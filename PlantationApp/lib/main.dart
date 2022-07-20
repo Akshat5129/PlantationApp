@@ -58,9 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Future.delayed(Duration(
         seconds: 3
     ), (){
-      //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),),);
       Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),),);
-      //Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerRegistration("9876543210"),),);
     },);
   }
 
@@ -89,12 +87,12 @@ class _MyHomePageState extends State<MyHomePage> {
           child: new Column(
             children: [
               new Container(
-                margin: EdgeInsets.only(top: 100.0),
+                margin: EdgeInsets.only(top: 160.0),
                 child: Image.asset(
-                    "assets/images/logo1.png"
+                    "assets/images/logo1.png", width: 220,
                 ),
               ),
-              SizedBox(height: 30,),
+              SizedBox(height: 40,),
               Container(alignment: Alignment.center,
                 child: Text(
                   "Plantation App",

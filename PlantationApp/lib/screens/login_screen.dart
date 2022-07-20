@@ -1,6 +1,9 @@
 //import 'package:flutter/cupertino.dart';
+
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:plantationapp/screens/farmer_reg.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -11,13 +14,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  bool _passwordVisible = true;
+
+  @override
+  void initState() {
+    _passwordVisible = true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 231, 169, 1),
       body: Container(
         padding: EdgeInsets.all(50),
-        child: Column(
+        child: ListView(
+            shrinkWrap: true,
+            children: [
+              Column(
           children: [
             Image.asset("assets/images/logo1.png", width: 200),
             SizedBox(height: 40,),
@@ -33,7 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Container(
+
+                Container(
               margin: EdgeInsets.only(top: 30),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -128,13 +143,32 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           margin: EdgeInsets.only(top: 15),
                           child: TextField(
+                            obscureText: _passwordVisible,
                             textAlign: TextAlign.start,
                             textAlignVertical: TextAlignVertical.center,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               //contentPadding: EdgeInsets.all(1),
-                              hintText: 'Enter your Password',
+                              hintText: 'Your Password',
                               prefixIcon: Icon(Icons.key),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  // Based on passwordVisible state choose the icon
+                                  _passwordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Theme.of(context).primaryColorDark,
+                                ),
+                                onPressed: () {
+                                  // Update the state i.e. toogle the state of passwordVisible variable
+                                  setState(() {
+                                    print("instate");
+                                    print(_passwordVisible);
+                                    _passwordVisible = !_passwordVisible;
+
+                                  });
+                                },
+                              ),
                             ),
                             style: GoogleFonts.lato(
                               textStyle: TextStyle(
@@ -144,16 +178,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
+
                           ),
                         ),
 
-                        Container(
+                        GestureDetector(child: Container(
                           margin: EdgeInsets.only(top: 10),
                           padding: EdgeInsets.symmetric(vertical: 25.0),
                           width: double.infinity,
                           child: RaisedButton(
                             elevation: 1.0,
-                            onPressed: (){},
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(),),);
+                            },
                             padding: EdgeInsets.all(15.0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
@@ -170,8 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                        ),
-
+                        ),),
                         Container(alignment: Alignment.center,
                           child: Text(
                           "Admin Login",
@@ -185,8 +221,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),),
-
-
                       ],
                     ),
                   )
@@ -195,6 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
             )
           ],
         ),
+      ])
       ),
     );
   }
