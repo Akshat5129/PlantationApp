@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:plantationapp/screens/farmer_demand.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 
-class FarmerDemandSConsent extends StatefulWidget {
-  const FarmerDemandSConsent({Key? key}) : super(key: key);
+class FarmerRegistration extends StatefulWidget {
+  const FarmerRegistration({Key? key}) : super(key: key);
 
   @override
-  State<FarmerDemandSConsent> createState() => _FarmerDemandSConsentState();
+  State<FarmerRegistration> createState() => _FarmerRegistrationState();
 }
 
-class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
+class _FarmerRegistrationState extends State<FarmerRegistration> {
 
   DateTime _selected = DateTime.now();
 

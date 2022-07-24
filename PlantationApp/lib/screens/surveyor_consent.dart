@@ -5,14 +5,14 @@ import 'package:plantationapp/screens/farmer_reg.dart';
 import 'package:signature/signature.dart';
 //import 'package:plantationapp/screens/farmer_reg2.dart';
 
-class FarmerDemand extends StatefulWidget {
-  const FarmerDemand({Key? key}) : super(key: key);
+class FarmerDemandSConsent extends StatefulWidget {
+  const FarmerDemandSConsent({Key? key}) : super(key: key);
 
   @override
-  State<FarmerDemand> createState() => _FarmerDemand();
+  State<FarmerDemandSConsent> createState() => _FarmerDemandSConsentState();
 }
 
-class _FarmerDemand extends State<FarmerDemand> {
+class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
