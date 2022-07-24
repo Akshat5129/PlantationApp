@@ -189,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: RaisedButton(
                             elevation: 1.0,
                             onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(),),);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
                             },
                             padding: EdgeInsets.all(15.0),
                             shape: RoundedRectangleBorder(

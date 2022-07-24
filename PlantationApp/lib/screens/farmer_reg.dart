@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:plantationapp/screens/surveyor_consent.dart';
 
-class FarmerRegistration extends StatefulWidget {
-  const FarmerRegistration({Key? key}) : super(key: key);
+class FarmerDemandSConsent extends StatefulWidget {
+  const FarmerDemandSConsent({Key? key}) : super(key: key);
 
   @override
-  State<FarmerRegistration> createState() => _FarmerRegistrationState();
+  State<FarmerDemandSConsent> createState() => _FarmerDemandSConsentState();
 }
 
-class _FarmerRegistrationState extends State<FarmerRegistration> {
+class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
 
   DateTime _selected = DateTime.now();
 
@@ -172,6 +173,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       onChanged: (String? newValue) {
                         setState(() {
                           dropdownvalue = newValue!;
+
                         });
                       },
                     )
@@ -396,7 +398,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     child: RaisedButton(
                       elevation: 1.0,
                       onPressed: (){
-                        _buildPopupDialog(context);
+                       // _buildPopupDialog(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(),),);
                       },
                       padding: EdgeInsets.all(15.0),
                       shape: RoundedRectangleBorder(
