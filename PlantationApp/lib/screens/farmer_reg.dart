@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/farmer_demand.dart';
+import 'package:plantationapp/screens/farmer_distribution.dart';
+import 'package:plantationapp/screens/farmer_plantation.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 
 class FarmerRegistration extends StatefulWidget {
@@ -400,7 +402,13 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       elevation: 1.0,
                       onPressed: (){
                        // _buildPopupDialog(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(),),);
+                        if(dropdownvalue=="Visit 1: Demand"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(),),);
+                        }else if(dropdownvalue=="Visit 2: Distribution"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(),),);
+                        }else if(dropdownvalue=="Visit 3: Plantation"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
+                        }
                       },
                       padding: EdgeInsets.all(15.0),
                       shape: RoundedRectangleBorder(

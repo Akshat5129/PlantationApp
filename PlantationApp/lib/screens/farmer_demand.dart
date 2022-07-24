@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 
+import 'farmer_consent.dart';
+
 class FarmerDemand extends StatefulWidget {
   const FarmerDemand({Key? key}) : super(key: key);
 
@@ -176,7 +178,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                   child: RaisedButton(
                                     elevation: 1.0,
                                     onPressed: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(),),);
                                     },
                                     padding: EdgeInsets.all(15.0),
                                     shape: RoundedRectangleBorder(
