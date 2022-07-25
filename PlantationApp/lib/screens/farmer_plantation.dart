@@ -240,17 +240,17 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                               ],
                             ))])])),
 
-    floatingActionButton: FloatingActionButton(
-    child: Icon(Icons.camera),
-    onPressed: () async {
-    final path = join(
-    (await getTemporaryDirectory()).path, '${DateTime.now()}.png');
-    await controller.takePicture().then((res) => {
-    setState(() {
-    _url = path;
-    })
-    });
-    },
-    ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.camera),
+        onPressed: () async {
+          final path = join(
+              (await getTemporaryDirectory()).path, '${DateTime.now()}.png');
+          await controller.takePicture().then((res) => {
+                setState(() {
+                  _url = path;
+                })
+              });
+        },
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );}}

@@ -17,6 +17,11 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   DateTime _selected = DateTime.now();
 
   final TextEditingController yearController = new TextEditingController();
+  final TextEditingController dateController = new TextEditingController();
+
+  DateTime dateToday =new DateTime.now();
+  String dateTod = DateTime.now().toString().substring(0,10);
+
 
   String dropdownvalue = 'Visit 1: Demand';
   var items = [
@@ -34,6 +39,20 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     'D2',
     'D3',
   ];
+
+  String dropdownvalue2 = 'Male';
+  var items2 = [
+    'Male',
+    'Female',
+    'Others'
+  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dateController.text=dateTod;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,8 +201,56 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     )
                   ),
 
-
                   SizedBox(height: 40,),
+                  Container(
+                    child: Text(
+                      "Date",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            color: Color.fromRGBO(58, 58, 58, 1),
+                            letterSpacing: .2,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    padding: EdgeInsets.only(left: 5),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                    decoration: BoxDecoration(
+                        color:Color.fromRGBO(181, 231, 77, 0.56),
+                        border: Border.all(
+                            color: Color.fromRGBO(181, 231, 77, 0.56)
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                    margin: EdgeInsets.only(top: 1),
+                    child: TextField(
+                      readOnly: true,
+                      controller: dateController,
+                      textAlign: TextAlign.start,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        //contentPadding: EdgeInsets.all(1),
+
+                        prefixIcon: Icon(Icons.date_range_outlined),
+                      ),
+                      style: GoogleFonts.lato(
+                        textStyle: TextStyle(
+                          color: Colors.black54,
+                          letterSpacing: .2,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+
+                  SizedBox(height: 20,),
                   Container(
                     child: Text(
                       "District",
@@ -349,6 +416,53 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                   SizedBox(height: 20,),
                   Container(
                     child: Text(
+                      "Aadhar Number",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            color: Color.fromRGBO(58, 58, 58, 1),
+                            letterSpacing: .2,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    padding: EdgeInsets.only(left: 5),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                    decoration: BoxDecoration(
+                        color:Color.fromRGBO(181, 231, 77, 0.56),
+                        border: Border.all(
+                            color: Color.fromRGBO(181, 231, 77, 0.56)
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                    margin: EdgeInsets.only(top: 1),
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.start,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        //contentPadding: EdgeInsets.all(1),
+                        hintText: "Enter your Aadhar Number",
+                        prefixIcon: Icon(Icons.credit_card_rounded),
+                      ),
+                      style: GoogleFonts.lato(
+                        textStyle: TextStyle(
+                          color: Colors.black54,
+                          letterSpacing: .2,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20,),
+                  Container(
+                    child: Text(
                       "Phone No",
                       textAlign: TextAlign.left,
                       style: GoogleFonts.poppins(
@@ -391,6 +505,60 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           ),
                         ),
                       ),
+                  ),
+
+                  SizedBox(height: 20,),
+                  Container(
+                    child: Text(
+                      "Gender",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            color: Color.fromRGBO(58, 58, 58, 1),
+                            letterSpacing: .2,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    padding: EdgeInsets.only(left: 5),
+                  ),
+                  Container(
+                      padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                      decoration: BoxDecoration(
+                          color:Color.fromRGBO(181, 231, 77, 0.56),
+                          border: Border.all(
+                              color: Color.fromRGBO(181, 231, 77, 0.56)
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10))
+                      ),
+                      margin: EdgeInsets.only(top: 1),
+                      child: DropdownButton(
+                        isExpanded: true,
+                        style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                              color: Colors.black54,
+                              letterSpacing: .2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        value: dropdownvalue2,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: items2.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownvalue2 = newValue!;
+                          });
+                        },
+                      )
                   ),
 
 
