@@ -136,7 +136,7 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
                                     SizedBox(height: 20,),
                                     Container(
                                       child: Text(
-                                        "Tree Name",
+                                        "Plant Name",
                                         textAlign: TextAlign.left,
                                         style: GoogleFonts.poppins(
                                           textStyle: TextStyle(
@@ -169,6 +169,23 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
                                             ),
                                           ),
                                         )
+                                    ),
+
+                                    SizedBox(height: 20,),
+                                    Container(
+                                      child: Text(
+                                        "Plant Images",
+                                        textAlign: TextAlign.left,
+                                        style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(
+                                              color: Color.fromRGBO(58, 58, 58, 1),
+                                              letterSpacing: .2,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                      ),
+                                      padding: EdgeInsets.only(left: 5),
                                     ),
 
                                     SizedBox(height: 20,),
