@@ -178,7 +178,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                     textAlignVertical: TextAlignVertical.center,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: 'Tree/Plant',
+                                        hintText: 'Selected Tree/Plant',
                                         prefixIcon: Icon(Icons.check_circle),
                                         prefixIconColor: Colors.green
                                     ),
