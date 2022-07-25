@@ -104,7 +104,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                 SizedBox(height: 10,),
                                 Container(
                                   child: Text(
-                                    "Demand",
+                                    "Farmer's Demand",
                                     textAlign: TextAlign.left,
                                     style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
