@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:plantationapp/screens/take_picture_page.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
+import 'package:plantationapp/screens/take_picture_page.dart';
 import 'package:signature/signature.dart';
 
 class FarmerPlantation extends StatefulWidget {
@@ -22,6 +24,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
   late CameraController controller;
   bool _isInited = false;
   late String _url;
+  String _path = "";
 
 
   final SignatureController _controller = SignatureController(
@@ -47,6 +50,24 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
       });
     });
   }
+
+
+  void _showCamera() async {
+
+    final cameras = await availableCameras();
+    final camera = cameras.first;
+
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TakePicturePage(camera: camera)));
+
+    setState(() {
+      _path = result;
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +149,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                 SizedBox(height: 20,),
                                 Container(
                                   child: Text(
-                                    "Selected Tree",
+                                    "Selected Plant",
                                     textAlign: TextAlign.left,
                                     style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
@@ -171,45 +192,112 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                     ),
                                   ),
                                 ),
-
-                                SizedBox(height: 20,),
-
+                                SizedBox(height: 30,),
                                 Container(
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  // child: _isInited ? CameraPreview(controller) : Container()
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: _isInited
-                                            ? AspectRatio(
-                                          aspectRatio: controller.value.aspectRatio,
-                                          child: CameraPreview(controller),
-                                        )
-                                            : Container(),
+                                  child: Text(
+                                    "Plant Images",
+                                    textAlign: TextAlign.left,
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          color: Color.fromRGBO(58, 58, 58, 1),
+                                          letterSpacing: .2,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600
                                       ),
-                                      Container(
-                                        height: 152,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              height: 120,
-                                              width: 120,
-                                              child: _url != null
-                                                  ? Image.file(
-                                                File(_url),
-                                                height: 120,
-                                                width: 120,
-                                              )
-                                                  : Container(),
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.only(left: 5),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 0),
+                                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                                  width: double.infinity,
+                                  child: RaisedButton(
+                                    elevation: 1.0,
+                                    onPressed: (){
+                                      showModalBottomSheet<void>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Container(
+                                            height: 200,
+                                            color: Colors.white70,
+                                            padding: EdgeInsets.all(10),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Container(
+                                                    margin: EdgeInsets.only(top: 10),
+                                                    padding: EdgeInsets.symmetric(vertical: 25.0),
+                                                    width: double.infinity,
+                                                    child: RaisedButton(
+                                                      elevation: 1.0,
+                                                      onPressed: (){
+                                                        _showCamera();
+                                                        //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
+                                                      },
+                                                      padding: EdgeInsets.all(15.0),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10.0),
+                                                      ),
+                                                      color: Colors.white24,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          Icon(Icons.camera_alt),
+                                                          SizedBox(width: 10,),
+                                                          Text(
+                                                            "Take a Picture",
+                                                            textAlign: TextAlign.center,
+                                                            style: GoogleFonts.poppins(
+                                                              textStyle: TextStyle(
+                                                                  color: Colors.black,
+                                                                  letterSpacing: .2,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight.w500
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
                                             ),
-                                          ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    padding: EdgeInsets.all(15.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    color: Color.fromRGBO(255, 252, 177, 1),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.camera_alt),
+                                     SizedBox(width: 10,),
+                                     Text(
+                                      "Capture Image",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            color: Colors.black,
+                                            letterSpacing: .2,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
+                                      ],
+                                    )
                                   ),
                                 ),
+
 
                                 Container(
                                   margin: EdgeInsets.only(top: 10),
@@ -240,17 +328,5 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                               ],
                             ))])])),
 
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera),
-        onPressed: () async {
-          final path = join(
-              (await getTemporaryDirectory()).path, '${DateTime.now()}.png');
-          await controller.takePicture().then((res) => {
-                setState(() {
-                  _url = path;
-                })
-              });
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
     );}}

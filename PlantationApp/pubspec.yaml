@@ -36,7 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^3.0.1
   signature: ^5.1.0
-  camera: 0.10.0
+  camera: ^0.9.8+1
+  image_picker: ^0.8.5+2
   path_provider: ^2.0.11
   path: ^1.8.1
 
