@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:plantationapp/screens/admin_home.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
 
 
@@ -208,19 +209,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),),
-                        Container(alignment: Alignment.center,
-                          child: Text(
-                          "Admin Login",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.roboto(
-                            textStyle: TextStyle(
-                                color: Colors.black54,
-                                letterSpacing: .2,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800
-                            ),
-                          ),
-                        ),),
+                        GestureDetector(
+                          child: Container(alignment: Alignment.center,
+                            child: Text(
+                                  "Admin Login",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(
+                                        color: Colors.black54,
+                                        letterSpacing: .2,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                ),
+                              ),
+                              onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminHome(),),);
+                          },
+                        )
                       ],
                     ),
                   )
