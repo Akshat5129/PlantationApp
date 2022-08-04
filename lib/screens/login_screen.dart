@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
+import 'package:http/http.dart' as http;
 
 
 class LoginScreen extends StatefulWidget {
@@ -16,10 +17,38 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   bool _passwordVisible = true;
+  TextEditingController controllerUserID = TextEditingController();
+  TextEditingController controllerPass = TextEditingController();
 
   @override
   void initState() {
     _passwordVisible = true;
+  }
+
+  //final String url = "https:/stand4land.in";
+  String url = 'https://stand4land.in/plantation_app/surveyor_login.php';
+  final String unencodedPath = "/plantation_app/admin_login.php";
+  final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
+
+
+  Future<http.Response> makePostRequest(String url, String unencodedPath , Map<String, String> header, Map<String,String> requestBody) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+
+    if(response.body=='success'){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(),),);
+    }else{
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => _buildPopupDialog(context),
+      );
+    }
+    return response;
   }
 
   @override
@@ -94,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           margin: EdgeInsets.only(top: 15),
                           child: TextField(
+                            controller: controllerUserID,
                             textAlign: TextAlign.start,
                             textAlignVertical: TextAlignVertical.center,
                             decoration: InputDecoration(
@@ -143,6 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           margin: EdgeInsets.only(top: 15),
                           child: TextField(
+                            controller: controllerPass,
                             obscureText: _passwordVisible,
                             textAlign: TextAlign.start,
                             textAlignVertical: TextAlignVertical.center,
@@ -189,7 +220,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: RaisedButton(
                             elevation: 1.0,
                             onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(),),);
+                              print("in pressed");
+                              url = 'https://stand4land.in/plantation_app/surveyor_login.php';
+
+                              Map<String,String> body = {'user_id': controllerUserID.text, 'password': controllerPass.text};
+
+                              url = url+"?user_id="+controllerUserID.text+"&password="+controllerPass.text;
+                              print("URL"+url);
+                              makePostRequest(url, unencodedPath, headers, body);
+                             // Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(),),);
                             },
                             padding: EdgeInsets.all(15.0),
                             shape: RoundedRectangleBorder(
@@ -219,6 +258,29 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ])
       ),
+    );
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return new AlertDialog(
+      title: const Text('Incorrect User ID or Password', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Please enter correct User ID or Password"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }

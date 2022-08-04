@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/farmer_demand.dart';
 import 'package:plantationapp/screens/farmer_distribution.dart';
 import 'package:plantationapp/screens/farmer_plantation.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
+import 'package:http/http.dart' as http;
 
 class FarmerRegistration extends StatefulWidget {
   const FarmerRegistration({Key? key}) : super(key: key);
@@ -40,6 +43,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     'D3',
   ];
 
+  dynamic d1 = "District";
+  dynamic districts = ['District'];
+
   String dropdownvalue2 = 'Male';
   var items2 = [
     'Male',
@@ -52,6 +58,31 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     // TODO: implement initState
     super.initState();
     dateController.text=dateTod;
+    makePostRequest(url, unencodedPath, headers);
+  }
+
+  //final String url = "https:/stand4land.in";
+  String url = 'https://stand4land.in/plantation_app/get_district_data.php';
+  final String unencodedPath = "/plantation_app/get_district_data.php";
+  final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
+
+
+  Future<http.Response> makePostRequest(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    d1 = jsonResult[0]['dname'];
+    jsonResult.forEach((s)=> districts.add(s["dname"]));
+    print(d1);
+    print(districts);
+    //dropdownvalue1=response.body;
+    return response;
   }
 
   @override
