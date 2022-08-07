@@ -17,6 +17,9 @@ class FarmerRegistration extends StatefulWidget {
 
 class _FarmerRegistrationState extends State<FarmerRegistration> {
 
+  List data = [];
+  String _mySelection="Dang";
+
   DateTime _selected = DateTime.now();
 
   final TextEditingController yearController = new TextEditingController();
@@ -36,15 +39,32 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     'Conclusion'
   ];
 
-  String dropdownvalue1 = 'D1';
+  String dropdownvalue1 = 'Select District';
   var items1 = [
-    'D1',
-    'D2',
-    'D3',
+    'Select District'
+  ];
+
+  String villageNameValue = 'Select Village';
+  var itemsVillage = [
+    'Select Village'
+  ];
+
+  String blockNameValue = 'Select Block';
+  var itemsBlock = [
+    'Select Block'
+  ];
+
+  String farmerNameValue = 'Select Farmer';
+  var itemsFarmer = [
+    'Select Farmer'
   ];
 
   dynamic d1 = "District";
   dynamic districts = ['District'];
+
+  String dd1 = "Dang";
+  List list1=[];
+  Map<String, int> map1 = {};
 
   String dropdownvalue2 = 'Male';
   var items2 = [
@@ -57,14 +77,21 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("init");
     dateController.text=dateTod;
     makePostRequest(url, unencodedPath, headers);
+    makePostRequest1(urlBlock, unencodedPath1, headers);
+    makePostRequest2(urlVillage, unencodedPath, headers);
   }
 
   //final String url = "https:/stand4land.in";
   String url = 'https://stand4land.in/plantation_app/get_district_data.php';
   final String unencodedPath = "/plantation_app/get_district_data.php";
+  final String unencodedPath1 = "/plantation_app/get_block_data.php";
   final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
+  String urlBlock = 'https://stand4land.in/plantation_app/get_block_data.php';
+  String urlVillage = 'https://stand4land.in/plantation_app/get_village_data.php';
+  String urlFarmer = 'https://stand4land.in/plantation_app/get_farmer_data.php';
 
 
   Future<http.Response> makePostRequest(String url, String unencodedPath , Map<String, String> header) async {
@@ -81,6 +108,51 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     jsonResult.forEach((s)=> districts.add(s["dname"]));
     print(d1);
     print(districts);
+    list1.add(d1);
+    //items1.add(d1);
+    jsonResult.forEach((s)=> items1.add(s["dname"]));
+    //dropdownvalue1=response.body;
+    return response;
+  }
+
+  Future<http.Response> makePostRequest1(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    d1 = jsonResult[0]['bname'];
+    jsonResult.forEach((s)=> districts.add(s["bname"]));
+    print(d1);
+    print(districts);
+    list1.add(d1);
+    //items1.add(d1);
+    jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
+    //dropdownvalue1=response.body;
+    return response;
+  }
+
+  Future<http.Response> makePostRequest2(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    d1 = jsonResult[0]['vname'];
+    jsonResult.forEach((s)=> districts.add(s["vname"]));
+    print(d1);
+    print(districts);
+    list1.add(d1);
+    //items1.add(d1);
+    jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
     //dropdownvalue1=response.body;
     return response;
   }
@@ -204,6 +276,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     ),
                     margin: EdgeInsets.only(top: 1),
                     child: DropdownButton(
+
                       isExpanded: true,
                       style: GoogleFonts.lato(
                         textStyle: TextStyle(
@@ -219,6 +292,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         return DropdownMenuItem(
                           value: items,
                           child: Text(items),
+
                         );
                       }).toList(),
                       // After selecting the desired option,it will
@@ -323,6 +397,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           return DropdownMenuItem(
                             value: items,
                             child: Text(items),
+                            enabled: items != 'Select District',
                           );
                         }).toList(),
                         // After selecting the desired option,it will
@@ -330,6 +405,61 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         onChanged: (String? newValue) {
                           setState(() {
                             dropdownvalue1 = newValue!;
+                          });
+                        },
+                      )
+                  ),
+
+
+                  SizedBox(height: 20,),
+                  Container(
+                    child: Text(
+                      "Block Name",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            color: Color.fromRGBO(58, 58, 58, 1),
+                            letterSpacing: .2,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    padding: EdgeInsets.only(left: 5),
+                  ),
+                  Container(
+                      padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                      decoration: BoxDecoration(
+                          color:Color.fromRGBO(181, 231, 77, 0.56),
+                          border: Border.all(
+                              color: Color.fromRGBO(181, 231, 77, 0.56)
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10))
+                      ),
+                      margin: EdgeInsets.only(top: 1),
+                      child: DropdownButton(
+                        isExpanded: true,
+                        style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                              color: Colors.black54,
+                              letterSpacing: .2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        value: blockNameValue,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: itemsBlock.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            blockNameValue = newValue!;
                           });
                         },
                       )
@@ -372,9 +502,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                               fontWeight: FontWeight.w600
                           ),
                         ),
-                        value: dropdownvalue1,
+                        value: villageNameValue,
                         icon: const Icon(Icons.keyboard_arrow_down),
-                        items: items1.map((String items) {
+                        items: itemsVillage.map((String items) {
                           return DropdownMenuItem(
                             value: items,
                             child: Text(items),
@@ -384,7 +514,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         // change button value to selected value
                         onChanged: (String? newValue) {
                           setState(() {
-                            dropdownvalue1 = newValue!;
+                            villageNameValue = newValue!;
                           });
                         },
                       )
