@@ -1,6 +1,8 @@
 //import 'package:flutter/cupertino.dart';
 
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
@@ -10,11 +12,33 @@ import 'package:http/http.dart' as http;
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  String dropdownvalue1 = 'Select District';
+  var items1 = [
+    'Select District'
+  ];
+
+  String villageNameValue = 'Select Village';
+  var itemsVillage = [
+    'Select Village'
+  ];
+
+  String blockNameValue = 'Select Block';
+  var itemsBlock = [
+    'Select Block'
+  ];
+
+  String farmerNameValue = 'Select Farmer';
+  var itemsFarmer = [
+    'Select Farmer'
+  ];
 
   bool _passwordVisible = true;
   TextEditingController controllerUserID = TextEditingController();
@@ -23,6 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     _passwordVisible = true;
+    makePostRequest0(urlDis, unencodedPath1, headers1);
+    makePostRequest1(urlBlock, unencodedPath1, headers1);
+    makePostRequest2(urlVillage, unencodedPath1, headers1);
   }
 
   //final String url = "https:/stand4land.in";
@@ -41,7 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.body);
 
     if(response.body=='success'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(),),);
+      print("succ");
+      print(itemsBlock);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
+        blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1
+      ),),);
     }else{
       showDialog(
         context: context,
@@ -50,6 +81,68 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return response;
   }
+
+
+  String urlDis = 'https://stand4land.in/plantation_app/get_district_data.php';
+  //final String unencodedPath = "/plantation_app/get_district_data.php";
+  final String unencodedPath1 = "/plantation_app/get_block_data.php";
+  final Map<String, String> headers1 = {'Content-Type': 'application/json; charset=UTF-8'};
+  String urlBlock = 'https://stand4land.in/plantation_app/get_block_data.php';
+  String urlVillage = 'https://stand4land.in/plantation_app/get_village_data.php';
+  String urlFarmer = 'https://stand4land.in/plantation_app/get_farmer_data.php';
+
+
+  Future<http.Response> makePostRequest0(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+
+    //items1.add(d1);
+    jsonResult.forEach((s)=> items1.add(s["dname"]));
+    print("this");
+    print(items1);
+    //dropdownvalue1=response.body;
+    return response;
+  }
+
+  Future<http.Response> makePostRequest1(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    //items1.add(d1);
+    jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
+    print(itemsBlock);
+    //dropdownvalue1=response.body;
+    return response;
+  }
+
+  Future<http.Response> makePostRequest2(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    //items1.add(d1);
+    jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
+    //dropdownvalue1=response.body;
+    return response;
+  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,28 @@ import 'package:plantationapp/screens/surveyor_consent.dart';
 import 'package:http/http.dart' as http;
 
 class FarmerRegistration extends StatefulWidget {
-  const FarmerRegistration({Key? key}) : super(key: key);
+  //const FarmerRegistration({Key? key}) : super(key: key);
+
+  String valueBlock1, valueVillage1, valueDistrict1;
+  var  itemsBlock1, itmesVillage1, itemsDIstrict1;
+
+
+
+  FarmerRegistration(
+      this.valueBlock1,
+      this.valueVillage1,
+      this.valueDistrict1,
+      this.itemsBlock1,
+      this.itmesVillage1,
+      this.itemsDIstrict1); // FarmerRegistration(
+  //     this.valueFarmer,
+  //     this.valueBlock,
+  //     this.valueVillage,
+  //     this.valueDistrict,
+  //     this.itemsFarmer,
+  //     this.itemsBlock,
+  //     this.itmesVillage,
+  //     this.itemsDIstrict);
 
   @override
   State<FarmerRegistration> createState() => _FarmerRegistrationState();
@@ -77,11 +98,15 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("init");
+    print("in");
+    print("${widget.itemsDIstrict1}");
     dateController.text=dateTod;
     makePostRequest(url, unencodedPath, headers);
     makePostRequest1(urlBlock, unencodedPath1, headers);
     makePostRequest2(urlVillage, unencodedPath, headers);
+    items1=widget.itemsDIstrict1;
+    itemsBlock=widget.itemsBlock1;
+    itemsVillage=widget.itmesVillage1;
   }
 
   //final String url = "https:/stand4land.in";
