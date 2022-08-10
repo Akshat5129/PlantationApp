@@ -248,40 +248,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
                             ))])])));}
 
 
-  Widget _buildPopupDialog(BuildContext context) {
 
-    return new Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          color: Colors.grey,
-          height: 300.0, // Change as per your requirement
-          width: 300.0, // Change as per your requirement
-          child: ListView.builder(
-
-            shrinkWrap: true,
-            itemCount: 15,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Card(child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('List Item $index'),
-                )),
-              );
-            },
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: FlatButton(
-
-            onPressed: (){
-              Navigator.pop(context);
-            },child: Text("Cancel"),),
-        )
-      ],
-    );
-  }
 
   Widget setupAlertDialoadContainer(context) {
     print("in the func");
