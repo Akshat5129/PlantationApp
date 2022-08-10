@@ -36,7 +36,8 @@ class _FarmerDemandState extends State<FarmerDemand> {
   int _itemCount = 0;
 
   var ForestTrees = ["Teak", "Drumstick", "Mahuva", "Neem", "Peepal", "Rosewood"];
-  var FruitTrees = ["Mango", "Blace Plum", "White Plum", "Guava", "Caeshue Nut"];
+  var FruitTrees = ["Mango", "Blace Plum", "White Plum", "Guava", "Caeshue Nut", "Lemon", "Jackfruit",
+    "Chiku", "Tamarind", "Apple Bair", "Custard Apple", "Pomegranate", "Almond"];
 
 
   @override
