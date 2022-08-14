@@ -47,6 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     _passwordVisible = true;
+    print("inside inint 1st"+items1.length.toString());
+    items1.clear();
+    items1.add("Select District");
+    print("inside inint"+items1.length.toString());
     makePostRequest0(urlDis, unencodedPath1, headers1);
     makePostRequest1(urlBlock, unencodedPath1, headers1);
     makePostRequest2(urlVillage, unencodedPath1, headers1);
@@ -69,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if(response.body=='success'){
       print("succ");
-      print(itemsBlock);
+      print(items1.length);
       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
         blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1
       ),),);
@@ -101,6 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.statusCode);
     print(response.body);
     var jsonResult = jsonDecode(response.body);
+    // print("items"+items1.length.toString());
+    // items1.clear();
+    // print("items1"+items1.length.toString());
 
     //items1.add(d1);
     jsonResult.forEach((s)=> items1.add(s["dname"]));

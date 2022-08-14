@@ -4,9 +4,15 @@ import 'package:plantationapp/screens/farmer_reg.dart';
 //import 'package:plantationapp/screens/farmer_reg3.dart';
 import 'package:signature/signature.dart';
 //import 'package:plantationapp/screens/farmer_reg2.dart';
+import 'package:http/http.dart' as http;
 
 class FarmerDemandSConsent extends StatefulWidget {
-  const FarmerDemandSConsent({Key? key}) : super(key: key);
+
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
+  Map<String, int> FarmerDemandMap;
+
+  FarmerDemandSConsent(this.year, this.status, this.date, this.district, this.block,
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap);
 
   @override
   State<FarmerDemandSConsent> createState() => _FarmerDemandSConsentState();
@@ -22,6 +28,44 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
   DateTime _selected = DateTime.now();
 
   final TextEditingController yearController = new TextEditingController();
+  final TextEditingController farmerName = new TextEditingController();
+  final TextEditingController demandController = new TextEditingController();
+  final TextEditingController treeController = new TextEditingController();
+
+
+  @override
+  void initState() {
+    farmerName.text=widget.farmer;
+    demandController.text=widget.farmerdemand;
+    treeController.text=widget.FarmerDemandMap.keys.elementAt(0);
+  }
+
+  //final String url = "https:/stand4land.in";
+  String url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
+  final String unencodedPath = "/plantation_app/admin_login.php";
+  final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
+
+
+  Future<http.Response> makePostRequest(String url, String unencodedPath , Map<String, String> header, Map<String,String> requestBody) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+
+    if(response.body=='success'){
+      print("succ");
+      //rint(items1.length);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => _buildPopupDialog(context),
+      );
+
+    }
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +127,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                         ),
                                         margin: EdgeInsets.only(top: 1),
                                         child: TextFormField(
+                                          controller: farmerName,
                                           style: GoogleFonts.lato(
                                             textStyle: TextStyle(
                                                 color: Colors.black54,
@@ -122,6 +167,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                         ),
                                         margin: EdgeInsets.only(top: 1),
                                         child: TextFormField(
+                                          controller: demandController,
                                           style: GoogleFonts.lato(
                                             textStyle: TextStyle(
                                                 color: Colors.black54,
@@ -160,6 +206,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                         ),
                                         margin: EdgeInsets.only(top: 1),
                                         child: TextFormField(
+                                          controller: treeController,
                                           style: GoogleFonts.lato(
                                             textStyle: TextStyle(
                                                 color: Colors.black54,
@@ -235,6 +282,23 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                       child: RaisedButton(
                                         elevation: 1.0,
                                         onPressed: (){
+                                          url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
+
+                                          Map<String,String> body = {};
+                                          print("date"+widget.date);
+
+                                          url = url+"?year="+widget.year+"&status="+widget.status;
+                                          url = url+"&date="+widget.date +"&district="+widget.district
+                                              +"&block="+widget.block
+                                              +"&village="+widget.village
+                                              +"&farmer="+widget.farmer
+                                              +"&aadhar="+widget.aadhar
+                                              +"&phone="+widget.phone
+                                              +"&gender="+widget.gender;
+
+
+                                          print("URL"+url);
+                                          makePostRequest(url, unencodedPath, headers, body);
                                           //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
                                         },
                                         padding: EdgeInsets.all(15.0),
@@ -243,7 +307,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                         ),
                                         color: Color.fromRGBO(243, 214, 139, 1.0),
                                         child: Text(
-                                          'NEXT',
+                                          'SUBMIT',
                                           style: TextStyle(
                                             color: Color.fromRGBO(93, 43, 14, 1),
                                             letterSpacing: 1.5,
@@ -255,4 +319,34 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                       ),
                                     ),
                                   ],
-                                ))])]))));}}
+                                ))])]))));
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return new AlertDialog(
+      title: const Text('Data Sent Sucessfully', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Demand of Farmer ${widget.farmer} has been successfuly registered"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
+                "", "", "", ["Select Block"], ["Select Village"], ["Select District"]
+            ),),);
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+
+        ),
+      ],
+    );
+  }
+
+}

@@ -49,6 +49,7 @@ dependencies:
   path: ^1.6.4
   web_socket_channel: ^2.2.0
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -238,7 +238,7 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
                                   child: RaisedButton(
                                     elevation: 1.0,
                                     onPressed: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
+                                      //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
                                     },
                                     padding: EdgeInsets.all(15.0),
                                     shape: RoundedRectangleBorder(

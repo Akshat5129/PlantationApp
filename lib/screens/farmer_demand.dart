@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
@@ -5,17 +7,28 @@ import 'package:plantationapp/screens/surveyor_consent.dart';
 
 import 'farmer_consent.dart';
 import 'farmer_demand.dart';
+import 'package:http/http.dart' as http;
 
 
 
 class FarmerDemand extends StatefulWidget {
-  const FarmerDemand({Key? key}) : super(key: key);
+  //const FarmerDemand({Key? key}) : super(key: key);
+
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender;
+
+
+  FarmerDemand(this.year, this.status, this.date, this.district, this.block,
+      this.village, this.farmer, this.aadhar, this.phone, this.gender);
 
   @override
   State<FarmerDemand> createState() => _FarmerDemandState();
 }
 
 class _FarmerDemandState extends State<FarmerDemand> {
+
+
+
+  late String year, status, date, district, block, village, farmer, aadhar, phone, gender;
 
   String dropdownvalue = 'Visit 1: Demand';
   var items = [
@@ -38,6 +51,63 @@ class _FarmerDemandState extends State<FarmerDemand> {
   var ForestTrees = ["Teak", "Drumstick", "Mahuva", "Neem", "Peepal", "Rosewood"];
   var FruitTrees = ["Mango", "Blace Plum", "White Plum", "Guava", "Caeshue Nut", "Lemon", "Jackfruit",
     "Chiku", "Tamarind", "Apple Bair", "Custard Apple", "Pomegranate", "Almond"];
+
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return new AlertDialog(
+      title: const Text('Incorrect User ID or Password', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Please enter correct User ID or Password"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+
+
+  //final String url = "https:/stand4land.in";
+  String url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
+  final String unencodedPath = "/plantation_app/admin_login.php";
+  final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
+
+
+  Future<http.Response> makePostRequest(String url, String unencodedPath , Map<String, String> header, Map<String,String> requestBody) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+
+    if(response.body=='success'){
+      print("succ");
+      print(items1.length);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
+          widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap),),);
+    }else{
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => _buildPopupDialog(context),
+      );
+    }
+    return response;
+  }
+
 
 
   @override
@@ -168,13 +238,17 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                         if(dropdownvalue1=="Forest Trees"){
                                           showDialog(
                                             context: context,
-                                            builder: (BuildContext context) => new FlutterExample(dropdownvalue1, ForestTrees),
+                                            builder: (BuildContext context) => new FlutterExample(dropdownvalue1, ForestTrees, widget.year,
+                                            widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                                                , widget.phone, widget.gender),
                                           );
 
                                         }else if(dropdownvalue1=="Plants"){
                                           showDialog(
                                             context: context,
-                                            builder: (BuildContext context) => new FlutterExample(dropdownvalue1, FruitTrees),
+                                            builder: (BuildContext context) => new FlutterExample(dropdownvalue1, FruitTrees, widget.year,
+                                                widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                                                , widget.phone, widget.gender),
                                           );
                                         }
 
@@ -185,7 +259,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                       ),
                                       color: Color.fromRGBO(181, 231, 77, 0.56),
                                       child: Text(
-                                        'LOGIN',
+                                        'SELECT',
                                         style: TextStyle(
                                           color: Colors.black54,
                                           letterSpacing: 1.5,
@@ -225,7 +299,27 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                   child: RaisedButton(
                                     elevation: 1.0,
                                     onPressed: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(),),);
+                                      // url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
+                                      //
+                                      // Map<String,String> body = {};
+                                      // print("date"+widget.date);
+                                      //
+                                      // url = url+"?year="+widget.year+"&status="+widget.status;
+                                      // url = url+"&date="+widget.date +"&district="+widget.district
+                                      //     +"&block="+widget.block
+                                      //     +"&village="+widget.village
+                                      //     +"&farmer="+widget.farmer
+                                      //     +"&aadhar="+widget.aadhar
+                                      //     +"&phone="+widget.phone
+                                      //     +"&gender="+widget.gender;
+                                      //
+                                      //
+                                      // print("URL"+url);
+                                      // makePostRequest(url, unencodedPath, headers, body);
+
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
+                                          widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                                          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap),),);
                                     },
                                     padding: EdgeInsets.all(15.0),
                                     shape: RoundedRectangleBorder(
@@ -333,6 +427,10 @@ class _FarmerDemandState extends State<FarmerDemand> {
     );
   }
 
+  @override
+  void initState() {
+    year=widget.year;
+  }
 }
 
 
@@ -350,6 +448,7 @@ class _ListTileItemState extends State<ListTileItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     print(FlutterExample.FarmerDemandMap);
     if(FlutterExample.FarmerDemandMap.containsKey(widget.title)){
       print("object1234");
@@ -392,14 +491,18 @@ class _ListTileItemState extends State<ListTileItem> {
       ),)
     );
   }
+
+
 }
 
 class FlutterExample extends StatelessWidget {
 
   String demandCat;
   var demandCatList;
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender;
 
-  FlutterExample(this.demandCat, this.demandCatList);
+  FlutterExample(this.demandCat, this.demandCatList, this.year, this.status, this.date, this.district, this.block,
+      this.village, this.farmer, this.aadhar, this.phone, this.gender);
   static Map<String, int> FarmerDemandMap = {};
 
 
@@ -421,7 +524,10 @@ class FlutterExample extends StatelessWidget {
       print(FarmerDemandMap);
       Navigator.of(context).pop();
       Navigator.of(context).pop();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(),),);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(
+          year,
+          status, date, district, block, village, farmer, aadhar, phone, gender
+      ),),);
       // Navigator.pushAndRemoveUntil(
       //   context,
       //   MaterialPageRoute(builder: (context) => FarmerDemand()),

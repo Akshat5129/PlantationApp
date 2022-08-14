@@ -1,11 +1,22 @@
+import 'dart:typed_data';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
+import 'package:plantationapp/screens/take_picture_page.dart';
 import 'package:signature/signature.dart';
 
 class FarmerDemandFConsent extends StatefulWidget {
-  const FarmerDemandFConsent({Key? key}) : super(key: key);
+  //const FarmerDemandFConsent({Key? key}) : super(key: key)
+
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
+  Map<String, int> FarmerDemandMap;
+
+
+  FarmerDemandFConsent(this.year, this.status, this.date, this.district, this.block,
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap);
 
   @override
   State<FarmerDemandFConsent> createState() => _FarmerDemandFConsentState();
@@ -18,164 +29,237 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     penColor: Colors.black,
     exportBackgroundColor: Colors.white,
   );
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() => print('Value changed'));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final cameras = await availableCameras();
+      print(cameras);
+      // setState(() {});
+      controller = CameraController(cameras[0], ResolutionPreset.medium);
+      controller.initialize().then((value) => {
+        setState(() {
+          _isInited = true;
+        })
+      });
+    });
+  }
 
+  late CameraDescription camera;
+  late CameraController controller;
+  bool _isInited = false;
+  late String _url;
+  String _path = "";
+
+  void _showCamera() async {
+
+    final cameras = await availableCameras();
+    final camera = cameras.first;
+
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TakePicturePage(camera: camera)));
+
+    setState(() {
+      _path = result;
+    });
+
+  }
+
+  Future<void> exportImage(BuildContext context) async {
+    if (_controller.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('No content')));
+      return;
+    }
+
+    final Uint8List? data = await _controller.toPngBytes();
+    if (data == null) {
+      return;
+    }
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: Center(
+              child: Container(
+                color: Colors.grey[300],
+                child: Image.memory(data),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color.fromRGBO(255, 254, 236, 1),
         body: Container(
-            padding: EdgeInsets.all(50),
-            child: ListView(
-                shrinkWrap: true,
-                children: [
-                  Column(
-                      children: [
-                        SizedBox(height: 40,),
-                        Text(
-                          "Farmer's Consent",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.roboto(
-                            textStyle: TextStyle(
-                                color: Color.fromRGBO(120, 153, 50, 1),
-                                letterSpacing: .2,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500
-                            ),
+          padding: EdgeInsets.all(50),
+          child: ListView(
+              shrinkWrap: true,
+              children: [
+                Column(
+                    children: [
+                      SizedBox(height: 40,),
+                      Text(
+                        "Farmer's Consent",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.roboto(
+                          textStyle: TextStyle(
+                              color: Color.fromRGBO(120, 153, 50, 1),
+                              letterSpacing: .2,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w500
                           ),
                         ),
-                        SizedBox(height: 30,),
-                        Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10))
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 40,),
-                                Container(
+                      ),
+                      SizedBox(height: 30,),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10))
+                        ),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 40,),
+                              Container(
+                                child: Text(
+                                  "Select/Click Photo",
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        color: Color.fromRGBO(58, 58, 58, 1),
+                                        letterSpacing: .2,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                ),
+                                padding: EdgeInsets.only(left: 5),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(vertical: 25.0),
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  elevation: 1.0,
+                                  onPressed: (){
+                                    _showCamera();
+                                    //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
+                                  },
+                                  padding: EdgeInsets.all(15.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  color: Color.fromRGBO(255, 252, 177, 1.0),
                                   child: Text(
-                                    "Select/Click Photo",
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          color: Color.fromRGBO(58, 58, 58, 1),
-                                          letterSpacing: .2,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.only(left: 5),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  padding: EdgeInsets.symmetric(vertical: 25.0),
-                                  width: double.infinity,
-                                  child: RaisedButton(
-                                    elevation: 1.0,
-                                    onPressed: (){
-                                      //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
-                                    },
-                                    padding: EdgeInsets.all(15.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    color: Color.fromRGBO(255, 252, 177, 1.0),
-                                    child: Text(
-                                      'Capture',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(93, 43, 14, 1),
-                                        letterSpacing: 1.5,
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'OpenSans',
-                                      ),
+                                    'Capture',
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(93, 43, 14, 1),
+                                      letterSpacing: 1.5,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'OpenSans',
                                     ),
                                   ),
                                 ),
+                              ),
 
-                                SizedBox(height: 20,),
-                                Container(
-                                  child: Text(
-                                    "Farmers's Signature",
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          color: Color.fromRGBO(58, 58, 58, 1),
-                                          letterSpacing: .2,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.only(left: 5),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
-                                  decoration: BoxDecoration(
-                                      color:Color.fromRGBO(215, 222, 199, 1.0),
-                                      border: Border.all(
-                                          color: Color.fromRGBO(215, 222, 199, 1.0)
-                                      ),
-                                      borderRadius: BorderRadius.all(Radius.circular(10))
-                                  ),
-                                  margin: EdgeInsets.only(top: 1),
-                                  child: Signature(
-                                    controller: _controller,
-                                    height: 130,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
-                                  margin: EdgeInsets.only(top: 1),
-                                  alignment: Alignment.center,
-                                  child: IconButton(
-                                    color: Colors.red,
-                                    onPressed: (){
-                                      _controller.clear();
-                                    }, icon: Icon(
-                                    Icons.clear,
-                                  ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 1),
-                                  alignment: Alignment.center,
-                                  child: IconButton(
-                                    color: Colors.red,
-                                    onPressed: (){
-                                      _controller.clear();
-                                    }, icon: Icon(
-                                    Icons.done_all_outlined,
-                                  ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  padding: EdgeInsets.symmetric(vertical: 25.0),
-                                  width: double.infinity,
-                                  child: RaisedButton(
-                                    elevation: 1.0,
-                                    onPressed: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
-                                    },
-                                    padding: EdgeInsets.all(15.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    color: Color.fromRGBO(243, 214, 139, 1.0),
-                                    child: Text(
-                                      'NEXT',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(93, 43, 14, 1),
-                                        letterSpacing: 1.5,
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'OpenSans',
-                                      ),
+                              SizedBox(height: 20,),
+                              Container(
+                                child: Text(
+                                  "Farmers's Signature",
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        color: Color.fromRGBO(58, 58, 58, 1),
+                                        letterSpacing: .2,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600
                                     ),
                                   ),
                                 ),
-                              ],
-                            ))])])));}}
+                                padding: EdgeInsets.only(left: 5),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                                decoration: BoxDecoration(
+                                    color:Color.fromRGBO(215, 222, 199, 1.0),
+                                    border: Border.all(
+                                        color: Color.fromRGBO(215, 222, 199, 1.0)
+                                    ),
+                                    borderRadius: BorderRadius.all(Radius.circular(10))
+                                ),
+                                margin: EdgeInsets.only(top: 1),
+                                child: Signature(
+                                  controller: _controller,
+                                  height: 130,
+                                  backgroundColor: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
+                                margin: EdgeInsets.only(top: 1),
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: const Icon(Icons.redo),
+                                  color: Colors.blue,
+                                  onPressed: () {
+                                    setState(() => _controller.clear());
+                                  },
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 1),
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: const Icon(Icons.image),
+                                  color: Colors.blue,
+                                  onPressed: () => exportImage(context),
+                                ),
+                              ),
+                            ]
+                        ),
+                      ),
+                    ]
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.symmetric(vertical: 25.0),
+                  width: double.infinity,
+                  child: RaisedButton(
+                    elevation: 1.0,
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(
+                          widget.year,
+                          widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                          , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap
+                      ),),);
+                    },
+                    padding: EdgeInsets.all(15.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    color: Color.fromRGBO(243, 214, 139, 1.0),
+                    child: Text(
+                      'NEXT',
+                      style: TextStyle(
+                        color: Color.fromRGBO(93, 43, 14, 1),
+                        letterSpacing: 1.5,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'OpenSans',
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+        )
+    );}}
