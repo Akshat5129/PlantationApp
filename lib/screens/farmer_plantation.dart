@@ -57,14 +57,17 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
     final cameras = await availableCameras();
     final camera = cameras.first;
 
-    final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TakePicturePage(camera: camera)));
 
-    setState(() {
-      _path = result;
-    });
+    // final result = await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => TakePicturePage(camera: camera)));
+
+    // setState(() {
+    //   _path = result;
+    // });
+    
+
 
   }
 

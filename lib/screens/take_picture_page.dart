@@ -6,11 +6,17 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:plantationapp/screens/farmer_consent.dart';
 
 
 class TakePicturePage extends StatefulWidget {
   final CameraDescription camera;
-  TakePicturePage({required this.camera});
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
+  Map<String, int> FarmerDemandMap;
+
+  TakePicturePage(this.year, this.status, this.date, this.district, this.block,
+  this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, {required this.camera});
+
 
   @override
   _TakePicturePageState createState() => _TakePicturePageState();
@@ -47,7 +53,9 @@ class _TakePicturePageState extends State<TakePicturePage> {
           builder: (context) => DisplayPictureScreen(
             // Pass the automatically generated path to
             // the DisplayPictureScreen widget.
-            imagePath: image.path,
+              widget.year,
+              widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+              , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap,path
           ),
         ),
       );
@@ -100,8 +108,25 @@ class _TakePicturePageState extends State<TakePicturePage> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
+  Map<String, int> FarmerDemandMap;
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  DisplayPictureScreen(
+      this.year,
+      this.status,
+      this.date,
+      this.district,
+      this.block,
+      this.village,
+      this.farmer,
+      this.aadhar,
+      this.phone,
+      this.gender,
+      this.farmerdemand,
+      this.FarmerDemandMap,this.imagePath);
+  //const DisplayPictureScreen({super.key, required this.imagePath});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +134,56 @@ class DisplayPictureScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
+      body: Container(
+        child: Column(
+          children: [
+            Container(
+              child: Image.file(File(imagePath)),
+              margin: EdgeInsets.only(bottom: 10),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RawMaterialButton(
+                  onPressed: () {},
+                  elevation: 2.0,
+                  fillColor: Colors.red.shade200,
+                  child: Icon(
+                    Icons.cancel_rounded,
+                    size: 35.0,
+                  ),
+                  padding: EdgeInsets.all(15.0),
+                  shape: CircleBorder(),
+                ),
+                RawMaterialButton(
+                  onPressed: () {
+                     Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => FarmerDemandFConsent(year,
+                         status, date, district, block, village, farmer, aadhar
+                          ,phone, gender, farmerdemand, FarmerDemandMap
+                          // Pass the automatically generated path to
+                          // the DisplayPictureScreen widget.
+
+                        ),
+                      ),
+                    );
+                  },
+                  elevation: 2.0,
+                  fillColor: Colors.green.shade300,
+                  child: Icon(
+                    Icons.check,
+                    size: 35.0,
+                  ),
+                  padding: EdgeInsets.all(15.0),
+                  shape: CircleBorder(),
+                )
+              ],
+            )
+          ],
+        ),
+      )//Image.file(File(imagePath)),
     );
   }
 }

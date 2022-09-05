@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
@@ -95,6 +96,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
 
     if(response.body=='success'){
       print("succ");
+      XFile image;
       print(items1.length);
       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
           widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
@@ -299,6 +301,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                   child: RaisedButton(
                                     elevation: 1.0,
                                     onPressed: (){
+                                      XFile? image;
                                       // url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
                                       //
                                       // Map<String,String> body = {};
@@ -319,7 +322,9 @@ class _FarmerDemandState extends State<FarmerDemand> {
 
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
                                           widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap),),);
+                                          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap),
+
+                                      ),);
                                     },
                                     padding: EdgeInsets.all(15.0),
                                     shape: RoundedRectangleBorder(

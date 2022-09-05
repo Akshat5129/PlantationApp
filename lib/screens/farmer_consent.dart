@@ -1,10 +1,15 @@
+
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
+import 'package:plantationapp/screens/take_picture_from_camera2.dart';
 import 'package:plantationapp/screens/take_picture_page.dart';
 import 'package:signature/signature.dart';
 
@@ -13,6 +18,7 @@ class FarmerDemandFConsent extends StatefulWidget {
 
   String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
   Map<String, int> FarmerDemandMap;
+
 
 
   FarmerDemandFConsent(this.year, this.status, this.date, this.district, this.block,
@@ -24,6 +30,8 @@ class FarmerDemandFConsent extends StatefulWidget {
 
 class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
 
+  late final todo;
+
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
     penColor: Colors.black,
@@ -32,6 +40,8 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
   @override
   void initState() {
     super.initState();
+    //todo = ModalRoute.of(context)!.settings.arguments as Todo;
+    //print("todo"+todo);
     _controller.addListener(() => print('Value changed'));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final cameras = await availableCameras();
@@ -44,13 +54,29 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
         })
       });
     });
+    //chooseImage('')
   }
+
 
   late CameraDescription camera;
   late CameraController controller;
   bool _isInited = false;
   late String _url;
   String _path = "";
+
+  late PickedFile uploadImage;
+  late File? selected = null;
+
+  Future<void> chooseImage(ImageSource imageSource) async {
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile? file = await imagePicker.getImage(source: imageSource);
+    //set source: ImageSource.camera to get image from camera
+    setState((){
+      uploadImage = file!;
+      selected = File(uploadImage.path);
+    });
+  }
+
 
   void _showCamera() async {
 
@@ -60,7 +86,8 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TakePicturePage(camera: camera)));
+            builder: (context) => TakeImageFromCamera2(widget.year, widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)));
 
     setState(() {
       _path = result;
@@ -144,6 +171,17 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                                 ),
                                 padding: EdgeInsets.only(left: 5),
                               ),
+                              Container(  //show image here after choosing image
+                                  // child:selected == null?
+                                  // Container(child: Text(selected.toString())): //if uploadimage is null then show empty container
+                                  // Container(   //elese show image here
+                                  //     child: SizedBox(
+                                  //         height:150,
+                                  //         child:Image.file(selected!) //load image from file
+                                  //     )
+                                  // )
+                                  child: Image.file(File(getTemporaryDirectory().toString()+'/image_${widget.aadhar}_${widget.date}.jpg'))
+                              ),
                               Container(
                                 margin: EdgeInsets.only(top: 10),
                                 padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -152,6 +190,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                                   elevation: 1.0,
                                   onPressed: (){
                                     _showCamera();
+
                                     //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
                                   },
                                   padding: EdgeInsets.all(15.0),
@@ -230,6 +269,9 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                       ),
                     ]
                 ),
+                // Container(
+                //   child: Image.file(File(todo!.path), height: 300,),
+                // ),
                 Container(
                   margin: EdgeInsets.only(top: 10),
                   padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -263,3 +305,9 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
               ]),
         )
     );}}
+
+
+class Todo {
+  final XFile image;
+  const Todo(this.image);
+}
