@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:plantationapp/screens/data_sync.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
 //import 'package:plantationapp/screens/farmer_reg3.dart';
 import 'package:signature/signature.dart';
@@ -49,6 +52,23 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
     // }
 
     //treeController.text=widget.FarmerDemandMap.keys.elementAt(0);
+  }
+
+  Future<void> exportImage(BuildContext context) async {
+    if (_controller.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('No content')));
+      return;
+    }
+
+    final Uint8List? data = await _controller.toPngBytes();
+
+    if (data == null) {
+      return;
+    }
+
+    widget.FarmerDemand1['surveyor_signature'] = data;
+
   }
 
   //final String url = "https:/stand4land.in";
@@ -281,31 +301,38 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                         backgroundColor: Colors.white,
                                       ),
                                     ),
-                                    Container(
-                                      padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
-                                      margin: EdgeInsets.only(top: 1),
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        color: Colors.red,
-                                        onPressed: (){
-                                          _controller.clear();
-                                        }, icon: Icon(
-                                        Icons.clear,
-                                      ),
-                                      ),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
+                                          margin: EdgeInsets.only(top: 1),
+                                          alignment: Alignment.center,
+                                          child: IconButton(
+                                            color: Colors.blue,
+                                            onPressed: (){
+                                              _controller.clear();
+                                            }, icon: Icon(
+                                            Icons.clear,
+                                          ),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(top: 1),
+                                          alignment: Alignment.center,
+                                          child: IconButton(
+                                            color: Colors.blue,
+                                            onPressed: (){
+                                              //_controller.clear();
+                                              exportImage(context);
+                                            }, icon: Icon(
+                                            Icons.done_all_outlined,
+                                          ),
+                                          ),
+                                        ),
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 1),
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        color: Colors.red,
-                                        onPressed: (){
-                                          _controller.clear();
-                                        }, icon: Icon(
-                                        Icons.done_all_outlined,
-                                      ),
-                                      ),
-                                    ),
+                                    SizedBox(height: 10,),
                                     Container(
                                       margin: EdgeInsets.only(top: 10),
                                       padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -313,24 +340,24 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                       child: RaisedButton(
                                         elevation: 1.0,
                                         onPressed: (){
-                                          url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
-
-                                          Map<String,String> body = {};
-                                          print("date"+widget.date);
-
-                                          url = url+"?year="+widget.year+"&status="+widget.status;
-                                          url = url+"&date="+widget.date +"&district="+widget.district
-                                              +"&block="+widget.block
-                                              +"&village="+widget.village
-                                              +"&farmer="+widget.farmer
-                                              +"&aadhar="+widget.aadhar
-                                              +"&phone="+widget.phone
-                                              +"&gender="+widget.gender;
-
-
-                                          print("URL"+url);
-                                          makePostRequest(url, unencodedPath, headers, body);
-                                          //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
+                                          // url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
+                                          //
+                                          // Map<String,String> body = {};
+                                          // print("date"+widget.date);
+                                          //
+                                          // url = url+"?year="+widget.year+"&status="+widget.status;
+                                          // url = url+"&date="+widget.date +"&district="+widget.district
+                                          //     +"&block="+widget.block
+                                          //     +"&village="+widget.village
+                                          //     +"&farmer="+widget.farmer
+                                          //     +"&aadhar="+widget.aadhar
+                                          //     +"&phone="+widget.phone
+                                          //     +"&gender="+widget.gender;
+                                          //
+                                          //
+                                          // print("URL"+url);
+                                          // makePostRequest(url, unencodedPath, headers, body);
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => DataSyncDemand(widget.FarmerDemand1),),);
                                         },
                                         padding: EdgeInsets.all(15.0),
                                         shape: RoundedRectangleBorder(
