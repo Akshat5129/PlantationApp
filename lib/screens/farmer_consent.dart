@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,11 +19,12 @@ class FarmerDemandFConsent extends StatefulWidget {
 
   String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
   Map<String, int> FarmerDemandMap;
+  var imageFarmer;
 
 
 
   FarmerDemandFConsent(this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.imageFarmer);
 
   @override
   State<FarmerDemandFConsent> createState() => _FarmerDemandFConsentState();
@@ -31,6 +33,25 @@ class FarmerDemandFConsent extends StatefulWidget {
 class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
 
   late final todo;
+  var image1 = null;
+  var image11 = null;
+
+  Map<String, dynamic> FarmerData1 = {
+    'year': '',
+    'status': '',
+    'date': '',
+    'district': '',
+    'block': '',
+    'village': '',
+    'farmer': '',
+    'aadhar': '',
+    'phone': '',
+    'gender': '',
+    'farmer_demand': '',
+    'farmer_demand_map': '',
+    'farmer_image': ''
+  };
+
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -40,8 +61,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
   @override
   void initState() {
     super.initState();
-    //todo = ModalRoute.of(context)!.settings.arguments as Todo;
-    //print("todo"+todo);
+    print("consent"+widget.FarmerDemandMap.toString());
     _controller.addListener(() => print('Value changed'));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final cameras = await availableCameras();
@@ -54,7 +74,24 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
         })
       });
     });
+    print("consent1"+widget.year);
+    FarmerData1['year'] = widget.year;
+    print("consent1"+FarmerData1['year']);
+    FarmerData1['status'] = widget.status;
+    FarmerData1['date'] = widget.date;
+    FarmerData1['district'] = widget.district;
+    FarmerData1['village'] = widget.village;
+    FarmerData1['farmer'] = widget.farmer;
+    FarmerData1['aadhar'] = widget.aadhar;
+    FarmerData1['phone'] = widget.phone;
+    FarmerData1['gender'] = widget.gender;
+    FarmerData1["farmer_demand"] = widget.farmerdemand;
+    FarmerData1['farmer_demand_map'] = widget.FarmerDemandMap;
+    FarmerData1['farmer_image'] = widget.imageFarmer;
+
     //chooseImage('')
+
+
   }
 
 
@@ -103,26 +140,85 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     }
 
     final Uint8List? data = await _controller.toPngBytes();
+
     if (data == null) {
       return;
     }
 
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: Center(
-              child: Container(
-                color: Colors.grey[300],
-                child: Image.memory(data),
-              ),
-            ),
-          );
-        },
+    FarmerData1['farmer_signature'] = data;
+
+
+    // await Navigator.of(context).push(
+    //   MaterialPageRoute<void>(
+    //     builder: (BuildContext context) {
+    //       return Scaffold(
+    //         appBar: AppBar(),
+    //         body: Center(
+    //           child: Container(
+    //             color: Colors.grey[300],
+    //             child: Image.memory(data),
+    //           ),
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
+  }
+
+  void _onLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: new Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              new CircularProgressIndicator(),
+              new Text("Loading"),
+            ],
+          ),
+        );
+      },
+    );
+    new Future.delayed(new Duration(seconds: 3), () {
+
+    });
+  }
+
+
+  Widget _buildPopupDialog(BuildContext context, var image12) {
+    return new AlertDialog(
+      title: const Text('Farmer Image successfully Captured', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child:
+          Image.file(File(image12!.path))
+            ,
+          height: 180, alignment: Alignment.center,)
+        ],
       ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            print("consent2"+widget.year);
+            Navigator.of(context).pop();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (BuildContext context) => FarmerDemandFConsent(widget.year,
+              widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, image12)),
+            );
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,16 +267,12 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                                 ),
                                 padding: EdgeInsets.only(left: 5),
                               ),
-                              Container(  //show image here after choosing image
-                                  // child:selected == null?
-                                  // Container(child: Text(selected.toString())): //if uploadimage is null then show empty container
-                                  // Container(   //elese show image here
-                                  //     child: SizedBox(
-                                  //         height:150,
-                                  //         child:Image.file(selected!) //load image from file
-                                  //     )
-                                  // )
-                                  child: Image.file(File(getTemporaryDirectory().toString()+'/image_${widget.aadhar}_${widget.date}.jpg'))
+                              Container(
+                                  child: widget.imageFarmer == null ? new Container() : new Container(
+                                      child: Image.file(File(widget.imageFarmer!.path)),
+                                    height: 180,
+                                    alignment: Alignment.center,
+                                  )
                               ),
                               Container(
                                 margin: EdgeInsets.only(top: 10),
@@ -188,8 +280,49 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                                 width: double.infinity,
                                 child: RaisedButton(
                                   elevation: 1.0,
-                                  onPressed: (){
-                                    _showCamera();
+                                  onPressed: () {
+                                    //_showCamera();
+
+
+
+                                    setState(() async {
+                                      image1 = await ImagePicker().getImage(source:ImageSource.camera);
+                                      if(image1 == null){
+                                        print("succc"+image1);
+                                        return;}
+
+                                      GallerySaver.saveImage(image1.path);
+                                      print("correct"+image1.path);
+                                      FarmerData1['farmer_image']=image1.path;
+                                      image11 = image1;
+                                      print("succccc"+image11.path);
+                                      image11 = image1;
+                                      print("succcc"+image11.path);
+
+                                      // Navigator.pushAndRemoveUntil(
+                                      //   context,
+                                      //   MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
+                                      //       widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)), // this mainpage is your page to refresh
+                                      //       (Route<dynamic> route) => false,
+                                      // );
+
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(builder: (BuildContext context) => FarmerDemandFConsent(widget.year,
+                                      //   widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)),
+                                      // );
+
+
+
+                                      //_onLoading();
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) => _buildPopupDialog(context,image11),
+                                      );
+                                    });
+
+
+
 
                                     //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
                                   },
@@ -243,27 +376,33 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                                   backgroundColor: Colors.white,
                                 ),
                               ),
-                              Container(
-                                padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
-                                margin: EdgeInsets.only(top: 1),
-                                alignment: Alignment.center,
-                                child: IconButton(
-                                  icon: const Icon(Icons.redo),
-                                  color: Colors.blue,
-                                  onPressed: () {
-                                    setState(() => _controller.clear());
-                                  },
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 1),
-                                alignment: Alignment.center,
-                                child: IconButton(
-                                  icon: const Icon(Icons.image),
-                                  color: Colors.blue,
-                                  onPressed: () => exportImage(context),
-                                ),
-                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
+                                    margin: EdgeInsets.only(top: 1),
+                                    alignment: Alignment.center,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.redo),
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        setState(() => _controller.clear());
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 1),
+                                    alignment: Alignment.center,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.check_circle_rounded),
+                                      color: Colors.blue,
+                                      onPressed: () => exportImage(context),
+                                    ),
+                                  ),
+
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              )
                             ]
                         ),
                       ),
@@ -279,10 +418,11 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                   child: RaisedButton(
                     elevation: 1.0,
                     onPressed: (){
+                      print("consentf "+FarmerData1['year']);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(
                           widget.year,
                           widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                          , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap
+                          , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, FarmerData1
                       ),),);
                     },
                     padding: EdgeInsets.all(15.0),

@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,13 +90,21 @@ class _TakeImageFromCamera2State extends State<TakeImageFromCamera2> {
                       if(controller != null){ //check if contrller is not null
                         if(controller!.value.isInitialized){ //check if controller is initialized
                           image = await controller!.takePicture(); //capture image
-                          setState(() {
+                          setState(() async {
                             //update UI
                             final File? imagefile = File(image!.path);
                             Map<String, File> map1 =  {'image': imagefile!};
                             SharedPreferences.setMockInitialValues(map1);
 
+                            var image1 = await ImagePicker().getImage(source:ImageSource.camera);
+                            if(image1 == null)
+                              return;
+
+                            GallerySaver.saveImage(image1.path);
+
+
                           });
+
 
                           //convert XFile to File
                           //final File? imagefile = File(image.path);
@@ -142,7 +151,7 @@ class _TakeImageFromCamera2State extends State<TakeImageFromCamera2> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => FarmerDemandFConsent(widget.year, widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap),
+                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap,null),
 
                         settings: RouteSettings(
                           arguments: image,

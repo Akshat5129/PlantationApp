@@ -5,14 +5,16 @@ import 'package:plantationapp/screens/farmer_reg.dart';
 import 'package:signature/signature.dart';
 //import 'package:plantationapp/screens/farmer_reg2.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 
 class FarmerDemandSConsent extends StatefulWidget {
 
   String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
-  Map<String, int> FarmerDemandMap;
+  Map<String, dynamic> FarmerDemandMap;
+  Map<String, dynamic> FarmerDemand1;
 
   FarmerDemandSConsent(this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.FarmerDemand1);
 
   @override
   State<FarmerDemandSConsent> createState() => _FarmerDemandSConsentState();
@@ -35,9 +37,18 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
 
   @override
   void initState() {
-    farmerName.text=widget.farmer;
-    demandController.text=widget.farmerdemand;
-    treeController.text=widget.FarmerDemandMap.keys.elementAt(0);
+    print("consent3"+widget.FarmerDemand1['year'].toString());
+    farmerName.text=widget.FarmerDemand1['farmer'];
+    demandController.text=widget.FarmerDemand1['farmer_demand'];
+    String remove = widget.FarmerDemand1['farmer_demand_map'].toString().replaceAll("{", " ");
+    String remove1 = remove.replaceAll("}", " ");
+    treeController.text=remove1;
+    // print(widget.FarmerDemandMap.keys);
+    // for (var key in widget.FarmerDemandMap.keys){
+    //   treeController.text = treeController.text+", "+key+ ": "+widget.FarmerDemandMap[key];
+    // }
+
+    //treeController.text=widget.FarmerDemandMap.keys.elementAt(0);
   }
 
   //final String url = "https:/stand4land.in";
@@ -93,6 +104,25 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                               ),
                             ),
                             SizedBox(height: 30,),
+                            Row(
+                              children: [
+                                Container(
+                                    child: widget.FarmerDemand1['farmer_image'] == null ? new Container() : new Container(
+                                      child: Image.file(File(widget.FarmerDemand1['farmer_image']!.path)),
+                                      height: 180,
+                                      alignment: Alignment.center,
+                                    )
+                                ),
+                                SizedBox(width: 30,),
+                                Container(
+                                  width: 140,
+                                  color: Colors.grey[300],
+                                  child: Image.memory(widget.FarmerDemand1['farmer_signature']),
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                            SizedBox(height: 15,),
                             Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(Radius.circular(10))
@@ -206,6 +236,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                         ),
                                         margin: EdgeInsets.only(top: 1),
                                         child: TextFormField(
+                                          maxLines: 4,
                                           controller: treeController,
                                           style: GoogleFonts.lato(
                                             textStyle: TextStyle(
