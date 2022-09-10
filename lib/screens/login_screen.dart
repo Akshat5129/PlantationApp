@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print("succ");
       print(items1.length);
       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
-        blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1
+        blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1, controllerUserID.text
       ),),);
     }else{
       showDialog(

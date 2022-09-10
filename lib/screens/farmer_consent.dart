@@ -17,14 +17,14 @@ import 'package:signature/signature.dart';
 class FarmerDemandFConsent extends StatefulWidget {
   //const FarmerDemandFConsent({Key? key}) : super(key: key)
 
-  String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand, userID;
   Map<String, int> FarmerDemandMap;
   var imageFarmer;
 
 
 
   FarmerDemandFConsent(this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.imageFarmer);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.imageFarmer, this.userID);
 
   @override
   State<FarmerDemandFConsent> createState() => _FarmerDemandFConsentState();
@@ -49,7 +49,8 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     'gender': '',
     'farmer_demand': '',
     'farmer_demand_map': '',
-    'farmer_image': ''
+    'farmer_image': '',
+    'userID': '',
   };
 
 
@@ -88,6 +89,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     FarmerData1["farmer_demand"] = widget.farmerdemand;
     FarmerData1['farmer_demand_map'] = widget.FarmerDemandMap;
     FarmerData1['farmer_image'] = widget.imageFarmer;
+    FarmerData1['userID']=widget.userID;
 
     //chooseImage('')
 
@@ -209,7 +211,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (BuildContext context) => FarmerDemandFConsent(widget.year,
-              widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, image12)),
+              widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, image12, widget.userID)),
             );
           },
           textColor: Theme.of(context).primaryColor,

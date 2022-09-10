@@ -151,7 +151,7 @@ class _TakeImageFromCamera2State extends State<TakeImageFromCamera2> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => FarmerDemandFConsent(widget.year, widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap,null),
+                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap,null, ""),
 
                         settings: RouteSettings(
                           arguments: image,

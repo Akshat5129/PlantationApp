@@ -43,9 +43,12 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
     print("consent3"+widget.FarmerDemand1['year'].toString());
     farmerName.text=widget.FarmerDemand1['farmer'];
     demandController.text=widget.FarmerDemand1['farmer_demand'];
-    String remove = widget.FarmerDemand1['farmer_demand_map'].toString().replaceAll("{", " ");
-    String remove1 = remove.replaceAll("}", " ");
+    String remove = widget.FarmerDemand1['farmer_demand_map'].toString().replaceAll("{", "");
+    String remove1 = remove.replaceAll("}", "");
     treeController.text=remove1;
+    widget.FarmerDemand1["farmer_demand_map"] = remove1;
+    print("consent678"+remove1);
+    widget.FarmerDemand1["aadhar"] = widget.FarmerDemand1['aadhar'].toString().replaceAll("/", "");
     // print(widget.FarmerDemandMap.keys);
     // for (var key in widget.FarmerDemandMap.keys){
     //   treeController.text = treeController.text+", "+key+ ": "+widget.FarmerDemandMap[key];
@@ -396,7 +399,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
           onPressed: () {
             Navigator.of(context).pop();
             Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
-                "", "", "", ["Select Block"], ["Select Village"], ["Select District"]
+                "", "", "", ["Select Block"], ["Select Village"], ["Select District"], widget.FarmerDemand1['userID']
             ),),);
           },
           textColor: Theme.of(context).primaryColor,

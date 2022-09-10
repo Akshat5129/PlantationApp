@@ -15,11 +15,11 @@ import 'package:http/http.dart' as http;
 class FarmerDemand extends StatefulWidget {
   //const FarmerDemand({Key? key}) : super(key: key);
 
-  String year, status, date, district, block, village, farmer, aadhar, phone, gender;
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, userID;
 
 
   FarmerDemand(this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.userID);
 
   @override
   State<FarmerDemand> createState() => _FarmerDemandState();
@@ -100,7 +100,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
       print(items1.length);
       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
           widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap,null),),);
+          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap,null, widget.userID),),);
     }else{
       showDialog(
         context: context,
@@ -242,7 +242,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                             context: context,
                                             builder: (BuildContext context) => new FlutterExample(dropdownvalue1, ForestTrees, widget.year,
                                             widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                                , widget.phone, widget.gender),
+                                                , widget.phone, widget.gender, widget.userID),
                                           );
 
                                         }else if(dropdownvalue1=="Plants"){
@@ -250,7 +250,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                             context: context,
                                             builder: (BuildContext context) => new FlutterExample(dropdownvalue1, FruitTrees, widget.year,
                                                 widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                                , widget.phone, widget.gender),
+                                                , widget.phone, widget.gender, widget.userID),
                                           );
                                         }
 
@@ -322,7 +322,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
 
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
                                           widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap, null),
+                                          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap, null, widget.userID),
 
                                       ),);
                                     },
@@ -504,10 +504,10 @@ class FlutterExample extends StatelessWidget {
 
   String demandCat;
   var demandCatList;
-  String year, status, date, district, block, village, farmer, aadhar, phone, gender;
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, userID;
 
   FlutterExample(this.demandCat, this.demandCatList, this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.userID);
   static Map<String, int> FarmerDemandMap = {};
 
 
@@ -531,7 +531,7 @@ class FlutterExample extends StatelessWidget {
       Navigator.of(context).pop();
       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(
           year,
-          status, date, district, block, village, farmer, aadhar, phone, gender
+          status, date, district, block, village, farmer, aadhar, phone, gender, userID
       ),),);
       // Navigator.pushAndRemoveUntil(
       //   context,

@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 class FarmerRegistration extends StatefulWidget {
   //const FarmerRegistration({Key? key}) : super(key: key);
 
-  String valueBlock1, valueVillage1, valueDistrict1;
+  String valueBlock1, valueVillage1, valueDistrict1, userID;
   var  itemsBlock1, itmesVillage1, itemsDIstrict1;
 
 
@@ -23,7 +23,8 @@ class FarmerRegistration extends StatefulWidget {
       this.valueDistrict1,
       this.itemsBlock1,
       this.itmesVillage1,
-      this.itemsDIstrict1); // FarmerRegistration(
+      this.itemsDIstrict1,
+      this.userID); // FarmerRegistration(
   //     this.valueFarmer,
   //     this.valueBlock,
   //     this.valueVillage,
@@ -928,7 +929,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             farmerNameValue,
                             aadharController.text,
                             phoneController.text,
-                            dropdownvalue2
+                            dropdownvalue2,
+                            widget.userID
                           ),),);
                         }else if(dropdownvalue=="Visit 2: Distribution"){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(),),);

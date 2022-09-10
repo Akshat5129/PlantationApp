@@ -162,7 +162,7 @@ class DisplayPictureScreen extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => FarmerDemandFConsent(year,
                          status, date, district, block, village, farmer, aadhar
-                          ,phone, gender, farmerdemand, FarmerDemandMap,null
+                          ,phone, gender, farmerdemand, FarmerDemandMap,null, ""
                           // Pass the automatically generated path to
                           // the DisplayPictureScreen widget.
 

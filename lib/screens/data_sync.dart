@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class DataSyncDemand extends StatefulWidget {
   //const DataSyncDemand({Key? key}) : super(key: key);
@@ -46,9 +51,14 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
             padding: EdgeInsets.symmetric(vertical: 25.0),
             width: double.infinity,
             child: RaisedButton(
+
               elevation: 1.0,
-              onPressed: (){
-                startUpload();
+              onPressed: ()  {
+                //startUpload();
+                _uploadFarmerImage();
+                _uploadFarmerReg();
+
+
               },
               padding: EdgeInsets.all(15.0),
               shape: RoundedRectangleBorder(
@@ -76,6 +86,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
   void initState() {
     print("inside iniit of sync");
     print(widget.FarmerDemand1.toString());
+
   }
 
 
@@ -101,7 +112,6 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         context: context,
         builder: (BuildContext context) => _buildPopupDialog(context),
       );
-
     }
     return response;
   }
@@ -136,16 +146,125 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     print("URL"+url);
     makePostRequest(url, unencodedPath, headers, body);
 
-    var uploadEndPoint =
-        'http://localhost/flutter_test/upload_image.php';
+    var uploadEndPoint = 'http://localhost/flutter_test/upload_image.php';
+  }
 
-    http.post(uploadEndPoint, body: {
+  Future<String?> uploadImage1(filename, url) async {
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.files.add(await http.MultipartFile.fromPath('picture', filename));
+    var res = await request.send();
+    return res.reasonPhrase;
+  }
+
+  final String phpEndPoint = 'https://stand4land.in/plantation_app/store_image.php';
+
+  void _uploadFarmerImage() {
+    if (widget.FarmerDemand1['farmer_image'] == null) return;
+    String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());
+    String fileName = widget.FarmerDemand1['farmer_image'].path.split("/").last;
+
+    if (widget.FarmerDemand1['farmer_signature'] == null) return;
+    var _image = MemoryImage(widget.FarmerDemand1['farmer_signature']);
+    String base64ImageFarmer_Sign = base64Encode(widget.FarmerDemand1['farmer_signature']);
+    String fileNameFarmer_Sign = widget.FarmerDemand1['aadhar']+"_"+widget.FarmerDemand1['phone'].split("/").last;
+
+    if (widget.FarmerDemand1['surveyor_signature'] == null) return;
+    String base64ImageSurveyor_Sign = base64Encode(widget.FarmerDemand1['surveyor_signature']);
+    String fileNameSurveyor_Sign = widget.FarmerDemand1['aadhar'].split("/").last;
+
+    http.post(Uri.parse(phpEndPoint), body: {
+      "image_farmer": base64Image,
+      "name_image_farmer": fileName,
+      "image_farmer_sign": base64ImageFarmer_Sign,
+      "name_farmer_sign": fileNameFarmer_Sign,
+      "image_surveyor_sign": base64ImageSurveyor_Sign,
+      "name_surveyor_sign": fileNameSurveyor_Sign,
+      "userID": widget.FarmerDemand1['userID'],
+      "aadhar": widget.FarmerDemand1['aadhar'],
+      "farmer_demand": widget.FarmerDemand1['farmer_demand'],
+      "farmer_demand_map": widget.FarmerDemand1['farmer_demand_map'].toString(),
+
+    }).then((res) {
+      print(res.statusCode);
+      print(res.body);
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
+  final String phpEndPoint1 = 'https://stand4land.in/plantation_app/store_farmer_reg.php';
+
+   void _uploadFarmerReg() {
+
+    http.post(Uri.parse(phpEndPoint1), body: {
+      "year": widget.FarmerDemand1['year'],
+      "status": widget.FarmerDemand1['status'],
+      "date": widget.FarmerDemand1['date'],
+      "district": widget.FarmerDemand1['district'],
+      "block": widget.FarmerDemand1['block'],
+      "village": widget.FarmerDemand1['village'],
+      "farmer": widget.FarmerDemand1['farmer'],
+      "aadhar": widget.FarmerDemand1['aadhar'],
+      "phone": widget.FarmerDemand1['phone'],
+      "gender": widget.FarmerDemand1['gender'],
+    }).then((res) {
+      print(res.statusCode);
+      print(res.body);
+      if(res.body=="success"){
+        print("consent success");
+        showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialog(context),
+            );
+        //return 1;
+      }
+      else if(res.body!="success"){
+        //return 0;
+      }
+    }).catchError((err) {
+      print(err);
+    });
+    _buildPopupDialog1(context);
+    //return 2;
+  }
+
+  Future<void> _uploadFarmerSign() async {
+
+    if (widget.FarmerDemand1['farmer_signature'] == null) return;
+    // File f1 = await File('my_image.jpg').writeAsBytes(widget.FarmerDemand1['farmer_signature']);
+    // String base64Image = base64Encode(f1.readAsBytesSync());
+    var _image = MemoryImage(widget.FarmerDemand1['farmer_signature']);
+    String base64Image = base64Encode(widget.FarmerDemand1['farmer_signature']);
+    String fileName = widget.FarmerDemand1['aadhar']+"_"+widget.FarmerDemand1['phone'].split("/").last;
+
+    http.post(Uri.parse(phpEndPoint), body: {
       "image": base64Image,
       "name": fileName,
-    }).then((result) {
-      setStatus(result.statusCode == 200 ? result.body : errMessage);
-    }).catchError((error) {
-      setStatus(error);
+      "aadhar": widget.FarmerDemand1['aadhar'],
+    }).then((res) {
+      print(res.statusCode);
+      print(res.body);
+      if(res.body=="success"){
+        _buildPopupDialog(context);
+      }
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
+  void _uploadSurveyorSign() {
+    if (widget.FarmerDemand1['surveyor_signature'] == null) return;
+    String base64Image = base64Encode(widget.FarmerDemand1['surveyor_signature']);
+    String fileName = widget.FarmerDemand1['aadhar'].split("/").last;
+
+    http.post(Uri.parse(phpEndPoint), body: {
+      "image": base64Image,
+      "name": fileName,
+      "aadhar": widget.FarmerDemand1['aadhar'],
+    }).then((res) {
+      print(res.statusCode);
+    }).catchError((err) {
+      print(err);
     });
   }
 
@@ -173,4 +292,9 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       ],
     );
   }
+
+  Widget _buildPopupDialog1(BuildContext context) {
+    return new CircularProgressIndicator();
+  }
+
 }
