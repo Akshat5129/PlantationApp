@@ -40,6 +40,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
 
   @override
   void initState() {
+    print(widget.FarmerDemand1['block']);
     print("consent3"+widget.FarmerDemand1['year'].toString());
     farmerName.text=widget.FarmerDemand1['farmer'];
     demandController.text=widget.FarmerDemand1['farmer_demand'];

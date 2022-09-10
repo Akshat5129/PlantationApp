@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:plantationapp/screens/farmer_reg.dart';
+import 'package:plantationapp/screens/surveyor_consent.dart';
 
 class DataSyncDemand extends StatefulWidget {
   //const DataSyncDemand({Key? key}) : super(key: key);
@@ -22,7 +24,25 @@ class DataSyncDemand extends StatefulWidget {
 
 class _DataSyncDemandState extends State<DataSyncDemand> {
 
+  String dropdownvalue1 = 'Select District';
+  var items1 = [
+    'Select District'
+  ];
 
+  String villageNameValue = 'Select Village';
+  var itemsVillage = [
+    'Select Village'
+  ];
+
+  String blockNameValue = 'Select Block';
+  var itemsBlock = [
+    'Select Block'
+  ];
+
+  String farmerNameValue = 'Select Farmer';
+  var itemsFarmer = [
+    'Select Farmer'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +97,77 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
               ),
             ),
           ),
+          // SizedBox(height: 30,),
+          // Container(
+          //   margin: EdgeInsets.only(top: 10),
+          //   padding: EdgeInsets.symmetric(vertical: 25.0),
+          //   width: double.infinity,
+          //   child: RaisedButton(
+          //
+          //     elevation: 1.0,
+          //     onPressed: ()  {
+          //       Navigator.of(context).pop();
+          //       Navigator.pushReplacement(
+          //         context,
+          //         MaterialPageRoute(builder: (BuildContext context) => FarmerDemandSConsent(widget.FarmerDemand1['year'],
+          //             widget.FarmerDemand1['status'], widget.FarmerDemand1['date'], widget.FarmerDemand1['district'], widget.FarmerDemand1['block'], widget.FarmerDemand1['village'], widget.FarmerDemand1['farmer'], widget.FarmerDemand1['aadhar'], widget.FarmerDemand1['phone'], widget.FarmerDemand1['gender'], widget.FarmerDemand1['farmer_demand'], widget.FarmerDemand1['farmer_demand_map'], widget.FarmerDemand1['image_farmer'], widget.FarmerDemand1['userID'])),
+          //       );
+          //
+          //     },
+          //     padding: EdgeInsets.all(15.0),
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(10.0),
+          //     ),
+          //     color: Colors.black54,
+          //     child: Text(
+          //       'EDIT DATA',
+          //       style: TextStyle(
+          //         color: Colors.white,
+          //         letterSpacing: 1.5,
+          //         fontSize: 15.0,
+          //         fontWeight: FontWeight.w600,
+          //         fontFamily: 'OpenSans',
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          SizedBox(height: 0,),
+          Container(
+            margin: EdgeInsets.only(top: 0),
+            padding: EdgeInsets.symmetric(vertical: 25.0),
+            width: double.infinity,
+            child: RaisedButton(
+
+              elevation: 1.0,
+              onPressed: ()  {
+                Navigator.of(context).pop();
+                // Navigator.pushReplacement(
+                //   context,
+                //   MaterialPageRoute(builder: (BuildContext context) => FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+                //     itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])),
+                // );
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+                         itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])), (Route<dynamic> route) => false);
+
+              },
+              padding: EdgeInsets.all(15.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              color: Colors.black54,
+              child: Text(
+                'Back to Home',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     ));
@@ -84,6 +175,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
   @override
   void initState() {
+    print(widget.FarmerDemand1['block']);
     print("inside iniit of sync");
     print(widget.FarmerDemand1.toString());
 
@@ -295,6 +387,69 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
   Widget _buildPopupDialog1(BuildContext context) {
     return new CircularProgressIndicator();
+  }
+
+  String urlDis = 'https://stand4land.in/plantation_app/get_district_data.php';
+  //final String unencodedPath = "/plantation_app/get_district_data.php";
+  final String unencodedPath1 = "/plantation_app/get_block_data.php";
+  final Map<String, String> headers1 = {'Content-Type': 'application/json; charset=UTF-8'};
+  String urlBlock = 'https://stand4land.in/plantation_app/get_block_data.php';
+  String urlVillage = 'https://stand4land.in/plantation_app/get_village_data.php';
+  String urlFarmer = 'https://stand4land.in/plantation_app/get_farmer_data.php';
+
+
+  Future<http.Response> makePostRequest0(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    // print("items"+items1.length.toString());
+    // items1.clear();
+    // print("items1"+items1.length.toString());
+
+    //items1.add(d1);
+    jsonResult.forEach((s)=> items1.add(s["dname"]));
+    print("this");
+    print(items1);
+    //dropdownvalue1=response.body;
+    return response;
+  }
+
+  Future<http.Response> makePostRequest1(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    //items1.add(d1);
+    jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
+    print(itemsBlock);
+    //dropdownvalue1=response.body;
+    return response;
+  }
+
+  Future<http.Response> makePostRequest2(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    //items1.add(d1);
+    jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
+    //dropdownvalue1=response.body;
+    return response;
   }
 
 }

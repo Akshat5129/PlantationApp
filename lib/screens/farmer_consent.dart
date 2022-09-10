@@ -61,6 +61,8 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
   );
   @override
   void initState() {
+    print(widget.farmer);
+    print(widget.district);
     super.initState();
     print("consent"+widget.FarmerDemandMap.toString());
     _controller.addListener(() => print('Value changed'));
@@ -81,6 +83,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     FarmerData1['status'] = widget.status;
     FarmerData1['date'] = widget.date;
     FarmerData1['district'] = widget.district;
+    FarmerData1['block'] = widget.block;
     FarmerData1['village'] = widget.village;
     FarmerData1['farmer'] = widget.farmer;
     FarmerData1['aadhar'] = widget.aadhar;
