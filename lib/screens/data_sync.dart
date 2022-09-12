@@ -375,7 +375,9 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         new FlatButton(
           onPressed: () {
             Navigator.of(context).pop();
-
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+                    itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])), (Route<dynamic> route) => false);
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Close'),
