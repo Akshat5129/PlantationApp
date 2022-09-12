@@ -49,6 +49,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   final TextEditingController dateController = new TextEditingController();
   final TextEditingController aadharController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
+  TextEditingController controllerEmpBankName = TextEditingController();
+
+  bool _validateYear= false;
 
   DateTime dateToday =new DateTime.now();
   String dateTod = DateTime.now().toString().substring(0,10);
@@ -297,6 +300,11 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       ),
                       margin: EdgeInsets.only(top: 1),
                       child: TextField(
+                        onChanged: (value){
+                          setState(() {
+                            yearController.text.isEmpty ? _validateYear = true : _validateYear = false;
+                          });
+                        },
                         readOnly: true,
                         controller: yearController,
                         textAlign: TextAlign.start,
@@ -306,6 +314,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           //contentPadding: EdgeInsets.all(1),
                           hintText: 'Select year',
                           prefixIcon: Icon(Icons.calendar_month_sharp),
+                          errorText: _validateYear ? 'Select Year' : null,
                         ),
                         style: GoogleFonts.lato(
                           textStyle: TextStyle(
@@ -467,7 +476,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         future: makePostRequest(url, unencodedPath, headers),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return DropdownButton(
+                            return DropdownButtonFormField(
                               isExpanded: true,
                               style: GoogleFonts.lato(
                                 textStyle: TextStyle(
@@ -478,6 +487,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 ),
                               ),
                               value: dropdownvalue1,
+                              validator: (value) => dropdownvalue1 == "Select District"
+                                  ? 'Please Select a District' : null,
                               icon: const Icon(Icons.keyboard_arrow_down),
                               items: snapshot.data?.map((items) {
                                 return DropdownMenuItem(
@@ -499,6 +510,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                   //_buildDropDownBlock(context);
                                 });
                               },
+
                             );
                           }
                           return Center(child: CircularProgressIndicator());
@@ -917,25 +929,33 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     child: RaisedButton(
                       elevation: 1.0,
                       onPressed: (){
-                       // _buildPopupDialog(context);
-                        if(dropdownvalue=="Visit 1: Demand"){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(
-                            yearController.text,
-                            dropdownvalue,
-                            dateController.text,
-                            dropdownvalue1,
-                            blockNameValue,
-                            villageNameValue,
-                            farmerNameValue,
-                            aadharController.text,
-                            phoneController.text,
-                            dropdownvalue2,
-                            widget.userID
-                          ),),);
-                        }else if(dropdownvalue=="Visit 2: Distribution"){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(),),);
-                        }else if(dropdownvalue=="Visit 3: Plantation"){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
+                        setState(() {
+                          yearController.text.isEmpty ? _validateYear = true : _validateYear = false;
+                          yearController.text.isEmpty ? _validateYear = true : _validateYear = false;
+                        });
+
+                        if(yearController.text!=""&&dropdownvalue1!="Select District"&&blockNameValue!="Select Block"&&villageNameValue!="&&"&&farmerNameValue!=""){
+                          print("inside this");
+                          // _buildPopupDialog(context);
+                          if(dropdownvalue=="Visit 1: Demand"){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(
+                                yearController.text,
+                                dropdownvalue,
+                                dateController.text,
+                                dropdownvalue1,
+                                blockNameValue,
+                                villageNameValue,
+                                farmerNameValue,
+                                aadharController.text,
+                                phoneController.text,
+                                dropdownvalue2,
+                                widget.userID
+                            ),),);
+                          }else if(dropdownvalue=="Visit 2: Distribution"){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(),),);
+                          }else if(dropdownvalue=="Visit 3: Plantation"){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
+                          }
                         }
                       },
                       padding: EdgeInsets.all(15.0),
