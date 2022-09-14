@@ -340,10 +340,19 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                     Container(
                                       margin: EdgeInsets.only(top: 10),
                                       padding: EdgeInsets.symmetric(vertical: 25.0),
-                                      width: double.infinity,
+                                      width: double.infinity,    //sign
                                       child: RaisedButton(
                                         elevation: 1.0,
                                         onPressed: (){
+                                          //print("hellooo"+widget.FarmerDemand1["surveyor_signature"].toString());
+                                          if(widget.FarmerDemand1["surveyor_signature"].toString()=="null"){
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) => _buildPopupDialogforSign(context),
+                                            );
+                                          } else if (widget.FarmerDemand1["surveyor_signature"].toString()!="null"){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => DataSyncDemand(widget.FarmerDemand1),),);
+                                          }
                                           // url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
                                           //
                                           // Map<String,String> body = {};
@@ -361,7 +370,7 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                           //
                                           // print("URL"+url);
                                           // makePostRequest(url, unencodedPath, headers, body);
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => DataSyncDemand(widget.FarmerDemand1),),);
+                                          //Navigator.push(context, MaterialPageRoute(builder: (context) => DataSyncDemand(widget.FarmerDemand1),),);
                                         },
                                         padding: EdgeInsets.all(15.0),
                                         shape: RoundedRectangleBorder(
@@ -382,6 +391,29 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                     ),
                                   ],
                                 ))])]))));
+  }
+
+  Widget _buildPopupDialogforSign(BuildContext context) {
+    return new AlertDialog(
+      title: const Text("Surveyor Sign has not been uploaded", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Take the signature of Yours and check right to the sign for successfully signature uploading"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 
   Widget _buildPopupDialog(BuildContext context) {

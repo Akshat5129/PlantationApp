@@ -424,11 +424,26 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                     elevation: 1.0,
                     onPressed: (){
                       print("consentf "+FarmerData1['year']);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(
-                          widget.year,
-                          widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                          , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, FarmerData1
-                      ),),);
+                      print("hey"+FarmerData1["farmer_image"].toString());
+                      print("heee"+FarmerData1["farmer_signature"].toString());
+                      if(FarmerData1["farmer_image"].toString()=="null"){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => _buildPopupDialogforCam(context),
+                        );
+                      }else if(FarmerData1["farmer_signature"].toString()=="null"){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => _buildPopupDialogforSign(context),
+                        );
+                      }else{
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(
+                            widget.year,
+                            widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, FarmerData1
+                        ),),);
+                      }
+
                     },
                     padding: EdgeInsets.all(15.0),
                     shape: RoundedRectangleBorder(
@@ -449,7 +464,54 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                 ),
               ]),
         )
-    );}}
+    );}
+
+  Widget _buildPopupDialogforCam(BuildContext context) {
+    return new AlertDialog(
+      title: const Text("Farmer photo is not selected or captured", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Capture farmer's photo from capture option"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPopupDialogforSign(BuildContext context) {
+    return new AlertDialog(
+      title: const Text("Farmer Sign has not been uploaded", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Take the signature from farmer and check right to the sign for successfully signature uploading"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+}
 
 
 class Todo {

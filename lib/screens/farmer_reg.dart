@@ -51,7 +51,15 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   final TextEditingController phoneController = new TextEditingController();
   TextEditingController controllerEmpBankName = TextEditingController();
 
+  final formGlobalKey = GlobalKey < FormState > ();
+  final formGlobalKey2 = GlobalKey < FormState > ();
+  final formGlobalKey3 = GlobalKey < FormState > ();
+  final formGlobalKey4 = GlobalKey < FormState > ();
+  final formGlobalKey5 = GlobalKey < FormState > ();
+
   bool _validateYear= false;
+  bool _validateAd= false;
+  bool _validatePhone= false;
 
   DateTime dateToday =new DateTime.now();
   String dateTod = DateTime.now().toString().substring(0,10);
@@ -248,7 +256,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
       backgroundColor: Color.fromRGBO(255, 254, 236, 1),
       body: Container(
         padding: EdgeInsets.all(50),
-        child: ListView(
+        child: Form(child: ListView(
           shrinkWrap: true,
           children: [
             Column(
@@ -302,6 +310,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       child: TextField(
                         onChanged: (value){
                           setState(() {
+                            print("insideset state");
                             yearController.text.isEmpty ? _validateYear = true : _validateYear = false;
                           });
                         },
@@ -462,7 +471,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     ),
                     padding: EdgeInsets.only(left: 5),
                   ),
-                  Container(
+                  Form(
+                    key: formGlobalKey,
+                    child: Container(
                       padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
                       decoration: BoxDecoration(
                           color:Color.fromRGBO(181, 231, 77, 0.56),
@@ -487,8 +498,14 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 ),
                               ),
                               value: dropdownvalue1,
-                              validator: (value) => dropdownvalue1 == "Select District"
-                                  ? 'Please Select a District' : null,
+                              validator: (value) {
+                                print("inside validator");
+                                if (dropdownvalue1 == null || dropdownvalue1=="Select District") {
+                                  print("value"+value.toString());
+                                  return 'Please select';
+                                }
+                                return null;
+                              },
                               icon: const Icon(Icons.keyboard_arrow_down),
                               items: snapshot.data?.map((items) {
                                 return DropdownMenuItem(
@@ -504,10 +521,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 print("object");
                                 setState(() {
                                   dropdownvalue1 = newValue.toString();
+                                  print(dropdownvalue1);
                                   //getDistrictID(newValue.toString());
                                   getBlockDatafromDistrict(newValue.toString());
                                   itemsBlock = getBlockDatafromDistrict(newValue.toString());
                                   //_buildDropDownBlock(context);
+                                  formGlobalKey.currentState!.validate();
                                 });
                               },
 
@@ -543,7 +562,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       //     });
                       //   },
                       // )
-                  ),
+                  ),),
 
 
                   SizedBox(height: 20,),
@@ -630,7 +649,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     ),
                     padding: EdgeInsets.only(left: 5),
                   ),
-                  Container(
+                  Form(
+                    key: formGlobalKey3,
+                    child: Container(
                       padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
                       decoration: BoxDecoration(
                           color:Color.fromRGBO(181, 231, 77, 0.56),
@@ -640,7 +661,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           borderRadius: BorderRadius.all(Radius.circular(10))
                       ),
                       margin: EdgeInsets.only(top: 1),
-                      child: DropdownButton(
+                      child: DropdownButtonFormField(
                         isExpanded: true,
                         style: GoogleFonts.lato(
                           textStyle: TextStyle(
@@ -651,12 +672,19 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           ),
                         ),
                         value: villageNameValue,
+                        validator: (value) {
+                          if (villageNameValue == null || villageNameValue=="Select Village") {
+                            print("value"+value.toString());
+                            return 'Please select a Village';
+                          }
+                          return null;
+                        },
                         icon: const Icon(Icons.keyboard_arrow_down),
                         items: itemsVillage.map((String items) {
                           return DropdownMenuItem(
                             value: items,
                             child: Text(items),
-                            enabled: items != 'Select Block',
+                            enabled: items != 'Select Village',
                           );
                         }).toList(),
                         // After selecting the desired option,it will
@@ -664,6 +692,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         onChanged: (String? newValue) {
                           setState(() {
                             villageNameValue = newValue!;
+                            print("consent value"+_validateYear.toString());
+                            formGlobalKey3.currentState!.validate();
                           });
                         },
                       ),
@@ -704,7 +734,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       //     return Center(child: CircularProgressIndicator());
                       //   },
                       // ),
-                  ),
+                  ),),
 
                   SizedBox(height: 20,),
                   Container(
@@ -722,7 +752,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     ),
                     padding: EdgeInsets.only(left: 5),
                   ),
-                  Container(
+                  Form(
+                    key: formGlobalKey4,
+                    child: Container(
                       padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
                       decoration: BoxDecoration(
                           color:Color.fromRGBO(181, 231, 77, 0.56),
@@ -736,7 +768,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         future: makePostRequest3(urlFarmer, unencodedPath, headers),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return DropdownButton(
+                            return DropdownButtonFormField(
                               isExpanded: true,
                               style: GoogleFonts.lato(
                                 textStyle: TextStyle(
@@ -747,6 +779,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 ),
                               ),
                               value: farmerNameValue,
+                              validator: (value) {
+                                if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
+                                  return 'Please select a farmer';
+                                }
+                                return null;
+                              },
                               icon: const Icon(Icons.keyboard_arrow_down),
                               items: snapshot.data?.map((items) {
                                 return DropdownMenuItem(
@@ -762,6 +800,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 print("object");
                                 setState(() {
                                   farmerNameValue = newValue.toString();
+                                  formGlobalKey4.currentState!.validate();
                                 });
                               },
                             );
@@ -769,7 +808,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           return Center(child: CircularProgressIndicator());
                         },
                       ),
-                  ),
+                  ),),
 
                   SizedBox(height: 20,),
                   Container(
@@ -798,6 +837,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     ),
                     margin: EdgeInsets.only(top: 1),
                     child: TextField(
+                      onChanged: (value){
+                        setState(() {
+                          print("insideset state");
+                          aadharController.text.isEmpty ? _validateAd = true : _validateAd = false;
+                        });
+                      },
                       controller: aadharController,
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.start,
@@ -807,6 +852,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         //contentPadding: EdgeInsets.all(1),
                         hintText: "Enter your Aadhar Number",
                         prefixIcon: Icon(Icons.credit_card_rounded),
+                        errorText: _validateAd ? 'Enter Aadhar' : null,
                       ),
                       style: GoogleFonts.lato(
                         textStyle: TextStyle(
@@ -846,6 +892,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       ),
                       margin: EdgeInsets.only(top: 1),
                       child: TextField(
+                        onChanged: (value){
+                          setState(() {
+                            print("insideset state");
+                            phoneController.text.isEmpty ? _validatePhone = true : _validatePhone = false;
+                          });
+                        },
                         controller: phoneController,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.start,
@@ -855,6 +907,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           //contentPadding: EdgeInsets.all(1),
                           hintText: 'Enter your Phone No',
                           prefixIcon: Icon(Icons.phone),
+                          errorText: _validatePhone ? 'Enter Phone' : null,
                         ),
                         style: GoogleFonts.lato(
                           textStyle: TextStyle(
@@ -931,10 +984,13 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       onPressed: (){
                         setState(() {
                           yearController.text.isEmpty ? _validateYear = true : _validateYear = false;
-                          yearController.text.isEmpty ? _validateYear = true : _validateYear = false;
+                          aadharController.text.isEmpty ? _validateAd = true : _validateAd = false;
+                          phoneController.text.isEmpty ? _validatePhone = true : _validatePhone = false;
                         });
-
-                        if(yearController.text!=""&&dropdownvalue1!="Select District"&&blockNameValue!="Select Block"&&villageNameValue!="&&"&&farmerNameValue!=""){
+                        if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()
+                            &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
+                            &&yearController.text!=""&&aadharController.text!=""&&phoneController.text!="") {
+                          // use the information provided
                           print("inside this");
                           // _buildPopupDialog(context);
                           if(dropdownvalue=="Visit 1: Demand"){
@@ -957,6 +1013,10 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
                           }
                         }
+
+                        // if(yearController.text!=""){
+                        //
+                        // }
                       },
                       padding: EdgeInsets.all(15.0),
                       shape: RoundedRectangleBorder(
@@ -982,7 +1042,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
         ),
           ],
         )
-      ),
+      ),)
     );
   }
 
@@ -1002,10 +1062,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
               // re-showing the dialog.
               selectedDate: _selected,
               onChanged: (DateTime dateTime) {
+                setState(() {
+                  _validateYear=false;
+                });
                 // close the dialog when year is selected.
                 yearController.text=dateTime.year.toString();
                 Navigator.pop(context);
-
                 // Do something with the dateTime selected.
                 // Remember that you need to use dateTime.year to get the year
               },
@@ -1088,6 +1150,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     urlVillage1 = urlVillage1+"?did="+blockID[index];
     makePostRequest2(urlVillage1, unencodedPath, headers);
     itemsVillage.forEach((item) async {
+
       print("34 i: "+item);
     });
     return itemsVillage;
@@ -1095,7 +1158,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
 
 
   Widget _buildDropDownBlock(BuildContext context) {
-    return new DropdownButton(
+    return new Form(
+      key: formGlobalKey2,
+      child: DropdownButtonFormField(
       isExpanded: true,
       style: GoogleFonts.lato(
         textStyle: TextStyle(
@@ -1106,6 +1171,14 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
         ),
       ),
       value: blockNameValue,
+        validator: (value) {
+          print("inside validator2");
+          if (blockNameValue == null || blockNameValue=="Select Block") {
+            print("value"+value.toString());
+            return 'Please select';
+          }
+          return null;
+        },
       icon: const Icon(Icons.keyboard_arrow_down),
       items: itemsBlock.map((String items) {
         return DropdownMenuItem(
@@ -1120,9 +1193,10 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
         setState(() {
           blockNameValue = newValue!;
           getVillageDatafromBlock(newValue);
+          formGlobalKey2.currentState!.validate();
         });
       },
-    );
+    ),);
   }
 
 
