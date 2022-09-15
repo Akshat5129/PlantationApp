@@ -377,7 +377,8 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
             Navigator.of(context).pop();
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
                 FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
-                    itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])), (Route<dynamic> route) => false);
+                    itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])),
+                    (Route<dynamic> route) => false);
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Close'),
@@ -428,6 +429,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       headers: header,
     );
     print(response.statusCode);
+    
     print(response.body);
     var jsonResult = jsonDecode(response.body);
     print(jsonResult.length);

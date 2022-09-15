@@ -196,9 +196,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     //items1.add(d1);
     blockID.clear();
     blockDID.clear();
+    jsonResult.forEach((s)=>  print("items_block_held"+s["bname"]));
     jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
+    print("itemsin block__"+itemsBlock.toString());
     jsonResult.forEach((s)=> blockDID.add(s["did"]));
     jsonResult.forEach((s)=> blockID.add(s["bid"]));
+
     //dropdownvalue1=response.body;
     return itemsBlock;
   }
@@ -248,6 +251,35 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     jsonResult.forEach((s)=> itemsFarmer.add(s["fname"]));
     //dropdownvalue1=response.body;
     return itemsFarmer;
+  }
+
+
+  Future<List<String>> makePostRequestforAadhar(String url, String unencodedPath , Map<String, String> header) async {
+    print("34 url: "+url);
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    var jsonResult = jsonDecode(response.body);
+    print(jsonResult.length);
+    d1 = jsonResult[0]['bname'];
+    itemsBlock.clear();
+    itemsBlock.add("Select Block");
+    jsonResult.forEach((s)=> districts.add(s["bname"]));
+    print(d1);
+    print(districts);
+    list1.add(d1);
+    //items1.add(d1);
+    blockID.clear();
+    blockDID.clear();
+    jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
+    jsonResult.forEach((s)=> blockDID.add(s["did"]));
+    jsonResult.forEach((s)=> blockID.add(s["bid"]));
+    //dropdownvalue1=response.body;
+    return itemsBlock;
   }
 
   @override
@@ -400,7 +432,6 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       onChanged: (String? newValue) {
                         setState(() {
                           dropdownvalue = newValue!;
-
                         });
                       },
                     )
@@ -516,15 +547,34 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                               }).toList(),
                               // After selecting the desired option,it will
                               // change button value to selected value
-                              onChanged: (newValue) {
+                              onChanged: (newValue) async {
                                 print(newValue);
                                 print("object");
+
+                                print("data_getting"+newValue.toString());
+                                int index = items8.indexOf(newValue.toString())-1;
+                                print("34index of item: "+index.toString());
+                                print("34district id"+districtID[index]);
+                                int i = 0;
+                                // print("34District id: "+districtID[index].toString());
+                                // print("34block id: "+blockID[index].toString());
+                                urlBlock1 = 'https://stand4land.in/plantation_app/get_block_data_from_did.php';
+                                urlBlock1 = urlBlock1+"?did="+districtID[index];
+                                //makePostRequest1(urlBlock1, unencodedPath, headers);
+                                List<String> itemsBlock1;
+                                itemsBlock1 = await makePostRequest1(urlBlock1, unencodedPath, headers);
+                                print("changed value from block");
+                                print(itemsBlock1);
+
                                 setState(() {
+                                  print("BlockNameVale0"+blockNameValue);
+                                  blockNameValue="Select Block";
+                                  print("BlockNameVale"+blockNameValue);
                                   dropdownvalue1 = newValue.toString();
-                                  print(dropdownvalue1);
                                   //getDistrictID(newValue.toString());
-                                  getBlockDatafromDistrict(newValue.toString());
-                                  itemsBlock = getBlockDatafromDistrict(newValue.toString());
+                                  //getBlockDatafromDistrict(newValue.toString());
+                                  //itemsBlock = getBlockDatafromDistrict(newValue.toString());
+                                  itemsBlock = itemsBlock1;
                                   //_buildDropDownBlock(context);
                                   formGlobalKey.currentState!.validate();
                                 });
@@ -987,6 +1037,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           aadharController.text.isEmpty ? _validateAd = true : _validateAd = false;
                           phoneController.text.isEmpty ? _validatePhone = true : _validatePhone = false;
                         });
+
+                        if(dropdownvalue=="Visit 1: Demand"){
                         if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()
                             &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
                             &&yearController.text!=""&&aadharController.text!=""&&phoneController.text!="") {
@@ -1007,11 +1059,27 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 dropdownvalue2,
                                 widget.userID
                             ),),);
-                          }else if(dropdownvalue=="Visit 2: Distribution"){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(),),);
-                          }else if(dropdownvalue=="Visit 3: Plantation"){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
                           }
+                        }
+                        } else if(dropdownvalue=="Visit 2: Distribution"){
+
+                          if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()
+                              &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
+                              &&yearController.text!="") {
+
+                            // url = 'https://stand4land.in/plantation_app/surveyor_login.php';
+                            //
+                            // Map<String,String> body = {'user_id': controllerUserID.text, 'password': controllerPass.text};
+                            //
+                            // url = url+"?user_id="+controllerUserID.text+"&password="+controllerPass.text;
+                            // print("URL"+url);
+                            // makePostRequest(url, unencodedPath, headers, body);
+
+                            // _buildPopupDialog(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(),),);
+                          }
+                        }else if(dropdownvalue=="Visit 3: Plantation"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
                         }
 
                         // if(yearController.text!=""){
@@ -1123,7 +1191,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   }
 
 
-  getBlockDatafromDistrict(String name){
+  getBlockDatafromDistrict(String name) async {
+    print("data_getting"+name);
     int index = items8.indexOf(name)-1;
     print("34index of item: "+index.toString());
     print("34district id"+districtID[index]);
@@ -1133,10 +1202,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     urlBlock1 = 'https://stand4land.in/plantation_app/get_block_data_from_did.php';
     urlBlock1 = urlBlock1+"?did="+districtID[index];
     makePostRequest1(urlBlock1, unencodedPath, headers);
-    itemsBlock.forEach((item) async {
-      print("34 i: "+item);
-    });
-    return itemsBlock;
+    List<String> itemsBlock1;
+    itemsBlock1 = await makePostRequest1(urlBlock1, unencodedPath, headers);
+    print("itemsblockohhhhh"+itemsBlock1.toString());
+    //newQuestions.
+    return itemsBlock1;
+    //return itemsBlock;
   }
 
   getVillageDatafromBlock(String name){
@@ -1189,10 +1260,31 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
       }).toList(),
       // After selecting the desired option,it will
       // change button value to selected value
-      onChanged: (String? newValue) {
+      onChanged: (String? newValue) async {
+
+        int index = itemsBlock.indexOf(newValue.toString())-1;
+        print("341index of item: "+index.toString());
+        print("341district id"+blockID[index]);
+        int i = 0;
+        // print("34District id: "+districtID[index].toString());
+        // print("34block id: "+blockID[index].toString());
+        urlVillage1 = 'https://stand4land.in/plantation_app/get_village_data_from_bid.php';
+        urlVillage1 = urlVillage1+"?did="+blockID[index];
+        print("BlockNameValue3"+newValue.toString());
+        List<String> itemsVillage1;
+        itemsVillage1 = await makePostRequest2(urlVillage1, unencodedPath, headers);
+        itemsVillage1.forEach((item) async {
+          print("34 i: "+item);
+        });
+
+        print("BlockNameValue3"+newValue.toString());
+
         setState(() {
+          print("BlockNameValue3"+newValue.toString());
           blockNameValue = newValue!;
-          getVillageDatafromBlock(newValue);
+          print("BlockNameValue1"+blockNameValue);
+          //getVillageDatafromBlock(newValue);
+          itemsVillage=itemsVillage1;
           formGlobalKey2.currentState!.validate();
         });
       },

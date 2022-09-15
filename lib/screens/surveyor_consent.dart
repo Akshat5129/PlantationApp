@@ -344,7 +344,6 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                       child: RaisedButton(
                                         elevation: 1.0,
                                         onPressed: (){
-                                          //print("hellooo"+widget.FarmerDemand1["surveyor_signature"].toString());
                                           if(widget.FarmerDemand1["surveyor_signature"].toString()=="null"){
                                             showDialog(
                                               context: context,
