@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 
-void main() {
+Future<void> main() async {
+  await Hive.initFlutter();
   runApp(const MyApp());
 }
 
