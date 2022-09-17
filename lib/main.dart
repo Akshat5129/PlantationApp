@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:plantationapp/screens/farmer_reg.dart';
 import 'package:plantationapp/screens/login_screen.dart';
+late Box box1;
 
 Future<void> main() async {
   await Hive.initFlutter();
+  box1 = await Hive.openBox('logindata');
   runApp(const MyApp());
 }
 
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: box1.get('isLogged',defaultValue: false)?FarmerRegistration("", "valueVillage1", "valueDistrict1", "itemsBlock1", "itmesVillage1", "itemsDIstrict1", "userID"):MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -61,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Future.delayed(Duration(
         seconds: 3
     ), (){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),),);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),),);
     },);
   }
 

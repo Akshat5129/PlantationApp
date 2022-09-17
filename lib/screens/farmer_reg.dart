@@ -3,9 +3,11 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:plantationapp/screens/farmer_demand.dart';
 import 'package:plantationapp/screens/farmer_distribution.dart';
 import 'package:plantationapp/screens/farmer_plantation.dart';
+import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 import 'package:http/http.dart' as http;
 
@@ -119,10 +121,13 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     'Others'
   ];
 
+  Box? box1;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    OpenBox();
     print("in");
     print("${widget.itemsDIstrict1}");
     items1.clear();
@@ -130,10 +135,10 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     makePostRequest(url, unencodedPath, headers);
     makePostRequest1(urlBlock, unencodedPath1, headers);
     makePostRequest2(urlVillage, unencodedPath, headers);
-    items1=widget.itemsDIstrict1;
+    //items1=widget.itemsDIstrict1;
     //itemsBlock=widget.itemsBlock1;
     //itemsVillage=widget.itmesVillage1;
-    items3= widget.itemsDIstrict1;
+    //items3= widget.itemsDIstrict1;
     print(items1.toString());
   }
 
@@ -307,6 +312,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     return itemsBlock;
   }
 
+  void OpenBox() async{
+    box1 = await Hive.openBox('logindata');
+    setState(() {
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -318,19 +329,35 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
           children: [
             Column(
           children: [
-            SizedBox(height: 40,),
-            Text(
-              "Farmer's Registration",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.roboto(
-                textStyle: TextStyle(
-                    color: Color.fromRGBO(120, 153, 50, 1),
-                    letterSpacing: .2,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500
+            Row(
+              children: [
+                Text(
+                  "Farmer's \nRegistration",
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.roboto(
+                    textStyle: TextStyle(
+                        color: Color.fromRGBO(120, 153, 50, 1),
+                        letterSpacing: .2,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500
+                    ),
+                  ),
                 ),
+                IconButton(
+              iconSize: 30,
+              icon: const Icon(
+                Icons.logout,
               ),
+              onPressed: () {
+                box1?.put('isLogged',false);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>LoginScreen()));
+              },
             ),
+
+
+              ],mainAxisAlignment: MainAxisAlignment.spaceBetween,),
+            SizedBox(height: 10,),
+
             SizedBox(height: 30,),
             Container(
               decoration: BoxDecoration(

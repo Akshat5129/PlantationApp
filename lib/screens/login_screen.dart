@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +20,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  bool isChecked = false;
+  late Box box1;
 
   String dropdownvalue1 = 'Select District';
   var items1 = [
@@ -46,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    createBox();
     _passwordVisible = true;
     print("inside inint 1st"+items1.length.toString());
     items1.clear();
@@ -62,6 +67,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
 
 
+  void createBox()async{
+    box1 = await Hive.openBox('logindata');
+    getdata();
+  }
+  void getdata()async{
+    if(box1.get('email')!=null){
+      controllerUserID.text = box1.get('email');
+      isChecked = true;
+      setState(() {
+      });
+    }
+    if(box1.get('pass')!=null){
+      controllerPass.text = box1.get('pass');
+      isChecked = true;
+      setState(() {
+      });
+    }
+  }
+
+
   Future<http.Response> makePostRequest(String url, String unencodedPath , Map<String, String> header, Map<String,String> requestBody) async {
     final response = await http.get(
       //Uri.http(url,unencodedPath),
@@ -72,12 +97,17 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.body);
 
     if(response.body=='success'){
-      print("succ");
-      print(items1.length);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
-        blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1, controllerUserID.text
+
+      if(isChecked){
+        box1.put('email', controllerUserID.value.text);
+        box1.put('pass', controllerPass.value.text);
+      }
+      box1.put('isLogged',true);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
+          blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1, controllerUserID.text
       ),),);
-    }else{
+    }
+    else{
       showDialog(
         context: context,
         builder: (BuildContext context) => _buildPopupDialog(context),
