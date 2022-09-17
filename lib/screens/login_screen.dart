@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isChecked = false;
   late Box box1;
+  late Box box2;
 
   String dropdownvalue1 = 'Select District';
   var items1 = [
@@ -70,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void createBox()async{
     box1 = await Hive.openBox('logindata');
     getdata();
+    box2 = await Hive.openBox('dropdowndata');
   }
   void getdata()async{
     if(box1.get('email')!=null){
@@ -135,6 +137,12 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.statusCode);
     print(response.body);
     var jsonResult = jsonDecode(response.body);
+    if(response.body=='success'){
+      jsonResult.forEach((s)=> items1.add(s["dname"]));
+      print("this");
+      print(items1);
+      box2.put('district', items1);
+    }
     // print("items"+items1.length.toString());
     // items1.clear();
     // print("items1"+items1.length.toString());

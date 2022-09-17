@@ -130,6 +130,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     OpenBox();
     print("in");
     print("${widget.itemsDIstrict1}");
+    print("${widget.itemsBlock1}");
+    print("${widget.itmesVillage1}");
     items1.clear();
     dateController.text=dateTod;
     makePostRequest(url, unencodedPath, headers);
