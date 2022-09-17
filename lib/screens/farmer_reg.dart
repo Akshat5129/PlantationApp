@@ -102,6 +102,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     'Select Farmer'
   ];
 
+  var villageDID = [];
+  var villageID = [];
+
   dynamic d1 = "District";
   dynamic districts = ['District'];
 
@@ -207,7 +210,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   }
 
   Future<List<String>> makePostRequest2(String url, String unencodedPath , Map<String, String> header) async {
-    print("34 url1: "+url);
+    print("34 url2: "+url);
     final response = await http.get(
       //Uri.http(url,unencodedPath),
       Uri.parse(url),
@@ -215,18 +218,34 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     );
     print(response.statusCode);   //colors: status code and body
     print(response.body);
-    var jsonResult = jsonDecode(response.body);
-    print(jsonResult.length);
-    d1 = jsonResult[0]['vname'];
-    itemsVillage.clear();
-    itemsVillage.add("Select Village");
-    jsonResult.forEach((s)=> districts.add(s["vname"]));
-    print(d1);
-    print(districts);
-    list1.add(d1);
-    //items1.add(d1);
-    jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
-    //dropdownvalue1=response.body;
+    if(response.body.toString() == "0 results"){
+      itemsVillage.clear();
+      itemsVillage.add("Select Village");
+      itemsVillage.add("No Village Data Found in selected block. Select Another Block. ");
+    } else{
+      print("inside else bro");
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      d1 = jsonResult[0]['vname'];
+      itemsVillage.clear();
+      itemsVillage.add("Select Village");
+      // jsonResult.forEach((s)=> districts.add(s["vname"]));
+      // print(d1);
+      // print(districts);
+      // list1.add(d1);
+      // //items1.add(d1);
+      // jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
+      villageDID.clear();
+      villageID.clear();
+      jsonResult.forEach((s)=>  print("items_village_held"+s["vname"].toString()));
+      jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
+      print("itemsin village__"+itemsVillage.toString());
+      jsonResult.forEach((s)=> villageDID.add(s["bid"]));
+      jsonResult.forEach((s)=> villageID.add(s["vid"]));
+      print("village_id"+villageID.toString());
+      //dropdownvalue1=response.body;
+    }
+
     return itemsVillage;
   }
 
@@ -238,18 +257,24 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     );
     print(response.statusCode);
     print(response.body);
-    var jsonResult = jsonDecode(response.body);
-    print(jsonResult.length);
-    d1 = jsonResult[0]['fname'];
-    itemsFarmer.clear();
-    itemsFarmer.add("Select Farmer");
-    jsonResult.forEach((s)=> districts.add(s["fname"]));
-    print(d1);
-    print(districts);
-    list1.add(d1);
-    //items1.add(d1);
-    jsonResult.forEach((s)=> itemsFarmer.add(s["fname"]));
-    //dropdownvalue1=response.body;
+    if(response.body.toString() == "0 results"){
+      itemsFarmer.clear();
+      itemsFarmer.add("Select Farmer");
+      itemsFarmer.add("No Farmer Data Found in selected Village. Select Another Village. ");
+    } else{
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      d1 = jsonResult[0]['fname'];
+      itemsFarmer.clear();
+      itemsFarmer.add("Select Farmer");
+      jsonResult.forEach((s)=> districts.add(s["fname"]));
+      print(d1);
+      print(districts);
+      list1.add(d1);
+      //items1.add(d1);
+      jsonResult.forEach((s)=> itemsFarmer.add(s["fname"]));
+      //dropdownvalue1=response.body;
+    }
     return itemsFarmer;
   }
 
@@ -739,11 +764,38 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         }).toList(),
                         // After selecting the desired option,it will
                         // change button value to selected value
-                        onChanged: (String? newValue) {
+                        onChanged: (String? newValue) async {
+                          print("all prints here -------------> ");
+                          print(newValue);
+                          print("vv"+villageNameValue);
+                          print(itemsVillage);
+
+                          int index = itemsVillage.indexOf(newValue.toString())-1;
+                          print("34133index of item: "+index.toString());
+                          print("34133district id"+villageID[index]);
+                          int i = 0;
+                          // print("34District id: "+districtID[index].toString());
+                          // print("34block id: "+blockID[index].toString());
+                          urlFarmer1 = 'https://stand4land.in/plantation_app/get_farmer_data_from_vid.php';
+                          urlFarmer1 = urlFarmer1+"?did="+villageID[index];
+                          print("VNameValue3"+newValue.toString());
+                          List<String> itemsVillage1;
+                          itemsVillage1 = await makePostRequest3(urlFarmer1, unencodedPath, headers);
+                          print("VNameValue6"+newValue.toString());
+                          itemsVillage1.forEach((item) async {
+                            print("34 i: "+item);
+                          });
+
                           setState(() {
                             villageNameValue = newValue!;
+                            print("all prints here1 -------------> ");
+                            print(newValue);
+                            print("vv"+villageNameValue);
+                            print(itemsVillage);
+                            itemsFarmer=itemsVillage1;
                             print("consent value"+_validateYear.toString());
                             formGlobalKey3.currentState!.validate();
+                            farmerNameValue = "Select Farmer";
                           });
                         },
                       ),
@@ -814,50 +866,86 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           borderRadius: BorderRadius.all(Radius.circular(10))
                       ),
                       margin: EdgeInsets.only(top: 1),
-                      child: FutureBuilder<List>(
-                        future: makePostRequest3(urlFarmer, unencodedPath, headers),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return DropdownButtonFormField(
-                              isExpanded: true,
-                              style: GoogleFonts.lato(
-                                textStyle: TextStyle(
-                                    color: Colors.black54,
-                                    letterSpacing: .2,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600
-                                ),
-                              ),
-                              value: farmerNameValue,
-                              validator: (value) {
-                                if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
-                                  return 'Please select a farmer';
-                                }
-                                return null;
-                              },
-                              icon: const Icon(Icons.keyboard_arrow_down),
-                              items: snapshot.data?.map((items) {
-                                return DropdownMenuItem(
-                                  value: items,
-                                  child: Text(items),
-                                  enabled: items != 'Select Farmer',
-                                );
-                              }).toList(),
-                              // After selecting the desired option,it will
-                              // change button value to selected value
-                              onChanged: (newValue) {
-                                print(newValue);
-                                print("object");
-                                setState(() {
-                                  farmerNameValue = newValue.toString();
-                                  formGlobalKey4.currentState!.validate();
-                                });
-                              },
-                            );
+                      child: DropdownButtonFormField(
+                        isExpanded: true,
+                        style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                              color: Colors.black54,
+                              letterSpacing: .2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        value: farmerNameValue,
+                        validator: (value) {
+                          if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
+                            print("value"+value.toString());
+                            return 'Please select a Farmer';
                           }
-                          return Center(child: CircularProgressIndicator());
+                          return null;
+                        },
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: itemsFarmer.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+                            enabled: items != 'Select Farmer',
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) async {
+                          setState(() {
+                            farmerNameValue = newValue!;
+                            //print("consent value"+_validateYear.toString());
+                            formGlobalKey4.currentState!.validate();
+                          });
                         },
                       ),
+                      // child: FutureBuilder<List>(
+                      //   future: makePostRequest3(urlFarmer, unencodedPath, headers),
+                      //   builder: (context, snapshot) {
+                      //     if (snapshot.hasData) {
+                      //       return DropdownButtonFormField(
+                      //         isExpanded: true,
+                      //         style: GoogleFonts.lato(
+                      //           textStyle: TextStyle(
+                      //               color: Colors.black54,
+                      //               letterSpacing: .2,
+                      //               fontSize: 16,
+                      //               fontWeight: FontWeight.w600
+                      //           ),
+                      //         ),
+                      //         value: farmerNameValue,
+                      //         validator: (value) {
+                      //           if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
+                      //             return 'Please select a farmer';
+                      //           }
+                      //           return null;
+                      //         },
+                      //         icon: const Icon(Icons.keyboard_arrow_down),
+                      //         items: snapshot.data?.map((items) {
+                      //           return DropdownMenuItem(
+                      //             value: items,
+                      //             child: Text(items),
+                      //             enabled: items != 'Select Farmer',
+                      //           );
+                      //         }).toList(),
+                      //         // After selecting the desired option,it will
+                      //         // change button value to selected value
+                      //         onChanged: (newValue) {
+                      //           print(newValue);
+                      //           print("object");
+                      //           setState(() {
+                      //             farmerNameValue = newValue.toString();
+                      //             formGlobalKey4.currentState!.validate();
+                      //           });
+                      //         },
+                      //       );
+                      //     }
+                      //     return Center(child: CircularProgressIndicator());
+                      //   },
+                      // ),
                   ),),
 
                   SizedBox(height: 20,),
@@ -1144,6 +1232,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
         );
   }
 
+
+
   List<dynamic> getDistrictID(String name) {
     int index = items8.indexOf(name)-1;
     print("1234index of item: "+index.toString());
@@ -1210,22 +1300,22 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     //return itemsBlock;
   }
 
-  getVillageDatafromBlock(String name){
-    int index = itemsBlock.indexOf(name)-1;
-    print("341index of item: "+index.toString());
-    print("341district id"+blockID[index]);
-    int i = 0;
-    // print("34District id: "+districtID[index].toString());
-    // print("34block id: "+blockID[index].toString());
-    urlVillage1 = 'https://stand4land.in/plantation_app/get_village_data_from_bid.php';
-    urlVillage1 = urlVillage1+"?did="+blockID[index];
-    makePostRequest2(urlVillage1, unencodedPath, headers);
-    itemsVillage.forEach((item) async {
-
-      print("34 i: "+item);
-    });
-    return itemsVillage;
-  }
+  // getVillageDatafromBlock(String name){
+  //   int index = itemsBlock.indexOf(name)-1;
+  //   print("341index of item: "+index.toString());
+  //   print("341district id"+blockID[index]);
+  //   int i = 0;
+  //   // print("34District id: "+districtID[index].toString());
+  //   // print("34block id: "+blockID[index].toString());
+  //   urlVillage1 = 'https://stand4land.in/plantation_app/get_village_data_from_bid.php';
+  //   urlVillage1 = urlVillage1+"?did="+blockID[index];
+  //   makePostRequest2(urlVillage1, unencodedPath, headers);
+  //   itemsVillage.forEach((item) async {
+  //
+  //     print("34 i: "+item);
+  //   });
+  //   return itemsVillage;
+  // }
 
 
   Widget _buildDropDownBlock(BuildContext context) {
@@ -1273,6 +1363,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
         print("BlockNameValue3"+newValue.toString());
         List<String> itemsVillage1;
         itemsVillage1 = await makePostRequest2(urlVillage1, unencodedPath, headers);
+        print("BlockNameValue6"+newValue.toString());
         itemsVillage1.forEach((item) async {
           print("34 i: "+item);
         });
@@ -1286,6 +1377,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
           //getVillageDatafromBlock(newValue);
           itemsVillage=itemsVillage1;
           formGlobalKey2.currentState!.validate();
+          villageNameValue="Select Village";
         });
       },
     ),);
