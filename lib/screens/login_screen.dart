@@ -29,6 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
   var items1 = [
     'Select District'
   ];
+  var districtDID = [];
+  var blockDID = [];
+  var blockBID = [];
+  var villageBID = [];
+  var villageVID = [];
+  var farmerFID = [];
+  var farmerVID = [];
 
   String villageNameValue = 'Select Village';
   var itemsVillage = [
@@ -60,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     makePostRequest0(urlDis, unencodedPath1, headers1);
     makePostRequest1(urlBlock, unencodedPath1, headers1);
     makePostRequest2(urlVillage, unencodedPath1, headers1);
+    makePostRequest3(urlFarmer, unencodedPath1, headers1);
   }
 
   //final String url = "https:/stand4land.in";
@@ -105,6 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
         box1.put('pass', controllerPass.value.text);
       }
       box1.put('isLogged',true);
+
+      print("box val abcd1");
+      box2.get("district1").forEach((element) { print(element); });
+      print("Block Box 1234");
+      box2.get("block1").forEach((s)=> print(s));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
           blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1, controllerUserID.text
       ),),);
@@ -129,6 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
   Future<http.Response> makePostRequest0(String url, String unencodedPath , Map<String, String> header) async {
+    print("make post request 2");
     final response = await http.get(
       //Uri.http(url,unencodedPath),
       Uri.parse(url),
@@ -137,21 +151,29 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.statusCode);
     print(response.body);
     var jsonResult = jsonDecode(response.body);
-    if(response.body=='success'){
+    if(response.statusCode==200){
       jsonResult.forEach((s)=> items1.add(s["dname"]));
-      print("this");
+      jsonResult.forEach((s)=> districtDID.add(s["did"]));
+      print("this inside box code");
+      print(box2.get("district1"));
+      print("helo");
       print(items1);
-      box2.put('district', items1);
+      box2.put('district1', items1);
+      box2.put('districtDID', districtDID);
+      print(box2.get("district1"));
+      print("innonononon ------> ");
+      box2.get("district1").forEach((element) { print(element); });
     }
     // print("items"+items1.length.toString());
     // items1.clear();
     // print("items1"+items1.length.toString());
 
     //items1.add(d1);
-    jsonResult.forEach((s)=> items1.add(s["dname"]));
-    print("this");
+    print("box hivvee");
     print(items1);
     //dropdownvalue1=response.body;
+    print("innonononon12 ------> ");
+    box2.get("district1").forEach((element) { print(element); });
     return response;
   }
 
@@ -165,9 +187,19 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.body);
     var jsonResult = jsonDecode(response.body);
     print(jsonResult.length);
+    if(response.statusCode==200){
+      jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
+      jsonResult.forEach((s)=> blockDID.add(s["did"]));
+      jsonResult.forEach((s)=> blockBID.add(s["bid"]));
+      print("box hivve");
+      print(itemsBlock);
+      box2.put('block1', itemsBlock);
+      box2.put('blockDID', blockDID);
+      box2.put('blockBID', blockBID);
+    }
     //items1.add(d1);
-    jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
-    print(itemsBlock);
+    //jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
+    //print(itemsBlock);
     //dropdownvalue1=response.body;
     return response;
   }
@@ -180,12 +212,48 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     print(response.statusCode);
     print(response.body);
-    var jsonResult = jsonDecode(response.body);
-    print(jsonResult.length);
-    //items1.add(d1);
-    jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      //items1.add(d1);
+      jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
+      jsonResult.forEach((s)=> print(s["bid"]));
+      jsonResult.forEach((s)=> villageBID.add(s["bid"]));
+      jsonResult.forEach((s)=> villageVID.add(s["vid"]));
+      box2.put("village1",itemsVillage);
+      box2.put('villageBID', villageBID);
+      box2.put('villageVID', villageVID);
+      print("Village Box 1234");
+      box2.get("villageBID").forEach((s)=> print(s));
+    }
     //dropdownvalue1=response.body;
     return response;
+  }
+
+
+  Future<List<String>> makePostRequest3(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      //items1.add(d1);
+      jsonResult.forEach((s)=> itemsFarmer.add(s["fname"]));
+      jsonResult.forEach((s)=> print(s["bid"]));
+      jsonResult.forEach((s)=> farmerVID.add(s["vid"]));
+      jsonResult.forEach((s)=> farmerFID.add(s["fid"]));
+      box2.put("farmer1",itemsFarmer);
+      box2.put('farmerVID', farmerVID);
+      box2.put('farmerFID', farmerFID);
+      print("Farmer Box 1234");
+      box2.get("farmerFID").forEach((s)=> print(s));
+    }
+    return itemsFarmer;
   }
 
 

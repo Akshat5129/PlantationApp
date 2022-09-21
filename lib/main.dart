@@ -10,6 +10,8 @@ Future<void> main() async {
   await Hive.initFlutter();
   box1 = await Hive.openBox('logindata');
   runApp(const MyApp());
+  print("boxx 11");
+  print(box1.get("isLogged"));
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +34,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: box1.get('isLogged',defaultValue: false)?FarmerRegistration("", "valueVillage1", "valueDistrict1", "itemsBlock1", "itmesVillage1", "itemsDIstrict1", "userID"):MyHomePage(title: 'Flutter Demo Home Page'),
+      //home: box1.get('isLogged',defaultValue: false)?FarmerRegistration("", "valueVillage1", "valueDistrict1", "itemsBlock1", "itmesVillage1", "itemsDIstrict1", "userID"):MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -61,10 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    print("hello box");
+    print(box1.get("isLogged"));
     Future.delayed(Duration(
         seconds: 3
     ), (){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),),);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+      box1.get('isLogged',defaultValue: false)?FarmerRegistration("", "valueVillage1", "valueDistrict1", "itemsBlock1", "itmesVillage1", "itemsDIstrict1", "userID"):LoginScreen()
+        ,),);
     },);
   }
 

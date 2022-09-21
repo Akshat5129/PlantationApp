@@ -77,6 +77,30 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     'Conclusion'
   ];
 
+  String districtdropdownvalue1 = 'Select District';
+  var districtitems1 = [
+    'Select District'
+  ];
+  String blockdropdownvalue1 = 'Select Block';
+  var blockitems1 = [
+    'Select Block'
+  ];
+  String villagedropdownvalue1 = 'Select Village';
+  var villageitems1 = [
+    'Select Village'
+  ];
+  String farmerdropdownvalue1 = 'Select Farmer';
+  var farmeritems1 = [
+    'Select Farmer'
+  ];
+  var districtDID1 = [];
+  var blockDID1 = [];
+  var blockBID1 = [];
+  var villageBID1 = [];
+  var villageVID1 = [];
+  var farmerVID1 = [];
+  var farmerFID1 = [];
+
   String dropdownvalue1 = 'Select District';
   var items1 = [
     'Select District'
@@ -122,13 +146,15 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   ];
 
   Box? box1;
+  Box? box2;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    OpenBox();
-    print("in");
+    //districtitems1.clear();
+    //OpenBox();
+    createBox();
     print("${widget.itemsDIstrict1}");
     print("${widget.itemsBlock1}");
     print("${widget.itmesVillage1}");
@@ -143,6 +169,42 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     //items3= widget.itemsDIstrict1;
     print(items1.toString());
   }
+
+
+  void createBox()async{
+    box1 = await Hive.openBox('dropdowndata');
+    getdata();
+    box2 = await Hive.openBox("logindata");
+  }
+  void getdata()async{
+    print("box dataabcd");
+    print(box1?.get('block1'));
+    if(box1?.get('district1')!=null){
+      setState(() {
+        print("length123");
+        box1?.get("district1").forEach((element) { print(element); });
+        districtitems1.clear();
+        districtitems1 = box1?.get("district1");
+        blockitems1.clear();
+        blockitems1 = box1?.get("block1");
+        villageitems1.clear();
+        villageitems1 = box1?.get("village1");
+        farmeritems1.clear();
+        farmeritems1 = box1?.get("farmer1");
+        //print("length: "+box1?.get("district").toString());
+        print("length: "+districtitems1.length.toString());
+
+        districtDID1 = box1?.get("districtDID");
+        blockDID1 = box1?.get("blockDID");
+        blockBID1 = box1?.get("blockBID");
+        villageBID1 = box1?.get("villageBID");
+        villageVID1 = box1?.get("villageVID");
+        farmerVID1 = box1?.get("farmerVID");
+        farmerFID1 = box1?.get("farmerFID");
+      });
+    }
+  }
+
 
   //final String url = "https:/stand4land.in";
   String url = 'https://stand4land.in/plantation_app/get_district_data.php';
@@ -315,7 +377,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   }
 
   void OpenBox() async{
-    box1 = await Hive.openBox('logindata');
+    box2 = await Hive.openBox('logindata');
     setState(() {
     });
   }
@@ -351,7 +413,11 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                 Icons.logout,
               ),
               onPressed: () {
-                box1?.put('isLogged',false);
+                print("boxx hello");
+                print(box2?.get("isLogged"));
+                box2?.put('isLogged',false);
+                print("box after");
+                print(box2?.get("isLogged"));
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>LoginScreen()));
               },
             ),
@@ -540,10 +606,11 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                   ),
 
 
+
                   SizedBox(height: 20,),
                   Container(
                     child: Text(
-                      "District",
+                      "District1",
                       textAlign: TextAlign.left,
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
@@ -568,111 +635,72 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           borderRadius: BorderRadius.all(Radius.circular(10))
                       ),
                       margin: EdgeInsets.only(top: 1),
-                      child: FutureBuilder<List>(
-                        future: makePostRequest(url, unencodedPath, headers),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return DropdownButtonFormField(
-                              isExpanded: true,
-                              style: GoogleFonts.lato(
-                                textStyle: TextStyle(
-                                    color: Colors.black54,
-                                    letterSpacing: .2,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600
-                                ),
-                              ),
-                              value: dropdownvalue1,
-                              validator: (value) {
-                                print("inside validator");
-                                if (dropdownvalue1 == null || dropdownvalue1=="Select District") {
-                                  print("value"+value.toString());
-                                  return 'Please select';
-                                }
-                                return null;
-                              },
-                              icon: const Icon(Icons.keyboard_arrow_down),
-                              items: snapshot.data?.map((items) {
-                                return DropdownMenuItem(
-                                  value: items,
-                                  child: Text(items),
-                                  enabled: items != 'Select District',
-                                );
-                              }).toList(),
-                              // After selecting the desired option,it will
-                              // change button value to selected value
-                              onChanged: (newValue) async {
-                                print(newValue);
-                                print("object");
-
-                                print("data_getting"+newValue.toString());
-                                int index = items8.indexOf(newValue.toString())-1;
-                                print("34index of item: "+index.toString());
-                                print("34district id"+districtID[index]);
-                                int i = 0;
-                                // print("34District id: "+districtID[index].toString());
-                                // print("34block id: "+blockID[index].toString());
-                                urlBlock1 = 'https://stand4land.in/plantation_app/get_block_data_from_did.php';
-                                urlBlock1 = urlBlock1+"?did="+districtID[index];
-                                //makePostRequest1(urlBlock1, unencodedPath, headers);
-                                List<String> itemsBlock1;
-                                itemsBlock1 = await makePostRequest1(urlBlock1, unencodedPath, headers);
-                                print("changed value from block");
-                                print(itemsBlock1);
-
-                                setState(() {
-                                  print("BlockNameVale0"+blockNameValue);
-                                  blockNameValue="Select Block";
-                                  print("BlockNameVale"+blockNameValue);
-                                  dropdownvalue1 = newValue.toString();
-                                  //getDistrictID(newValue.toString());
-                                  //getBlockDatafromDistrict(newValue.toString());
-                                  //itemsBlock = getBlockDatafromDistrict(newValue.toString());
-                                  itemsBlock = itemsBlock1;
-                                  //_buildDropDownBlock(context);
-                                  formGlobalKey.currentState!.validate();
-                                });
-                              },
-
-                            );
+                      child: DropdownButtonFormField(
+                        isExpanded: true,
+                        style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                              color: Colors.black54,
+                              letterSpacing: .2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        value: districtdropdownvalue1,
+                        validator: (value) {
+                          if (districtdropdownvalue1 == null || districtdropdownvalue1=="Select District") {
+                            return 'Please select';
                           }
-                          return Center(child: CircularProgressIndicator());
+                          return null;
                         },
-                      ),
-                      // child: DropdownButton(
-                      //   isExpanded: true,
-                      //   style: GoogleFonts.lato(
-                      //     textStyle: TextStyle(
-                      //         color: Colors.black54,
-                      //         letterSpacing: .2,
-                      //         fontSize: 16,
-                      //         fontWeight: FontWeight.w600
-                      //     ),
-                      //   ),
-                      //   value: dropdownvalue1,
-                      //   icon: const Icon(Icons.keyboard_arrow_down),
-                      //   items: items1.map((String items) {
-                      //     return DropdownMenuItem(
-                      //       value: items,
-                      //       child: Text(items),
-                      //       enabled: items != 'Select District',
-                      //     );
-                      //   }).toList(),
-                      //   // After selecting the desired option,it will
-                      //   // change button value to selected value
-                      //   onChanged: (String? newValue) {
-                      //     setState(() {
-                      //       dropdownvalue1 = newValue!;
-                      //     });
-                      //   },
-                      // )
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: districtitems1.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          int i1, i3;
+                          String i2;
+                          List<String> newList=["Select Block"];
+                          setState(() {
+                            districtdropdownvalue1 = newValue!;
+                            blockdropdownvalue1 = "Select Block";
+                            villagedropdownvalue1 = "Select Village";
+                            farmerdropdownvalue1 = "Select Farmer";
+                            i1 = districtitems1.indexOf(newValue);
+                            print("len"+blockitems1.length.toString());
+                            print(i1);
+                            print(newList);
+                            blockDID1.asMap().forEach((index, element) {
+                              print(element);
+                              print(i1);
+                              print("nect");
+                              print(newList);
+                              print(box1?.get("block1")[index]);
+                              if(element.toString() == i1.toString()){
+                                print(newList);
+                                print("index"+index.toString());
+                                print(box1?.get("block1")[index+1]);
+                                newList.add(box1?.get("block1")[index+1]);
+                              }
+                            });
+                            print(newList);
+                            blockitems1 = newList;
+                          });
+                          formGlobalKey.currentState!.validate();
+                        },
+                      )
                   ),),
+
 
 
                   SizedBox(height: 20,),
                   Container(
                     child: Text(
-                      "Block Name",
+                      "Block1",
                       textAlign: TextAlign.left,
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
@@ -685,7 +713,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                     ),
                     padding: EdgeInsets.only(left: 5),
                   ),
-                  Container(
+                  Form(
+                    key: formGlobalKey2,
+                    child: Container(
                       padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
                       decoration: BoxDecoration(
                           color:Color.fromRGBO(181, 231, 77, 0.56),
@@ -695,52 +725,70 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           borderRadius: BorderRadius.all(Radius.circular(10))
                       ),
                       margin: EdgeInsets.only(top: 1),
-                      child: _buildDropDownBlock(context)
-                      // child: FutureBuilder<List>(
-                      //   future: makePostRequest1(urlBlock, unencodedPath, headers),
-                      //   builder: (context, snapshot) {
-                      //     if (snapshot.hasData) {
-                      //       return DropdownButton(
-                      //         isExpanded: true,
-                      //         style: GoogleFonts.lato(
-                      //           textStyle: TextStyle(
-                      //               color: Colors.black54,
-                      //               letterSpacing: .2,
-                      //               fontSize: 16,
-                      //               fontWeight: FontWeight.w600
-                      //           ),
-                      //         ),
-                      //         value: blockNameValue,
-                      //         icon: const Icon(Icons.keyboard_arrow_down),
-                      //         items: snapshot.data?.map((items) {
-                      //           return DropdownMenuItem(
-                      //             value: items,
-                      //             child: Text(items),
-                      //             enabled: items != 'Select Block',
-                      //           );
-                      //         }).toList(),
-                      //         // After selecting the desired option,it will
-                      //         // change button value to selected value
-                      //         onChanged: (newValue) {
-                      //           print(newValue);
-                      //           print("object");
-                      //           setState(() {
-                      //             blockNameValue = newValue.toString();
-                      //             getBlockID(newValue.toString());
-                      //           });
-                      //         },
-                      //       );
-                      //     }
-                      //     return Center(child: CircularProgressIndicator());
-                      //   },
-                      // )
-                  ),
+                      child: DropdownButtonFormField(
+                        isExpanded: true,
+                        style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                              color: Colors.black54,
+                              letterSpacing: .2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        value: blockdropdownvalue1,
+                        validator: (value) {
+                          if (blockdropdownvalue1 == null || blockdropdownvalue1=="Select Block") {
+                            return 'Please select';
+                          }
+                          return null;
+                        },
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: blockitems1.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          int i1, i3;
+                          String i2;
+                          List<String> newList=["Select Village"];
+                          setState(() {
+                            blockdropdownvalue1 = newValue!;
+                            villagedropdownvalue1 = "Select Village";
+                            farmerdropdownvalue1 = "Select Farmer";
+                            i1 = box1?.get("block1").indexOf(newValue);
+                            print("len"+villageitems1.length.toString());
+                            print(i1);
+                            print(newList);
+                            villageBID1.asMap().forEach((index, element) {
+                              print(element);
+                              print(i1);
+                              print("nect");
+                              print(newList);
+                              print(box1?.get("village1")[index]);
+                              if(element.toString() == i1.toString()){
+                                print(newList);
+                                print("index"+index.toString());
+                                print(box1?.get("village1")[index+1]);
+                                newList.add(box1?.get("village1")[index+1]);
+                              }
+                            });
+                            print(newList);
+                            villageitems1 = newList;
+                          });
+                          formGlobalKey2.currentState!.validate();
+                        },
+                      )
+                  ),),
 
 
                   SizedBox(height: 20,),
                   Container(
                     child: Text(
-                      "Village Name",
+                      "Village1",
                       textAlign: TextAlign.left,
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
@@ -775,102 +823,61 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                               fontWeight: FontWeight.w600
                           ),
                         ),
-                        value: villageNameValue,
+                        value: villagedropdownvalue1,
                         validator: (value) {
-                          if (villageNameValue == null || villageNameValue=="Select Village") {
-                            print("value"+value.toString());
+                          if (villagedropdownvalue1 == null || villagedropdownvalue1=="Select Village") {
                             return 'Please select a Village';
                           }
                           return null;
                         },
                         icon: const Icon(Icons.keyboard_arrow_down),
-                        items: itemsVillage.map((String items) {
+                        items: villageitems1.map((String items) {
                           return DropdownMenuItem(
                             value: items,
                             child: Text(items),
-                            enabled: items != 'Select Village',
                           );
                         }).toList(),
                         // After selecting the desired option,it will
                         // change button value to selected value
-                        onChanged: (String? newValue) async {
-                          print("all prints here -------------> ");
-                          print(newValue);
-                          print("vv"+villageNameValue);
-                          print(itemsVillage);
-
-                          int index = itemsVillage.indexOf(newValue.toString())-1;
-                          print("34133index of item: "+index.toString());
-                          print("34133district id"+villageID[index]);
-                          int i = 0;
-                          // print("34District id: "+districtID[index].toString());
-                          // print("34block id: "+blockID[index].toString());
-                          urlFarmer1 = 'https://stand4land.in/plantation_app/get_farmer_data_from_vid.php';
-                          urlFarmer1 = urlFarmer1+"?did="+villageID[index];
-                          print("VNameValue3"+newValue.toString());
-                          List<String> itemsVillage1;
-                          itemsVillage1 = await makePostRequest3(urlFarmer1, unencodedPath, headers);
-                          print("VNameValue6"+newValue.toString());
-                          itemsVillage1.forEach((item) async {
-                            print("34 i: "+item);
-                          });
-
+                        onChanged: (String? newValue) {
+                          int i1, i3;
+                          String i2;
+                          List<String> newList=["Select Farmer"];
                           setState(() {
-                            villageNameValue = newValue!;
-                            print("all prints here1 -------------> ");
-                            print(newValue);
-                            print("vv"+villageNameValue);
-                            print(itemsVillage);
-                            itemsFarmer=itemsVillage1;
-                            print("consent value"+_validateYear.toString());
-                            formGlobalKey3.currentState!.validate();
-                            farmerNameValue = "Select Farmer";
+                            villagedropdownvalue1 = newValue!;
+                            farmerdropdownvalue1 = "Select Farmer";
+                            i1 = box1?.get("village1").indexOf(newValue);
+                            print("len"+farmeritems1.length.toString());
+                            print(i1);
+                            print(newList);
+                            farmerVID1.asMap().forEach((index, element) {
+                              print(element);
+                              print(i1);
+                              print("nect1");
+                              print(newList);
+                              print(box1?.get("farmer1")[index]);
+                              if(element.toString() == i1.toString()){
+                                print(newList);
+                                print("index"+index.toString());
+                                print(box1?.get("farmer1")[index+1]);
+                                newList.add(box1?.get("farmer1")[index+1]);
+                              }
+                            });
+                            print(newList);
+                            farmeritems1 = newList;
                           });
+                          formGlobalKey3.currentState!.validate();
                         },
-                      ),
-                      // child: FutureBuilder<List>(
-                      //   future: makePostRequest2(urlVillage, unencodedPath, headers),
-                      //   builder: (context, snapshot) {
-                      //     if (snapshot.hasData) {
-                      //       return DropdownButton(
-                      //         isExpanded: true,
-                      //         style: GoogleFonts.lato(
-                      //           textStyle: TextStyle(
-                      //               color: Colors.black54,
-                      //               letterSpacing: .2,
-                      //               fontSize: 16,
-                      //               fontWeight: FontWeight.w600
-                      //           ),
-                      //         ),
-                      //         value: villageNameValue,
-                      //         icon: const Icon(Icons.keyboard_arrow_down),
-                      //         items: snapshot.data?.map((items) {
-                      //           return DropdownMenuItem(
-                      //             value: items,
-                      //             child: Text(items),
-                      //             enabled: items != 'Select Village',
-                      //           );
-                      //         }).toList(),
-                      //         // After selecting the desired option,it will
-                      //         // change button value to selected value
-                      //         onChanged: (newValue) {
-                      //           print(newValue);
-                      //           print("object");
-                      //           setState(() {
-                      //             villageNameValue = newValue.toString();
-                      //           });
-                      //         },
-                      //       );
-                      //     }
-                      //     return Center(child: CircularProgressIndicator());
-                      //   },
-                      // ),
+                      )
                   ),),
+
+
+
 
                   SizedBox(height: 20,),
                   Container(
                     child: Text(
-                      "Farmer Name",
+                      "Farmer1",
                       textAlign: TextAlign.left,
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
@@ -905,77 +912,466 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                               fontWeight: FontWeight.w600
                           ),
                         ),
-                        value: farmerNameValue,
+                        value: farmerdropdownvalue1,
                         validator: (value) {
-                          if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
-                            print("value"+value.toString());
+                          if (farmerdropdownvalue1 == null || farmerdropdownvalue1=="Select Farmer") {
                             return 'Please select a Farmer';
                           }
                           return null;
                         },
                         icon: const Icon(Icons.keyboard_arrow_down),
-                        items: itemsFarmer.map((String items) {
+                        items: farmeritems1.map((String items) {
                           return DropdownMenuItem(
                             value: items,
                             child: Text(items),
-                            enabled: items != 'Select Farmer',
                           );
                         }).toList(),
                         // After selecting the desired option,it will
                         // change button value to selected value
-                        onChanged: (String? newValue) async {
+                        onChanged: (String? newValue) {
                           setState(() {
-                            farmerNameValue = newValue!;
-                            //print("consent value"+_validateYear.toString());
-                            formGlobalKey4.currentState!.validate();
+                            farmerdropdownvalue1 = newValue!;
                           });
+                          formGlobalKey4.currentState!.validate();
                         },
-                      ),
-                      // child: FutureBuilder<List>(
-                      //   future: makePostRequest3(urlFarmer, unencodedPath, headers),
-                      //   builder: (context, snapshot) {
-                      //     if (snapshot.hasData) {
-                      //       return DropdownButtonFormField(
-                      //         isExpanded: true,
-                      //         style: GoogleFonts.lato(
-                      //           textStyle: TextStyle(
-                      //               color: Colors.black54,
-                      //               letterSpacing: .2,
-                      //               fontSize: 16,
-                      //               fontWeight: FontWeight.w600
-                      //           ),
-                      //         ),
-                      //         value: farmerNameValue,
-                      //         validator: (value) {
-                      //           if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
-                      //             return 'Please select a farmer';
-                      //           }
-                      //           return null;
-                      //         },
-                      //         icon: const Icon(Icons.keyboard_arrow_down),
-                      //         items: snapshot.data?.map((items) {
-                      //           return DropdownMenuItem(
-                      //             value: items,
-                      //             child: Text(items),
-                      //             enabled: items != 'Select Farmer',
-                      //           );
-                      //         }).toList(),
-                      //         // After selecting the desired option,it will
-                      //         // change button value to selected value
-                      //         onChanged: (newValue) {
-                      //           print(newValue);
-                      //           print("object");
-                      //           setState(() {
-                      //             farmerNameValue = newValue.toString();
-                      //             formGlobalKey4.currentState!.validate();
-                      //           });
-                      //         },
-                      //       );
-                      //     }
-                      //     return Center(child: CircularProgressIndicator());
-                      //   },
-                      // ),
+                      )
                   ),),
+
+
+
+                  // SizedBox(height: 20,),
+                  // Container(
+                  //   child: Text(
+                  //     "District",
+                  //     textAlign: TextAlign.left,
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle: TextStyle(
+                  //           color: Color.fromRGBO(58, 58, 58, 1),
+                  //           letterSpacing: .2,
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.w600
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   padding: EdgeInsets.only(left: 5),
+                  // ),
+                  // Form(
+                  //   child: Container(
+                  //     padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                  //     decoration: BoxDecoration(
+                  //         color:Color.fromRGBO(181, 231, 77, 0.56),
+                  //         border: Border.all(
+                  //             color: Color.fromRGBO(181, 231, 77, 0.56)
+                  //         ),
+                  //         borderRadius: BorderRadius.all(Radius.circular(10))
+                  //     ),
+                  //     margin: EdgeInsets.only(top: 1),
+                  //     child: FutureBuilder<List>(
+                  //       future: makePostRequest(url, unencodedPath, headers),
+                  //       builder: (context, snapshot) {
+                  //         if (snapshot.hasData) {
+                  //           return DropdownButtonFormField(
+                  //             isExpanded: true,
+                  //             style: GoogleFonts.lato(
+                  //               textStyle: TextStyle(
+                  //                   color: Colors.black54,
+                  //                   letterSpacing: .2,
+                  //                   fontSize: 16,
+                  //                   fontWeight: FontWeight.w600
+                  //               ),
+                  //             ),
+                  //             value: dropdownvalue1,
+                  //             validator: (value) {
+                  //               print("inside validator");
+                  //               if (dropdownvalue1 == null || dropdownvalue1=="Select District") {
+                  //                 print("value"+value.toString());
+                  //                 return 'Please select';
+                  //               }
+                  //               return null;
+                  //             },
+                  //             icon: const Icon(Icons.keyboard_arrow_down),
+                  //             items: snapshot.data?.map((items) {
+                  //               return DropdownMenuItem(
+                  //                 value: items,
+                  //                 child: Text(items),
+                  //                 enabled: items != 'Select District',
+                  //               );
+                  //             }).toList(),
+                  //             // After selecting the desired option,it will
+                  //             // change button value to selected value
+                  //             onChanged: (newValue) async {
+                  //               print(newValue);
+                  //               print("object");
+                  //
+                  //               print("data_getting"+newValue.toString());
+                  //               int index = items8.indexOf(newValue.toString())-1;
+                  //               print("34index of item: "+index.toString());
+                  //               print("34district id"+districtID[index]);
+                  //               int i = 0;
+                  //               // print("34District id: "+districtID[index].toString());
+                  //               // print("34block id: "+blockID[index].toString());
+                  //               urlBlock1 = 'https://stand4land.in/plantation_app/get_block_data_from_did.php';
+                  //               urlBlock1 = urlBlock1+"?did="+districtID[index];
+                  //               //makePostRequest1(urlBlock1, unencodedPath, headers);
+                  //               List<String> itemsBlock1;
+                  //               itemsBlock1 = await makePostRequest1(urlBlock1, unencodedPath, headers);
+                  //               print("changed value from block");
+                  //               print(itemsBlock1);
+                  //
+                  //               setState(() {
+                  //                 print("BlockNameVale0"+blockNameValue);
+                  //                 blockNameValue="Select Block";
+                  //                 print("BlockNameVale"+blockNameValue);
+                  //                 dropdownvalue1 = newValue.toString();
+                  //                 //getDistrictID(newValue.toString());
+                  //                 //getBlockDatafromDistrict(newValue.toString());
+                  //                 //itemsBlock = getBlockDatafromDistrict(newValue.toString());
+                  //                 itemsBlock = itemsBlock1;
+                  //                 //_buildDropDownBlock(context);
+                  //                 formGlobalKey.currentState!.validate();
+                  //               });
+                  //             },
+                  //
+                  //           );
+                  //         }
+                  //         return Center(child: CircularProgressIndicator());
+                  //       },
+                  //     ),
+                  //     // child: DropdownButton(
+                  //     //   isExpanded: true,
+                  //     //   style: GoogleFonts.lato(
+                  //     //     textStyle: TextStyle(
+                  //     //         color: Colors.black54,
+                  //     //         letterSpacing: .2,
+                  //     //         fontSize: 16,
+                  //     //         fontWeight: FontWeight.w600
+                  //     //     ),
+                  //     //   ),
+                  //     //   value: dropdownvalue1,
+                  //     //   icon: const Icon(Icons.keyboard_arrow_down),
+                  //     //   items: items1.map((String items) {
+                  //     //     return DropdownMenuItem(
+                  //     //       value: items,
+                  //     //       child: Text(items),
+                  //     //       enabled: items != 'Select District',
+                  //     //     );
+                  //     //   }).toList(),
+                  //     //   // After selecting the desired option,it will
+                  //     //   // change button value to selected value
+                  //     //   onChanged: (String? newValue) {
+                  //     //     setState(() {
+                  //     //       dropdownvalue1 = newValue!;
+                  //     //     });
+                  //     //   },
+                  //     // )
+                  // ),),
+                  //
+                  //
+                  // SizedBox(height: 20,),
+                  // Container(
+                  //   child: Text(
+                  //     "Block Name",
+                  //     textAlign: TextAlign.left,
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle: TextStyle(
+                  //           color: Color.fromRGBO(58, 58, 58, 1),
+                  //           letterSpacing: .2,
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.w600
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   padding: EdgeInsets.only(left: 5),
+                  // ),
+                  // Container(
+                  //     padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                  //     decoration: BoxDecoration(
+                  //         color:Color.fromRGBO(181, 231, 77, 0.56),
+                  //         border: Border.all(
+                  //             color: Color.fromRGBO(181, 231, 77, 0.56)
+                  //         ),
+                  //         borderRadius: BorderRadius.all(Radius.circular(10))
+                  //     ),
+                  //     margin: EdgeInsets.only(top: 1),
+                  //     child: _buildDropDownBlock(context)
+                  //     // child: FutureBuilder<List>(
+                  //     //   future: makePostRequest1(urlBlock, unencodedPath, headers),
+                  //     //   builder: (context, snapshot) {
+                  //     //     if (snapshot.hasData) {
+                  //     //       return DropdownButton(
+                  //     //         isExpanded: true,
+                  //     //         style: GoogleFonts.lato(
+                  //     //           textStyle: TextStyle(
+                  //     //               color: Colors.black54,
+                  //     //               letterSpacing: .2,
+                  //     //               fontSize: 16,
+                  //     //               fontWeight: FontWeight.w600
+                  //     //           ),
+                  //     //         ),
+                  //     //         value: blockNameValue,
+                  //     //         icon: const Icon(Icons.keyboard_arrow_down),
+                  //     //         items: snapshot.data?.map((items) {
+                  //     //           return DropdownMenuItem(
+                  //     //             value: items,
+                  //     //             child: Text(items),
+                  //     //             enabled: items != 'Select Block',
+                  //     //           );
+                  //     //         }).toList(),
+                  //     //         // After selecting the desired option,it will
+                  //     //         // change button value to selected value
+                  //     //         onChanged: (newValue) {
+                  //     //           print(newValue);
+                  //     //           print("object");
+                  //     //           setState(() {
+                  //     //             blockNameValue = newValue.toString();
+                  //     //             getBlockID(newValue.toString());
+                  //     //           });
+                  //     //         },
+                  //     //       );
+                  //     //     }
+                  //     //     return Center(child: CircularProgressIndicator());
+                  //     //   },
+                  //     // )
+                  // ),
+                  //
+                  //
+                  // SizedBox(height: 20,),
+                  // Container(
+                  //   child: Text(
+                  //     "Village Name",
+                  //     textAlign: TextAlign.left,
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle: TextStyle(
+                  //           color: Color.fromRGBO(58, 58, 58, 1),
+                  //           letterSpacing: .2,
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.w600
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   padding: EdgeInsets.only(left: 5),
+                  // ),
+                  // Form(
+                  //   child: Container(
+                  //     padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                  //     decoration: BoxDecoration(
+                  //         color:Color.fromRGBO(181, 231, 77, 0.56),
+                  //         border: Border.all(
+                  //             color: Color.fromRGBO(181, 231, 77, 0.56)
+                  //         ),
+                  //         borderRadius: BorderRadius.all(Radius.circular(10))
+                  //     ),
+                  //     margin: EdgeInsets.only(top: 1),
+                  //     child: DropdownButtonFormField(
+                  //       isExpanded: true,
+                  //       style: GoogleFonts.lato(
+                  //         textStyle: TextStyle(
+                  //             color: Colors.black54,
+                  //             letterSpacing: .2,
+                  //             fontSize: 16,
+                  //             fontWeight: FontWeight.w600
+                  //         ),
+                  //       ),
+                  //       value: villageNameValue,
+                  //       validator: (value) {
+                  //         if (villageNameValue == null || villageNameValue=="Select Village") {
+                  //           print("value"+value.toString());
+                  //           return 'Please select a Village';
+                  //         }
+                  //         return null;
+                  //       },
+                  //       icon: const Icon(Icons.keyboard_arrow_down),
+                  //       items: itemsVillage.map((String items) {
+                  //         return DropdownMenuItem(
+                  //           value: items,
+                  //           child: Text(items),
+                  //           enabled: items != 'Select Village',
+                  //         );
+                  //       }).toList(),
+                  //       // After selecting the desired option,it will
+                  //       // change button value to selected value
+                  //       onChanged: (String? newValue) async {
+                  //         print("all prints here -------------> ");
+                  //         print(newValue);
+                  //         print("vv"+villageNameValue);
+                  //         print(itemsVillage);
+                  //
+                  //         int index = itemsVillage.indexOf(newValue.toString())-1;
+                  //         print("34133index of item: "+index.toString());
+                  //         print("34133district id"+villageID[index]);
+                  //         int i = 0;
+                  //         // print("34District id: "+districtID[index].toString());
+                  //         // print("34block id: "+blockID[index].toString());
+                  //         urlFarmer1 = 'https://stand4land.in/plantation_app/get_farmer_data_from_vid.php';
+                  //         urlFarmer1 = urlFarmer1+"?did="+villageID[index];
+                  //         print("VNameValue3"+newValue.toString());
+                  //         List<String> itemsVillage1;
+                  //         itemsVillage1 = await makePostRequest3(urlFarmer1, unencodedPath, headers);
+                  //         print("VNameValue6"+newValue.toString());
+                  //         itemsVillage1.forEach((item) async {
+                  //           print("34 i: "+item);
+                  //         });
+                  //
+                  //         setState(() {
+                  //           villageNameValue = newValue!;
+                  //           print("all prints here1 -------------> ");
+                  //           print(newValue);
+                  //           print("vv"+villageNameValue);
+                  //           print(itemsVillage);
+                  //           itemsFarmer=itemsVillage1;
+                  //           print("consent value"+_validateYear.toString());
+                  //           formGlobalKey3.currentState!.validate();
+                  //           farmerNameValue = "Select Farmer";
+                  //         });
+                  //       },
+                  //     ),
+                  //     // child: FutureBuilder<List>(
+                  //     //   future: makePostRequest2(urlVillage, unencodedPath, headers),
+                  //     //   builder: (context, snapshot) {
+                  //     //     if (snapshot.hasData) {
+                  //     //       return DropdownButton(
+                  //     //         isExpanded: true,
+                  //     //         style: GoogleFonts.lato(
+                  //     //           textStyle: TextStyle(
+                  //     //               color: Colors.black54,
+                  //     //               letterSpacing: .2,
+                  //     //               fontSize: 16,
+                  //     //               fontWeight: FontWeight.w600
+                  //     //           ),
+                  //     //         ),
+                  //     //         value: villageNameValue,
+                  //     //         icon: const Icon(Icons.keyboard_arrow_down),
+                  //     //         items: snapshot.data?.map((items) {
+                  //     //           return DropdownMenuItem(
+                  //     //             value: items,
+                  //     //             child: Text(items),
+                  //     //             enabled: items != 'Select Village',
+                  //     //           );
+                  //     //         }).toList(),
+                  //     //         // After selecting the desired option,it will
+                  //     //         // change button value to selected value
+                  //     //         onChanged: (newValue) {
+                  //     //           print(newValue);
+                  //     //           print("object");
+                  //     //           setState(() {
+                  //     //             villageNameValue = newValue.toString();
+                  //     //           });
+                  //     //         },
+                  //     //       );
+                  //     //     }
+                  //     //     return Center(child: CircularProgressIndicator());
+                  //     //   },
+                  //     // ),
+                  // ),),
+                  //
+                  // SizedBox(height: 20,),
+                  // Container(
+                  //   child: Text(
+                  //     "Farmer Name",
+                  //     textAlign: TextAlign.left,
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle: TextStyle(
+                  //           color: Color.fromRGBO(58, 58, 58, 1),
+                  //           letterSpacing: .2,
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.w600
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   padding: EdgeInsets.only(left: 5),
+                  // ),
+                  // Form(
+                  //   child: Container(
+                  //     padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                  //     decoration: BoxDecoration(
+                  //         color:Color.fromRGBO(181, 231, 77, 0.56),
+                  //         border: Border.all(
+                  //             color: Color.fromRGBO(181, 231, 77, 0.56)
+                  //         ),
+                  //         borderRadius: BorderRadius.all(Radius.circular(10))
+                  //     ),
+                  //     margin: EdgeInsets.only(top: 1),
+                  //     child: DropdownButtonFormField(
+                  //       isExpanded: true,
+                  //       style: GoogleFonts.lato(
+                  //         textStyle: TextStyle(
+                  //             color: Colors.black54,
+                  //             letterSpacing: .2,
+                  //             fontSize: 16,
+                  //             fontWeight: FontWeight.w600
+                  //         ),
+                  //       ),
+                  //       value: farmerNameValue,
+                  //       validator: (value) {
+                  //         if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
+                  //           print("value"+value.toString());
+                  //           return 'Please select a Farmer';
+                  //         }
+                  //         return null;
+                  //       },
+                  //       icon: const Icon(Icons.keyboard_arrow_down),
+                  //       items: itemsFarmer.map((String items) {
+                  //         return DropdownMenuItem(
+                  //           value: items,
+                  //           child: Text(items),
+                  //           enabled: items != 'Select Farmer',
+                  //         );
+                  //       }).toList(),
+                  //       // After selecting the desired option,it will
+                  //       // change button value to selected value
+                  //       onChanged: (String? newValue) async {
+                  //         setState(() {
+                  //           farmerNameValue = newValue!;
+                  //           //print("consent value"+_validateYear.toString());
+                  //           formGlobalKey4.currentState!.validate();
+                  //         });
+                  //       },
+                  //     ),
+                  //     // child: FutureBuilder<List>(
+                  //     //   future: makePostRequest3(urlFarmer, unencodedPath, headers),
+                  //     //   builder: (context, snapshot) {
+                  //     //     if (snapshot.hasData) {
+                  //     //       return DropdownButtonFormField(
+                  //     //         isExpanded: true,
+                  //     //         style: GoogleFonts.lato(
+                  //     //           textStyle: TextStyle(
+                  //     //               color: Colors.black54,
+                  //     //               letterSpacing: .2,
+                  //     //               fontSize: 16,
+                  //     //               fontWeight: FontWeight.w600
+                  //     //           ),
+                  //     //         ),
+                  //     //         value: farmerNameValue,
+                  //     //         validator: (value) {
+                  //     //           if (farmerNameValue == null || farmerNameValue=="Select Farmer") {
+                  //     //             return 'Please select a farmer';
+                  //     //           }
+                  //     //           return null;
+                  //     //         },
+                  //     //         icon: const Icon(Icons.keyboard_arrow_down),
+                  //     //         items: snapshot.data?.map((items) {
+                  //     //           return DropdownMenuItem(
+                  //     //             value: items,
+                  //     //             child: Text(items),
+                  //     //             enabled: items != 'Select Farmer',
+                  //     //           );
+                  //     //         }).toList(),
+                  //     //         // After selecting the desired option,it will
+                  //     //         // change button value to selected value
+                  //     //         onChanged: (newValue) {
+                  //     //           print(newValue);
+                  //     //           print("object");
+                  //     //           setState(() {
+                  //     //             farmerNameValue = newValue.toString();
+                  //     //             formGlobalKey4.currentState!.validate();
+                  //     //           });
+                  //     //         },
+                  //     //       );
+                  //     //     }
+                  //     //     return Center(child: CircularProgressIndicator());
+                  //     //   },
+                  //     // ),
+                  // ),),
 
                   SizedBox(height: 20,),
                   Container(
@@ -1349,7 +1745,6 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
 
   Widget _buildDropDownBlock(BuildContext context) {
     return new Form(
-      key: formGlobalKey2,
       child: DropdownButtonFormField(
       isExpanded: true,
       style: GoogleFonts.lato(
