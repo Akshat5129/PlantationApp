@@ -100,6 +100,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   var villageVID1 = [];
   var farmerVID1 = [];
   var farmerFID1 = [];
+  int i1 = 0;
 
   String dropdownvalue1 = 'Select District';
   var items1 = [
@@ -147,6 +148,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
 
   Box? box1;
   Box? box2;
+  Box? box3;
 
   @override
   void initState() {
@@ -175,6 +177,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     box1 = await Hive.openBox('dropdowndata');
     getdata();
     box2 = await Hive.openBox("logindata");
+    box3 = await Hive.openBox("farmer_demand");
   }
   void getdata()async{
     print("box dataabcd");
@@ -931,6 +934,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         onChanged: (String? newValue) {
                           setState(() {
                             farmerdropdownvalue1 = newValue!;
+                            i1 = box1?.get("farmer1").indexOf(newValue);
+                            print(i1);
+                            print("i1-------> "+i1.toString());
                           });
                           formGlobalKey4.currentState!.validate();
                         },
@@ -1559,6 +1565,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           print("inside this");
                           // _buildPopupDialog(context);
                           if(dropdownvalue=="Visit 1: Demand"){
+
+                            print("i----------: "+i1.toString());
+
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(
                                 yearController.text,
                                 dropdownvalue,
@@ -1570,7 +1579,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 aadharController.text,
                                 phoneController.text,
                                 dropdownvalue2,
-                                widget.userID
+                                i1.toString()
                             ),),);
                           }
                         }
