@@ -1,11 +1,20 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:plantationapp/screens/distribution_farmer_consent.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 import 'package:signature/signature.dart';
 
 class FarmerDistribution extends StatefulWidget {
-  const FarmerDistribution({Key? key}) : super(key: key);
+  //const FarmerDistribution({Key? key}) : super(key: key);
+
+  String Farmer;
+  int fid;
+
+  FarmerDistribution(this.Farmer, this.fid);
 
   @override
   State<FarmerDistribution> createState() => _FarmerDistributionState();
@@ -14,12 +23,90 @@ class FarmerDistribution extends StatefulWidget {
 class _FarmerDistributionState extends State<FarmerDistribution> {
 
   bool agree = false;
+  final TextEditingController demandTypeController = new TextEditingController();
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
     penColor: Colors.black,
     exportBackgroundColor: Colors.white,
   );
+
+  Box? box1;
+  Box? box2;
+
+  List selected_tree = [];
+  List qty = [];
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    createBox();
+    print("inside");
+    print(box1?.get("demandFID"));
+    print(box1?.get("demandFID"));
+    setState(() {
+      print("instate");
+
+      box1?.get("demandFID").asMap().forEach((index, element) {
+        print(element);
+        print(widget.fid);
+        print("nect1");
+        print(box1?.get("regFID")[index]);
+        if(box1?.get("demandFID")[index].toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+          print("index"+index.toString());
+          demandTypeController.text = demandTypeController.text+box1?.get("demandFarmer")[index];
+          // phoneController.text = box1?.get("regPhone")[index];
+          // dropdownvalue2 = box1?.get("regGender")[index];
+          // print(box1?.get("regPhone")[index+1]);
+          // showPOP = false;
+        }
+      });
+    });
+  }
+
+  void createBox()async{
+    box1 = await Hive.openBox('dropdowndata');
+    box2 = await Hive.openBox("logindata");
+    print(box1?.get("demandFID"));
+
+    box1?.get("demandFID").asMap().forEach((index, element) {
+      print(element);
+      print(widget.fid);
+      print("nect1");
+      print(box1?.get("demandUserID")[index].toString());
+      print(box2?.get("email"));
+      //print(box1?.get("regFID")[index]);
+      if(element.toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+        print("index"+index.toString());
+        if(demandTypeController.text.contains("Trees") || demandTypeController.text.contains("Forest")){
+          demandTypeController.text = demandTypeController.text;
+        }else{
+          demandTypeController.text = demandTypeController.text+box1?.get("demandFarmer")[index];
+        }
+
+        //selected_tree.add(box1?.get("demandList")[index].toString());
+        //qty.add(box1?.get("demandqty")[index].toString());
+
+        setState(() {
+          selected_tree.add(box1?.get("demandList")[index].toString());
+          qty.add(box1?.get("demandqty")[index].toString());
+        });
+        // phoneController.text = box1?.get("regPhone")[index];
+        // dropdownvalue2 = box1?.get("regGender")[index];
+        // print(box1?.get("regPhone")[index+1]);
+        // showPOP = false;
+      }
+
+      print("list l1 l2");
+      print(selected_tree);
+      print(qty);
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +167,7 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
                                   ),
                                   margin: EdgeInsets.only(top: 1),
                                   child: TextField(
+                                    controller: demandTypeController,
                                     readOnly: true,
                                     textAlign: TextAlign.start,
                                     textAlignVertical: TextAlignVertical.center,
@@ -124,23 +212,24 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
                                       borderRadius: BorderRadius.all(Radius.circular(10))
                                   ),
                                   margin: EdgeInsets.only(top: 1),
-                                  child: TextField(
-                                    readOnly: true,
-                                    textAlign: TextAlign.start,
-                                    textAlignVertical: TextAlignVertical.center,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: 'Tree/Plant',
-                                      prefixIcon: Icon(Icons.check_circle),
-                                      prefixIconColor: Colors.green
-                                    ),
-                                    style: GoogleFonts.lato(
-                                      textStyle: TextStyle(
-                                        color: Colors.black54,
-                                        letterSpacing: .2,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                  child: Container(
+                                    height: 200,
+                                    child: Scrollbar(
+                                        child: ListView.builder(
+                                          itemCount: selected_tree.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            //String key = FlutterExample.FarmerDemandMap.keys.elementAt(index);
+                                            return new Column(
+                                              children: <Widget>[
+                                                new ListTile(
+                                                  title: new Text(selected_tree[index]+": "+qty[index]),
+                                                  //subtitle: new Text(qty[index]),
+                                                ),
+
+                                              ],
+                                            );
+                                          },
+                                        )
                                     ),
                                   ),
                                 ),
@@ -169,68 +258,65 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
                                   ],
                                 ),
 
-                                SizedBox(height: 20,),
-                                Container(
-                                  child: Text(
-                                    "Farmers's Signature",
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          color: Color.fromRGBO(58, 58, 58, 1),
-                                          letterSpacing: .2,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.only(left: 5),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
-                                  decoration: BoxDecoration(
-                                      color:Color.fromRGBO(215, 222, 199, 1.0),
-                                      border: Border.all(
-                                          color: Color.fromRGBO(215, 222, 199, 1.0)
-                                      ),
-                                      borderRadius: BorderRadius.all(Radius.circular(10))
-                                  ),
-                                  margin: EdgeInsets.only(top: 1),
-                                  child: Signature(
-                                    controller: _controller,
-                                    height: 130,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
-                                      margin: EdgeInsets.only(top: 1),
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        color: Colors.red,
-                                        onPressed: (){
-                                          _controller.clear();
-                                        }, icon: Icon(
-                                        Icons.clear,
-                                      ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 1),
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        color: Colors.red,
-                                        onPressed: (){
-                                          _controller.clear();
-                                        }, icon: Icon(
-                                        Icons.done_all_outlined,
-                                      ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                // SizedBox(height: 20,),
+                                // Container(
+                                //   child: Text(
+                                //     "Farmers's Signature",
+                                //     textAlign: TextAlign.left,
+                                //     style: GoogleFonts.poppins(
+                                //       textStyle: TextStyle(
+                                //           color: Color.fromRGBO(58, 58, 58, 1),
+                                //           letterSpacing: .2,
+                                //           fontSize: 15,
+                                //           fontWeight: FontWeight.w600
+                                //       ),
+                                //     ),
+                                //   ),
+                                //   padding: EdgeInsets.only(left: 5),
+                                // ),
+                                // Container(
+                                //   padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                                //   decoration: BoxDecoration(
+                                //       color:Color.fromRGBO(215, 222, 199, 1.0),
+                                //       border: Border.all(
+                                //           color: Color.fromRGBO(215, 222, 199, 1.0)
+                                //       ),
+                                //       borderRadius: BorderRadius.all(Radius.circular(10))
+                                //   ),
+                                //   margin: EdgeInsets.only(top: 1),
+                                //   child: Signature(
+                                //     controller: _controller,
+                                //     height: 130,
+                                //     backgroundColor: Colors.white,
+                                //   ),
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Container(
+                                //       padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
+                                //       margin: EdgeInsets.only(top: 1),
+                                //       alignment: Alignment.center,
+                                //       child: IconButton(
+                                //         icon: const Icon(Icons.redo),
+                                //         color: Colors.blue,
+                                //         onPressed: () {
+                                //           setState(() => _controller.clear());
+                                //         },
+                                //       ),
+                                //     ),
+                                //     Container(
+                                //       margin: EdgeInsets.only(top: 1),
+                                //       alignment: Alignment.center,
+                                //       child: IconButton(
+                                //         icon: const Icon(Icons.check_circle_rounded),
+                                //         color: Colors.blue,
+                                //         onPressed: () => exportImage(context),
+                                //       ),
+                                //     ),
+                                //
+                                //   ],
+                                //   mainAxisAlignment: MainAxisAlignment.center,
+                                // ),
                                 Container(
                                   margin: EdgeInsets.only(top: 10),
                                   padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -238,7 +324,7 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
                                   child: RaisedButton(
                                     elevation: 1.0,
                                     onPressed: (){
-                                      //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistributionFConsent(widget.Farmer, widget.fid, agree.toString(), null),),);
                                     },
                                     padding: EdgeInsets.all(15.0),
                                     shape: RoundedRectangleBorder(

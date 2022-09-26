@@ -362,19 +362,16 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     print(response.body);
     var jsonResult = jsonDecode(response.body);
     print(jsonResult.length);
-    d1 = jsonResult[0]['bname'];
-    itemsBlock.clear();
-    itemsBlock.add("Select Block");
-    jsonResult.forEach((s)=> districts.add(s["bname"]));
-    print(d1);
-    print(districts);
-    list1.add(d1);
-    //items1.add(d1);
-    blockID.clear();
-    blockDID.clear();
-    jsonResult.forEach((s)=> itemsBlock.add(s["bname"]));
-    jsonResult.forEach((s)=> blockDID.add(s["did"]));
-    jsonResult.forEach((s)=> blockID.add(s["bid"]));
+    var regFID;
+    var regAD;
+    var regPhone;
+    var regGender;
+    jsonResult.forEach((s){
+      regFID.add(s["fid"]);
+      regAD.add(s["aadhar"]);
+      regPhone.add(s["phone"]);
+      regGender.add(s["gender"]);
+    });
     //dropdownvalue1=response.body;
     return itemsBlock;
   }
@@ -932,12 +929,43 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         // After selecting the desired option,it will
                         // change button value to selected value
                         onChanged: (String? newValue) {
+                          bool showPOP = false;
                           setState(() {
+
                             farmerdropdownvalue1 = newValue!;
+                            aadharController.clear();
+                            phoneController.clear();
+                            dropdownvalue2="Male";
+
                             i1 = box1?.get("farmer1").indexOf(newValue);
                             print(i1);
                             print("i1-------> "+i1.toString());
+                            if(dropdownvalue != "Visit 1: Demand"){
+                              box1?.get("regFID").asMap().forEach((index, element) {
+                                print(element);
+                                print(i1);
+                                print("nect1");
+                                print(box1?.get("regFID")[index]);
+                                if(element.toString() == i1.toString()){
+                                  print("index"+index.toString());
+                                  aadharController.text = box1?.get("regAD")[index];
+                                  phoneController.text = box1?.get("regPhone")[index];
+                                  dropdownvalue2 = box1?.get("regGender")[index];
+                                  print(box1?.get("regPhone")[index+1]);
+                                  showPOP = false;
+                                }
+                              });
+                            }
                           });
+                          if(dropdownvalue != "Visit 1: Demand") {
+                                    if (aadharController.text.isEmpty) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            _buildPopupDialogNotReg(context),
+                                      );
+                                    }
+                                  }
                           formGlobalKey4.currentState!.validate();
                         },
                       )
@@ -1598,7 +1626,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             // makePostRequest(url, unencodedPath, headers, body);
 
                             // _buildPopupDialog(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(),),);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(farmerdropdownvalue1, i1),),);
                           }
                         }else if(dropdownvalue=="Visit 3: Plantation"){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
@@ -1814,6 +1842,30 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
         });
       },
     ),);
+  }
+
+
+  Widget _buildPopupDialogNotReg(BuildContext context) {
+    return new AlertDialog(
+      title: const Text("Farmer has not been Registered Yet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Please register Farmer's Demand First"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 
 

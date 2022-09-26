@@ -37,6 +37,18 @@ class _LoginScreenState extends State<LoginScreen> {
   var farmerFID = [];
   var farmerVID = [];
   var farmerAadhar = [];
+  var regFID = [];
+  var regAD = [];
+  var regPhone = [];
+  var regGender = [];
+
+  var demandFID = [];
+  var demandUserID = [];
+  var demandFarmer = [];
+  var demandList = [];
+  var demandqty = [];
+
+
 
   String villageNameValue = 'Select Village';
   var itemsVillage = [
@@ -70,6 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
     makePostRequest1(urlBlock, unencodedPath1, headers1);
     makePostRequest2(urlVillage, unencodedPath1, headers1);
     makePostRequest3(urlFarmer, unencodedPath1, headers1);
+    makePostRequest4(urlAadhar, unencodedPath1, headers1);
+    makePostRequest5(urlDemand, unencodedPath1, headers1);
   }
 
   //final String url = "https:/stand4land.in";
@@ -146,6 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String urlVillage = 'https://stand4land.in/plantation_app/get_village_data.php';
   String urlFarmer = 'https://stand4land.in/plantation_app/get_farmer_data.php';
   String urlAadhar = 'https://stand4land.in/plantation_app/get_aadhar_data.php';
+  String urlDemand = 'https://stand4land.in/plantation_app/get_demand_data.php';
 
 
   Future<http.Response> makePostRequest0(String url, String unencodedPath , Map<String, String> header) async {
@@ -223,8 +238,9 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       //items1.add(d1);
-      jsonResult.forEach((s)=> farmerAadhar.add(s["aadhar"]));
+      jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
       jsonResult.forEach((s)=> villageVID.add(s["vid"]));
+      jsonResult.forEach((s)=> villageBID.add(s["bid"]));
       box2.put("village1",itemsVillage);
       box2.put('villageBID', villageBID);
       box2.put('villageVID', villageVID);
@@ -262,29 +278,62 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  Future<List<String>> makePostRequest4(String url, String unencodedPath , Map<String, String> header) async {
+  Future<http.Response> makePostRequest4(String url, String unencodedPath , Map<String, String> header) async {
     final response = await http.get(
       //Uri.http(url,unencodedPath),
       Uri.parse(url),
       headers: header,
     );
+    print("Farmer Box 1234566");
     print(response.statusCode);
     print(response.body);
     if(response.statusCode==200){
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
-      //items1.add(d1);
-      jsonResult.forEach((s)=> itemsFarmer.add(s["fname"]));
-      jsonResult.forEach((s)=> print(s["bid"]));
-      jsonResult.forEach((s)=> farmerVID.add(s["vid"]));
-      jsonResult.forEach((s)=> farmerFID.add(s["fid"]));
-      box2.put("farmer1",itemsFarmer);
-      box2.put('farmerVID', farmerVID);
-      box2.put('farmerFID', farmerFID);
-      print("Farmer Box 1234");
-      box2.get("farmerFID").forEach((s)=> print(s));
+      jsonResult.forEach((s){
+        regFID.add(s["fid"]);
+        regAD.add(s["aadhar"]);
+        regPhone.add(s["phone"]);
+        regGender.add(s["gender"]);
+      });
+      box2.put("regFID",regFID);
+      box2.put('regAD', regAD);
+      box2.put('regPhone', regPhone);
+      box2.put('regGender', regGender);
+      print("Farmer Box 1234566");
+      box2.get("regPhone").forEach((s)=> print(s));
     }
-    return itemsFarmer;
+    return response;
+  }
+
+  Future<http.Response> makePostRequest5(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print("Farmer Box 1234577");
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      jsonResult.forEach((s){
+        demandFID.add(s["fid"]);
+        demandUserID.add(s["emp_id"]);
+        demandFarmer.add(s["tree_type"]);
+        demandList.add(s["selected_tree"]);
+        demandqty.add(s["qty"]);
+      });
+      box2.put("demandFID",demandFID);
+      box2.put('demandUserID', demandUserID);
+      box2.put('demandFarmer', demandFarmer);
+      box2.put('demandList', demandList);
+      box2.put('demandqty', demandqty);
+      print("Farmer Box 1234566");
+      box2.get("demandFID").forEach((s)=> print(s));
+    }
+    return response;
   }
 
 

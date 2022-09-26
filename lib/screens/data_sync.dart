@@ -79,7 +79,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
               onPressed: ()  {
                 //startUpload();
                 _uploadFarmerImage();
-                _uploadFarmerReg();
+                //_uploadFarmerReg();
 
                 showDialog(
                               context: context,
@@ -270,6 +270,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
   }
 
   final String phpEndPoint = 'https://stand4land.in/plantation_app/store_image.php';
+  final String phpEndPoint2 = 'https://stand4land.in/plantation_app/store_distribution.php';
 
   void _uploadFarmerImage() {
 
@@ -279,92 +280,157 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     for (var i = 0; i < box3.length; i++) {
       print(box3.getAt(i));
       print("index: "+ i.toString());
-      print(box3.getAt(i)['farmer']);
+      print(box3.getAt(i)['status']);
 
-      //String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());
-      String fileName = box3.getAt(i)['farmer']+"_"+box1.get('email')+".jpg";
+      if(box3.getAt(i)['status']=='Visit 1: Demand'){
+        //String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());
+        String fileName = box3.getAt(i)['farmer']+"_"+box1.get('email')+".jpg";
 
-      if (box3.getAt(i)['farmer_signature'] == null) return;
-      var _image = MemoryImage(box3.getAt(i)['farmer_signature']);
-      String base64ImageFarmer_Sign = base64Encode(box3.getAt(i)['farmer_signature']);
-      String fileNameFarmer_Sign = box3.getAt(i)['aadhar']+"_"+box3.getAt(i)['phone'].split("/").last;
+        if (box3.getAt(i)['farmer_signature'] == null) return;
+        var _image = MemoryImage(box3.getAt(i)['farmer_signature']);
+        String base64ImageFarmer_Sign = base64Encode(box3.getAt(i)['farmer_signature']);
+        String fileNameFarmer_Sign = box3.getAt(i)['aadhar']+"_"+box3.getAt(i)['phone'].split("/").last;
 
-      if (box3.getAt(i)['surveyor_signature'] == null) return;
-      String base64ImageSurveyor_Sign = base64Encode(box3.getAt(i)['surveyor_signature']);
-      String fileNameSurveyor_Sign = box3.getAt(i)['aadhar'].split("/").last;
+        if (box3.getAt(i)['surveyor_signature'] == null) return;
+        String base64ImageSurveyor_Sign = base64Encode(box3.getAt(i)['surveyor_signature']);
+        String fileNameSurveyor_Sign = box3.getAt(i)['aadhar'].split("/").last;
 
-      print("Data to be sent surveyor");
-      print(fileNameSurveyor_Sign.toString());
-      print(base64ImageSurveyor_Sign.toString());
+        print("Data to be sent surveyor");
+        print(fileNameSurveyor_Sign.toString());
+        print(base64ImageSurveyor_Sign.toString());
 
-      http.post(Uri.parse(phpEndPoint), body: {
-        "image_farmer": box3.getAt(i)['farmer_image_base64'],
-        "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
-        "image_farmer_sign": base64ImageFarmer_Sign,
-        "name_farmer_sign": fileNameFarmer_Sign,
-        "image_surveyor_sign": base64ImageSurveyor_Sign,
-        "name_surveyor_sign": fileNameSurveyor_Sign,
-        "userID": box1.get('email'),
-        "aadhar": box3.getAt(i)['aadhar'],
-        "fid": box3.getAt(i)['fid'],
-        "farmer_demand": box3.getAt(i)['farmer_demand'],
-        "farmer_demand_map": box3.getAt(i)['farmer_demand_map'].toString(),
+        http.post(Uri.parse(phpEndPoint), body: {
+          "image_farmer": box3.getAt(i)['farmer_image_base64'],
+          "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
+          "image_farmer_sign": base64ImageFarmer_Sign,
+          "name_farmer_sign": fileNameFarmer_Sign,
+          "image_surveyor_sign": base64ImageSurveyor_Sign,
+          "name_surveyor_sign": fileNameSurveyor_Sign,
+          "userID": box1.get('email'),
+          "aadhar": box3.getAt(i)['aadhar'],
+          "fid": box3.getAt(i)['fid'],
+          "farmer_demand": box3.getAt(i)['farmer_demand'],
+          "farmer_demand_map": box3.getAt(i)['farmer_demand_map'].toString(),
 
-      }).then((res) {
-        print("inside data");
-        print(res.statusCode);
-        print(res.body);
+        }).then((res) {
+          print("inside data");
+          print(res.statusCode);
+          print(res.body);
 
-        if(i == box3.length-1){
-          setState(() {
-            _isLoading = false;
+          if(i == box3.length-1){
+            setState(() {
+              _isLoading = false;
 
-          });
+            });
 
-          showDialog(
-            context: context,
-            builder: (BuildContext context) => _buildPopupDialogChecked(context),
-          );
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialogChecked(context),
+            );
 
-        }
-        print("isloading"+_isLoading.toString());
-      }).catchError((err) {
-        print(err);
-      });
-
-
-      http.post(Uri.parse(phpEndPoint1), body: {
-        "year": box3.getAt(i)['year'],
-        "status": box3.getAt(i)['status'],
-        "date": box3.getAt(i)['date'],
-        "district": box3.getAt(i)['district'],
-        "block": box3.getAt(i)['block'],
-        "village": box3.getAt(i)['village'],
-        "farmer": box3.getAt(i)['farmer'],
-        "aadhar": box3.getAt(i)['aadhar'],
-        "phone": box3.getAt(i)['phone'],
-        "gender": box3.getAt(i)['gender'],
-        "fid": box3.getAt(i)['fid'],
-      }).then((res) {
-        print(res.statusCode);
-        print(res.body);
-        if(res.body=="success"){
-          print("consent success");
-
+          }
           print("isloading"+_isLoading.toString());
+        }).catchError((err) {
+          print(err);
+        });
 
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) => _buildPopupDialog(context),
-          // );
-          //return 1;
-        }
-        else if(res.body!="success"){
-          //return 0;
-        }
-      }).catchError((err) {
-        print(err);
-      });
+
+        http.post(Uri.parse(phpEndPoint1), body: {
+          "year": box3.getAt(i)['year'],
+          "status": box3.getAt(i)['status'],
+          "date": box3.getAt(i)['date'],
+          "district": box3.getAt(i)['district'],
+          "block": box3.getAt(i)['block'],
+          "village": box3.getAt(i)['village'],
+          "farmer": box3.getAt(i)['farmer'],
+          "aadhar": box3.getAt(i)['aadhar'],
+          "phone": box3.getAt(i)['phone'],
+          "gender": box3.getAt(i)['gender'],
+          "fid": box3.getAt(i)['fid'],
+        }).then((res) {
+          print(res.statusCode);
+          print(res.body);
+          if(res.body=="success"){
+            print("consent success");
+
+            print("isloading"+_isLoading.toString());
+
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) => _buildPopupDialog(context),
+            // );
+            //return 1;
+          }
+          else if(res.body!="success"){
+            //return 0;
+          }
+        }).catchError((err) {
+          print(err);
+        });
+      }
+      else if(box3.getAt(i)['status']=='Visit 2: Distribution'){
+        print("Various");
+        print(box3.getAt(i)['farmer_sign']);
+        print(box3.getAt(i)['surveyor_signature']);
+
+        if (box3.getAt(i)['farmer_sign'] == null) return;
+        var _image = MemoryImage(box3.getAt(i)['farmer_sign']);
+        String base64ImageFarmer_Sign = base64Encode(box3.getAt(i)['farmer_sign']);
+        String fileNameFarmer_Sign = box3.getAt(i)['fid'].toString()+"_"+box1.get('email').split("/").last;
+
+        if (box3.getAt(i)['surveyor_signature'] == null) return;
+        String base64ImageSurveyor_Sign = base64Encode(box3.getAt(i)['surveyor_signature']);
+        String fileNameSurveyor_Sign = box3.getAt(i)['fid'].toString().split("/").last;
+
+        print("Data to be sent surveyor");
+        print(fileNameSurveyor_Sign.toString());
+        print(base64ImageSurveyor_Sign.toString());
+
+        print("VALUES --- ");
+        print(box3.getAt(i)['farmer_image_base64']);
+        print(box3.getAt(i)['farmer_image_file_name']);
+        print(base64ImageFarmer_Sign);
+        print(fileNameFarmer_Sign);
+        print(base64ImageSurveyor_Sign);
+        print(fileNameSurveyor_Sign);
+        print(box1.get('email'));
+        print(box3.getAt(i)['fid']);
+        print(box3.getAt(i)['agreement']);
+
+        http.post(Uri.parse(phpEndPoint2), body: {
+          "image_farmer": box3.getAt(i)['farmer_image_base64'],
+          "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
+          "image_farmer_sign": base64ImageFarmer_Sign,
+          "name_farmer_sign": fileNameFarmer_Sign,
+          "image_surveyor_sign": base64ImageSurveyor_Sign,
+          "name_surveyor_sign": fileNameSurveyor_Sign,
+          "userID": box1.get('email'),
+          "fid": box3.getAt(i)['fid'].toString(),
+          "agreement": box3.getAt(i)['agreement'],
+
+        }).then((res) {
+          print("inside data");
+          print(res.statusCode);
+          print(res.body);
+
+          if(i == box3.length-1){
+            setState(() {
+              _isLoading = false;
+            });
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialogChecked(context),
+            );
+
+          }
+          print("isloading"+_isLoading.toString());
+        }).catchError((err) {
+          print(err);
+        });
+      }
+
+
 
     }
 
@@ -503,6 +569,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         new FlatButton(
           onPressed: () {
             Navigator.of(context).pop();
+            box3.clear();
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
                 FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
                     itemsBlock, itemsVillage, items1, "widget.FarmerDemand1['userID']")),
