@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:plantationapp/screens/login_screen.dart';
@@ -51,8 +52,10 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     'farmer_demand_map': '',
     'farmer_image': '',
     'userID': '',
+    'fid': ''
   };
 
+  Box? box1;
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -61,6 +64,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
   );
   @override
   void initState() {
+
     print(widget.farmer);
     print(widget.district);
     super.initState();
@@ -92,13 +96,14 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     FarmerData1["farmer_demand"] = widget.farmerdemand;
     FarmerData1['farmer_demand_map'] = widget.FarmerDemandMap;
     FarmerData1['farmer_image'] = widget.imageFarmer;
-    FarmerData1['userID']=widget.userID;
-
+    FarmerData1['userID']=box1?.get("email");
+    FarmerData1['fid']=widget.userID;
     //chooseImage('')
-
-
   }
 
+  void createBox()async{
+    box1 = await Hive.openBox('logindata');
+  }
 
   late CameraDescription camera;
   late CameraController controller;

@@ -469,6 +469,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
   @override
   void initState() {
     year=widget.year;
+    //FlutterExample.FarmerDemandMap.clear();
   }
 }
 

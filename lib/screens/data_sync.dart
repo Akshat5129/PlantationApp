@@ -264,6 +264,10 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     String base64ImageSurveyor_Sign = base64Encode(widget.FarmerDemand1['surveyor_signature']);
     String fileNameSurveyor_Sign = widget.FarmerDemand1['aadhar'].split("/").last;
 
+    print("Data to be sent surveyor");
+    print(fileNameSurveyor_Sign.toString());
+    print(base64ImageSurveyor_Sign.toString());
+
     http.post(Uri.parse(phpEndPoint), body: {
       "image_farmer": base64Image,
       "name_image_farmer": fileName,
@@ -273,10 +277,12 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       "name_surveyor_sign": fileNameSurveyor_Sign,
       "userID": widget.FarmerDemand1['userID'],
       "aadhar": widget.FarmerDemand1['aadhar'],
+      "fid": widget.FarmerDemand1['fid'],
       "farmer_demand": widget.FarmerDemand1['farmer_demand'],
       "farmer_demand_map": widget.FarmerDemand1['farmer_demand_map'].toString(),
 
     }).then((res) {
+      print("inside data");
       print(res.statusCode);
       print(res.body);
     }).catchError((err) {
@@ -287,6 +293,8 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
   final String phpEndPoint1 = 'https://stand4land.in/plantation_app/store_farmer_reg.php';
 
    void _uploadFarmerReg() {
+     print("Data coming 12345");
+     print(widget.FarmerDemand1['district']);
 
     http.post(Uri.parse(phpEndPoint1), body: {
       "year": widget.FarmerDemand1['year'],
@@ -299,6 +307,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       "aadhar": widget.FarmerDemand1['aadhar'],
       "phone": widget.FarmerDemand1['phone'],
       "gender": widget.FarmerDemand1['gender'],
+      "fid": widget.FarmerDemand1['fid'],
     }).then((res) {
       print(res.statusCode);
       print(res.body);
@@ -375,10 +384,10 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         new FlatButton(
           onPressed: () {
             Navigator.of(context).pop();
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
-                    itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])),
-                    (Route<dynamic> route) => false);
+            // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            //     FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+            //         itemsBlock, itemsVillage, items1, "widget.FarmerDemand1['userID']")),
+            //         (Route<dynamic> route) => false);
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Close'),
