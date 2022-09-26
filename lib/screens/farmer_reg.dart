@@ -1629,7 +1629,11 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistribution(farmerdropdownvalue1, i1),),);
                           }
                         }else if(dropdownvalue=="Visit 3: Plantation"){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(),),);
+                          if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()
+                              &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
+                              &&yearController.text!="") {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(farmerdropdownvalue1, i1),),);
+                          }
                         }
 
                         // if(yearController.text!=""){

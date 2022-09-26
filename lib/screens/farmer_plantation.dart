@@ -1,19 +1,21 @@
-import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:camera/camera.dart';
-import 'package:hive/hive.dart';
-import 'package:plantationapp/screens/take_picture_page.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:plantationapp/screens/distribution_farmer_consent.dart';
 import 'package:plantationapp/screens/login_screen.dart';
+import 'package:plantationapp/screens/plantation_farmer_consent.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
-import 'package:plantationapp/screens/take_picture_page.dart';
 import 'package:signature/signature.dart';
 
 class FarmerPlantation extends StatefulWidget {
-  const FarmerPlantation({Key? key}) : super(key: key);
+  //const FarmerDistribution({Key? key}) : super(key: key);
+
+  String Farmer;
+  int fid;
+
+  FarmerPlantation(this.Farmer, this.fid);
 
   @override
   State<FarmerPlantation> createState() => _FarmerPlantationState();
@@ -21,13 +23,8 @@ class FarmerPlantation extends StatefulWidget {
 
 class _FarmerPlantationState extends State<FarmerPlantation> {
 
-  late CameraDescription camera;
-  late CameraController controller;
-  bool _isInited = false;
-  late String _url;
-  String _path = "";
-  late Box box3;
-
+  bool agree = false;
+  final TextEditingController demandTypeController = new TextEditingController();
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -35,50 +32,83 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
     exportBackgroundColor: Colors.white,
   );
 
+  Box? box1;
+  Box? box2;
+
+  List tree_type = [];
+  List selected_tree = [];
+  List qty = [];
+
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     createBox();
+    print("inside");
+    print(box1?.get("demandFID"));
+    print(box1?.get("demandFID"));
+    setState(() {
+      print("instate");
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final cameras = await availableCameras();
-      print(cameras);
-      // setState(() {});
-      controller = CameraController(cameras[0], ResolutionPreset.medium);
-      controller.initialize().then((value) => {
-        setState(() {
-          _isInited = true;
-        })
+      box1?.get("demandFID").asMap().forEach((index, element) {
+        print(element);
+        print(widget.fid);
+        print("nect1");
+        print(box1?.get("regFID")[index]);
+        if(box1?.get("demandFID")[index].toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+          print("index"+index.toString());
+          demandTypeController.text = demandTypeController.text+box1?.get("demandFarmer")[index];
+          // phoneController.text = box1?.get("regPhone")[index];
+          // dropdownvalue2 = box1?.get("regGender")[index];
+          // print(box1?.get("regPhone")[index+1]);
+          // showPOP = false;
+        }
       });
     });
   }
 
   void createBox()async{
-    box3 = await Hive.openBox('demanddata');
-    print(box3.get("datetime"));
-    print(box3.length);
+    box1 = await Hive.openBox('dropdowndata');
+    box2 = await Hive.openBox("logindata");
+    print(box1?.get("demandFID"));
+
+    box1?.get("demandFID").asMap().forEach((index, element) {
+      print(element);
+      print(widget.fid);
+      print("nect1");
+      print(box1?.get("demandUserID")[index].toString());
+      print(box2?.get("email"));
+      //print(box1?.get("regFID")[index]);
+      if(element.toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+        print("index"+index.toString());
+        if(demandTypeController.text.contains("Trees") || demandTypeController.text.contains("Forest")){
+          demandTypeController.text = demandTypeController.text;
+        }else{
+          demandTypeController.text = demandTypeController.text+box1?.get("demandFarmer")[index];
+        }
+
+        //selected_tree.add(box1?.get("demandList")[index].toString());
+        //qty.add(box1?.get("demandqty")[index].toString());
+
+        setState(() {
+          tree_type.add(box1?.get("demandFarmer")[index].toString());
+          selected_tree.add(box1?.get("demandList")[index].toString());
+          qty.add(box1?.get("demandqty")[index].toString());
+        });
+        // phoneController.text = box1?.get("regPhone")[index];
+        // dropdownvalue2 = box1?.get("regGender")[index];
+        // print(box1?.get("regPhone")[index+1]);
+        // showPOP = false;
+      }
+
+      print("list l1 l2");
+      print(selected_tree);
+      print(qty);
+    });
   }
 
-
-  void _showCamera() async {
-
-    final cameras = await availableCameras();
-    final camera = cameras.first;
-
-
-    // final result = await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => TakePicturePage(camera: camera)));
-
-    // setState(() {
-    //   _path = result;
-    // });
-    
-
-
-  }
 
 
   @override
@@ -116,7 +146,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                 SizedBox(height: 10,),
                                 Container(
                                   child: Text(
-                                    "Farmer's Demand",
+                                    "Demand",
                                     textAlign: TextAlign.left,
                                     style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
@@ -140,6 +170,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                   ),
                                   margin: EdgeInsets.only(top: 1),
                                   child: TextField(
+                                    controller: demandTypeController,
                                     readOnly: true,
                                     textAlign: TextAlign.start,
                                     textAlignVertical: TextAlignVertical.center,
@@ -161,7 +192,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                 SizedBox(height: 20,),
                                 Container(
                                   child: Text(
-                                    "Selected Plant",
+                                    "Selected Tree",
                                     textAlign: TextAlign.left,
                                     style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
@@ -184,133 +215,90 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                       borderRadius: BorderRadius.all(Radius.circular(10))
                                   ),
                                   margin: EdgeInsets.only(top: 1),
-                                  child: TextField(
-                                    readOnly: true,
-                                    textAlign: TextAlign.start,
-                                    textAlignVertical: TextAlignVertical.center,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: 'Selected Tree/Plant',
-                                        prefixIcon: Icon(Icons.check_circle),
-                                        prefixIconColor: Colors.green
-                                    ),
-                                    style: GoogleFonts.lato(
-                                      textStyle: TextStyle(
-                                        color: Colors.black54,
-                                        letterSpacing: .2,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                  child: Container(
+                                    height: 200,
+                                    child: Scrollbar(
+                                        child: ListView.builder(
+                                          itemCount: selected_tree.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            //String key = FlutterExample.FarmerDemandMap.keys.elementAt(index);
+                                            return new Column(
+                                              children: <Widget>[
+                                                new ListTile(
+                                                  title: new Text(selected_tree[index]+": "+qty[index]),
+                                                  //subtitle: new Text(qty[index]),
+                                                ),
+
+                                              ],
+                                            );
+                                          },
+                                        )
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 30,),
-                                Container(
-                                  child: Text(
-                                    "Plant Images",
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          color: Color.fromRGBO(58, 58, 58, 1),
-                                          letterSpacing: .2,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.only(left: 5),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 0),
-                                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                                  width: double.infinity,
-                                  child: RaisedButton(
-                                    elevation: 1.0,
-                                    onPressed: (){
-                                      showModalBottomSheet<void>(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                            height: 200,
-                                            color: Colors.white70,
-                                            padding: EdgeInsets.all(10),
-                                            child: Center(
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Container(
-                                                    margin: EdgeInsets.only(top: 10),
-                                                    padding: EdgeInsets.symmetric(vertical: 25.0),
-                                                    width: double.infinity,
-                                                    child: RaisedButton(
-                                                      elevation: 1.0,
-                                                      onPressed: (){
-                                                        _showCamera();
-                                                        //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
-                                                      },
-                                                      padding: EdgeInsets.all(15.0),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(10.0),
-                                                      ),
-                                                      color: Colors.white24,
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Icon(Icons.camera_alt),
-                                                          SizedBox(width: 10,),
-                                                          Text(
-                                                            "Take a Picture",
-                                                            textAlign: TextAlign.center,
-                                                            style: GoogleFonts.poppins(
-                                                              textStyle: TextStyle(
-                                                                  color: Colors.black,
-                                                                  letterSpacing: .2,
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight.w500
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ),
-                                                  ),
 
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    padding: EdgeInsets.all(15.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    color: Color.fromRGBO(255, 252, 177, 1),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.camera_alt),
-                                     SizedBox(width: 10,),
-                                     Text(
-                                      "Capture Image",
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                            color: Colors.black,
-                                            letterSpacing: .2,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500
-                                        ),
-                                      ),
-                                    ),
-                                      ],
-                                    )
-                                  ),
-                                ),
+                                SizedBox(height: 20,),
 
 
+                                // SizedBox(height: 20,),
+                                // Container(
+                                //   child: Text(
+                                //     "Farmers's Signature",
+                                //     textAlign: TextAlign.left,
+                                //     style: GoogleFonts.poppins(
+                                //       textStyle: TextStyle(
+                                //           color: Color.fromRGBO(58, 58, 58, 1),
+                                //           letterSpacing: .2,
+                                //           fontSize: 15,
+                                //           fontWeight: FontWeight.w600
+                                //       ),
+                                //     ),
+                                //   ),
+                                //   padding: EdgeInsets.only(left: 5),
+                                // ),
+                                // Container(
+                                //   padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                                //   decoration: BoxDecoration(
+                                //       color:Color.fromRGBO(215, 222, 199, 1.0),
+                                //       border: Border.all(
+                                //           color: Color.fromRGBO(215, 222, 199, 1.0)
+                                //       ),
+                                //       borderRadius: BorderRadius.all(Radius.circular(10))
+                                //   ),
+                                //   margin: EdgeInsets.only(top: 1),
+                                //   child: Signature(
+                                //     controller: _controller,
+                                //     height: 130,
+                                //     backgroundColor: Colors.white,
+                                //   ),
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Container(
+                                //       padding: EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 2),
+                                //       margin: EdgeInsets.only(top: 1),
+                                //       alignment: Alignment.center,
+                                //       child: IconButton(
+                                //         icon: const Icon(Icons.redo),
+                                //         color: Colors.blue,
+                                //         onPressed: () {
+                                //           setState(() => _controller.clear());
+                                //         },
+                                //       ),
+                                //     ),
+                                //     Container(
+                                //       margin: EdgeInsets.only(top: 1),
+                                //       alignment: Alignment.center,
+                                //       child: IconButton(
+                                //         icon: const Icon(Icons.check_circle_rounded),
+                                //         color: Colors.blue,
+                                //         onPressed: () => exportImage(context),
+                                //       ),
+                                //     ),
+                                //
+                                //   ],
+                                //   mainAxisAlignment: MainAxisAlignment.center,
+                                // ),
                                 Container(
                                   margin: EdgeInsets.only(top: 10),
                                   padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -318,7 +306,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                   child: RaisedButton(
                                     elevation: 1.0,
                                     onPressed: (){
-                                      //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(),),);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantationFConsent(widget.Farmer, agree.toString(), widget.fid, tree_type, selected_tree, qty, null),),);
                                     },
                                     padding: EdgeInsets.all(15.0),
                                     shape: RoundedRectangleBorder(
@@ -338,7 +326,4 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                   ),
                                 ),
                               ],
-                            ))])])),
-
-
-    );}}
+                            ))])])));}}

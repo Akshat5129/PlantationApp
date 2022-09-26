@@ -271,6 +271,9 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
   final String phpEndPoint = 'https://stand4land.in/plantation_app/store_image.php';
   final String phpEndPoint2 = 'https://stand4land.in/plantation_app/store_distribution.php';
+  final String phpEndPoint3 = 'https://stand4land.in/plantation_app/store_plantation.php';
+  final String phpEndPoint4 = 'https://stand4land.in/plantation_app/store_followup1.php';
+  final String phpEndPoint5 = 'https://stand4land.in/plantation_app/store_followup2.php';
 
   void _uploadFarmerImage() {
 
@@ -369,6 +372,67 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         });
       }
       else if(box3.getAt(i)['status']=='Visit 2: Distribution'){
+        print("Various");
+        print(box3.getAt(i)['farmer_sign']);
+        print(box3.getAt(i)['surveyor_signature']);
+
+        if (box3.getAt(i)['farmer_sign'] == null) return;
+        var _image = MemoryImage(box3.getAt(i)['farmer_sign']);
+        String base64ImageFarmer_Sign = base64Encode(box3.getAt(i)['farmer_sign']);
+        String fileNameFarmer_Sign = box3.getAt(i)['fid'].toString()+"_"+box1.get('email').split("/").last;
+
+        if (box3.getAt(i)['surveyor_signature'] == null) return;
+        String base64ImageSurveyor_Sign = base64Encode(box3.getAt(i)['surveyor_signature']);
+        String fileNameSurveyor_Sign = box3.getAt(i)['fid'].toString().split("/").last;
+
+        print("Data to be sent surveyor");
+        print(fileNameSurveyor_Sign.toString());
+        print(base64ImageSurveyor_Sign.toString());
+
+        print("VALUES --- ");
+        print(box3.getAt(i)['farmer_image_base64']);
+        print(box3.getAt(i)['farmer_image_file_name']);
+        print(base64ImageFarmer_Sign);
+        print(fileNameFarmer_Sign);
+        print(base64ImageSurveyor_Sign);
+        print(fileNameSurveyor_Sign);
+        print(box1.get('email'));
+        print(box3.getAt(i)['fid']);
+        print(box3.getAt(i)['agreement']);
+
+        http.post(Uri.parse(phpEndPoint2), body: {
+          "image_farmer": box3.getAt(i)['farmer_image_base64'],
+          "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
+          "image_farmer_sign": base64ImageFarmer_Sign,
+          "name_farmer_sign": fileNameFarmer_Sign,
+          "image_surveyor_sign": base64ImageSurveyor_Sign,
+          "name_surveyor_sign": fileNameSurveyor_Sign,
+          "userID": box1.get('email'),
+          "fid": box3.getAt(i)['fid'].toString(),
+          "agreement": box3.getAt(i)['agreement'],
+
+        }).then((res) {
+          print("inside data");
+          print(res.statusCode);
+          print(res.body);
+
+          if(i == box3.length-1){
+            setState(() {
+              _isLoading = false;
+            });
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialogChecked(context),
+            );
+
+          }
+          print("isloading"+_isLoading.toString());
+        }).catchError((err) {
+          print(err);
+        });
+      }
+      else if(box3.getAt(i)['status']=='Visit 3: Plantation'){
         print("Various");
         print(box3.getAt(i)['farmer_sign']);
         print(box3.getAt(i)['surveyor_signature']);
