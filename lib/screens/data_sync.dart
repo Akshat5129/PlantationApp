@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -44,6 +45,8 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     'Select Farmer'
   ];
 
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,6 +80,15 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
                 //startUpload();
                 _uploadFarmerImage();
                 _uploadFarmerReg();
+
+                showDialog(
+                              context: context,
+                              builder: (BuildContext context) => _buildPopupDialog(context),
+                            );
+
+                setState(() {
+                  _isLoading = true;
+                });
 
 
               },
@@ -146,9 +158,9 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
                 //   MaterialPageRoute(builder: (BuildContext context) => FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
                 //     itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])),
                 // );
-                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>
                 FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
-                         itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])), (Route<dynamic> route) => false);
+                         itemsBlock, itemsVillage, items1, box1.get('email'))));
 
               },
               padding: EdgeInsets.all(15.0),
@@ -173,12 +185,21 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     ));
   }
 
+  late Box box3;
+  late Box box1;
+
   @override
   void initState() {
+    createBox();
     print(widget.FarmerDemand1['block']);
     print("inside iniit of sync");
     print(widget.FarmerDemand1.toString());
+  }
 
+  void createBox()async{
+    box3 = await Hive.openBox('demanddata');
+    box1 = await Hive.openBox('logindata');
+    print(box3.length);
   }
 
 
@@ -251,42 +272,104 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
   final String phpEndPoint = 'https://stand4land.in/plantation_app/store_image.php';
 
   void _uploadFarmerImage() {
-    if (widget.FarmerDemand1['farmer_image'] == null) return;
-    String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());
-    String fileName = widget.FarmerDemand1['farmer_image'].path.split("/").last;
 
-    if (widget.FarmerDemand1['farmer_signature'] == null) return;
-    var _image = MemoryImage(widget.FarmerDemand1['farmer_signature']);
-    String base64ImageFarmer_Sign = base64Encode(widget.FarmerDemand1['farmer_signature']);
-    String fileNameFarmer_Sign = widget.FarmerDemand1['aadhar']+"_"+widget.FarmerDemand1['phone'].split("/").last;
+    print(box3.length);
+    print("values inside the box");
+    print(box3.values);
+    for (var i = 0; i < box3.length; i++) {
+      print(box3.getAt(i));
+      print("index: "+ i.toString());
+      print(box3.getAt(i)['farmer']);
 
-    if (widget.FarmerDemand1['surveyor_signature'] == null) return;
-    String base64ImageSurveyor_Sign = base64Encode(widget.FarmerDemand1['surveyor_signature']);
-    String fileNameSurveyor_Sign = widget.FarmerDemand1['aadhar'].split("/").last;
+      //String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());
+      String fileName = box3.getAt(i)['farmer']+"_"+box1.get('email')+".jpg";
 
-    print("Data to be sent surveyor");
-    print(fileNameSurveyor_Sign.toString());
-    print(base64ImageSurveyor_Sign.toString());
+      if (box3.getAt(i)['farmer_signature'] == null) return;
+      var _image = MemoryImage(box3.getAt(i)['farmer_signature']);
+      String base64ImageFarmer_Sign = base64Encode(box3.getAt(i)['farmer_signature']);
+      String fileNameFarmer_Sign = box3.getAt(i)['aadhar']+"_"+box3.getAt(i)['phone'].split("/").last;
 
-    http.post(Uri.parse(phpEndPoint), body: {
-      "image_farmer": base64Image,
-      "name_image_farmer": fileName,
-      "image_farmer_sign": base64ImageFarmer_Sign,
-      "name_farmer_sign": fileNameFarmer_Sign,
-      "image_surveyor_sign": base64ImageSurveyor_Sign,
-      "name_surveyor_sign": fileNameSurveyor_Sign,
-      "userID": widget.FarmerDemand1['userID'],
-      "aadhar": widget.FarmerDemand1['aadhar'],
-      "fid": widget.FarmerDemand1['fid'],
-      "farmer_demand": widget.FarmerDemand1['farmer_demand'],
-      "farmer_demand_map": widget.FarmerDemand1['farmer_demand_map'].toString(),
+      if (box3.getAt(i)['surveyor_signature'] == null) return;
+      String base64ImageSurveyor_Sign = base64Encode(box3.getAt(i)['surveyor_signature']);
+      String fileNameSurveyor_Sign = box3.getAt(i)['aadhar'].split("/").last;
 
-    }).then((res) {
-      print("inside data");
-      print(res.statusCode);
-      print(res.body);
-    }).catchError((err) {
-      print(err);
+      print("Data to be sent surveyor");
+      print(fileNameSurveyor_Sign.toString());
+      print(base64ImageSurveyor_Sign.toString());
+
+      http.post(Uri.parse(phpEndPoint), body: {
+        "image_farmer": box3.getAt(i)['farmer_image_base64'],
+        "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
+        "image_farmer_sign": base64ImageFarmer_Sign,
+        "name_farmer_sign": fileNameFarmer_Sign,
+        "image_surveyor_sign": base64ImageSurveyor_Sign,
+        "name_surveyor_sign": fileNameSurveyor_Sign,
+        "userID": box1.get('email'),
+        "aadhar": box3.getAt(i)['aadhar'],
+        "fid": box3.getAt(i)['fid'],
+        "farmer_demand": box3.getAt(i)['farmer_demand'],
+        "farmer_demand_map": box3.getAt(i)['farmer_demand_map'].toString(),
+
+      }).then((res) {
+        print("inside data");
+        print(res.statusCode);
+        print(res.body);
+
+        if(i == box3.length-1){
+          setState(() {
+            _isLoading = false;
+
+          });
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => _buildPopupDialogChecked(context),
+          );
+
+        }
+        print("isloading"+_isLoading.toString());
+      }).catchError((err) {
+        print(err);
+      });
+
+
+      http.post(Uri.parse(phpEndPoint1), body: {
+        "year": box3.getAt(i)['year'],
+        "status": box3.getAt(i)['status'],
+        "date": box3.getAt(i)['date'],
+        "district": box3.getAt(i)['district'],
+        "block": box3.getAt(i)['block'],
+        "village": box3.getAt(i)['village'],
+        "farmer": box3.getAt(i)['farmer'],
+        "aadhar": box3.getAt(i)['aadhar'],
+        "phone": box3.getAt(i)['phone'],
+        "gender": box3.getAt(i)['gender'],
+        "fid": box3.getAt(i)['fid'],
+      }).then((res) {
+        print(res.statusCode);
+        print(res.body);
+        if(res.body=="success"){
+          print("consent success");
+
+          print("isloading"+_isLoading.toString());
+
+          // showDialog(
+          //   context: context,
+          //   builder: (BuildContext context) => _buildPopupDialog(context),
+          // );
+          //return 1;
+        }
+        else if(res.body!="success"){
+          //return 0;
+        }
+      }).catchError((err) {
+        print(err);
+      });
+
+    }
+
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -296,37 +379,37 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
      print("Data coming 12345");
      print(widget.FarmerDemand1['district']);
 
-    http.post(Uri.parse(phpEndPoint1), body: {
-      "year": widget.FarmerDemand1['year'],
-      "status": widget.FarmerDemand1['status'],
-      "date": widget.FarmerDemand1['date'],
-      "district": widget.FarmerDemand1['district'],
-      "block": widget.FarmerDemand1['block'],
-      "village": widget.FarmerDemand1['village'],
-      "farmer": widget.FarmerDemand1['farmer'],
-      "aadhar": widget.FarmerDemand1['aadhar'],
-      "phone": widget.FarmerDemand1['phone'],
-      "gender": widget.FarmerDemand1['gender'],
-      "fid": widget.FarmerDemand1['fid'],
-    }).then((res) {
-      print(res.statusCode);
-      print(res.body);
-      if(res.body=="success"){
-        print("consent success");
-        showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context),
-            );
-        //return 1;
-      }
-      else if(res.body!="success"){
-        //return 0;
-      }
-    }).catchError((err) {
-      print(err);
-    });
-    _buildPopupDialog1(context);
-    //return 2;
+    // http.post(Uri.parse(phpEndPoint1), body: {
+    //   "year": widget.FarmerDemand1['year'],
+    //   "status": widget.FarmerDemand1['status'],
+    //   "date": widget.FarmerDemand1['date'],
+    //   "district": widget.FarmerDemand1['district'],
+    //   "block": widget.FarmerDemand1['block'],
+    //   "village": widget.FarmerDemand1['village'],
+    //   "farmer": widget.FarmerDemand1['farmer'],
+    //   "aadhar": widget.FarmerDemand1['aadhar'],
+    //   "phone": widget.FarmerDemand1['phone'],
+    //   "gender": widget.FarmerDemand1['gender'],
+    //   "fid": widget.FarmerDemand1['fid'],
+    // }).then((res) {
+    //   print(res.statusCode);
+    //   print(res.body);
+    //   if(res.body=="success"){
+    //     print("consent success");
+    //     showDialog(
+    //           context: context,
+    //           builder: (BuildContext context) => _buildPopupDialog(context),
+    //         );
+    //     //return 1;
+    //   }
+    //   else if(res.body!="success"){
+    //     //return 0;
+    //   }
+    // }).catchError((err) {
+    //   print(err);
+    // });
+   //_buildPopupDialog1(context);
+
   }
 
   Future<void> _uploadFarmerSign() async {
@@ -370,9 +453,45 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
   }
 
   Widget _buildPopupDialog(BuildContext context) {
+     print("_isLoading1"+_isLoading.toString());
     return new AlertDialog(
+
+      title: const Text('Data Sending to the Server', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+      content: _isLoading ? CircularProgressIndicator() : Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+            Container(
+          child: CircularProgressIndicator(),
+              height: 100,
+      ),)
+
+        ],
+      ),
+      // actions: <Widget>[
+      //   new FlatButton(
+      //     onPressed: () {
+      //       Navigator.of(context).pop();
+      //       // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+      //       //     FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+      //       //         itemsBlock, itemsVillage, items1, "widget.FarmerDemand1['userID']")),
+      //       //         (Route<dynamic> route) => false);
+      //     },
+      //     textColor: Theme.of(context).primaryColor,
+      //     child: const Text('Close'),
+      //
+      //   ),
+      // ],
+    );
+  }
+
+
+  Widget _buildPopupDialogChecked(BuildContext context) {
+    print("_isLoading1"+_isLoading.toString());
+    return new AlertDialog(
+
       title: const Text('Data Sent Sucessfully', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
-      content: new Column(
+      content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[Center(child:
@@ -384,10 +503,10 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         new FlatButton(
           onPressed: () {
             Navigator.of(context).pop();
-            // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-            //     FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
-            //         itemsBlock, itemsVillage, items1, "widget.FarmerDemand1['userID']")),
-            //         (Route<dynamic> route) => false);
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+                    itemsBlock, itemsVillage, items1, "widget.FarmerDemand1['userID']")),
+                    (Route<dynamic> route) => false);
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Close'),

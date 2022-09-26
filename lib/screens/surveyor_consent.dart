@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:plantationapp/screens/data_sync.dart';
+import 'package:plantationapp/screens/farmer_plantation.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
 //import 'package:plantationapp/screens/farmer_reg3.dart';
 import 'package:signature/signature.dart';
@@ -36,10 +39,31 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
   final TextEditingController farmerName = new TextEditingController();
   final TextEditingController demandController = new TextEditingController();
   final TextEditingController treeController = new TextEditingController();
-
-
+  
+  late Box box3;
+  
+  
   @override
   void initState() {
+    createBox();
+    print("on map");
+    print(widget.FarmerDemand1["year"]);
+    print(widget.FarmerDemand1["status"]);
+    print(widget.FarmerDemand1["date"]);
+    print(widget.FarmerDemand1["district"]);
+    print(widget.FarmerDemand1["farmer_image"]);
+    print(widget.FarmerDemand1["farmer_signature"]);
+    print(widget.FarmerDemand1["block"]);
+    print(widget.FarmerDemand1["village"]);
+    print(widget.FarmerDemand1["farmer"]);
+    print(widget.FarmerDemand1["aadhar"]);
+    print(widget.FarmerDemand1["phone"]);
+    print(widget.FarmerDemand1["gender"]);
+    print(widget.FarmerDemand1["farmer_demand_map"]);
+    print(widget.FarmerDemand1["farmer_demand"]);
+    print(widget.FarmerDemand1["fid"]);
+    print(widget.FarmerDemand1["userID"]);
+    print("done");
     print(widget.FarmerDemand1['block']);
     print("consent3"+widget.FarmerDemand1['year'].toString());
     farmerName.text=widget.FarmerDemand1['farmer'];
@@ -56,6 +80,10 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
     // }
 
     //treeController.text=widget.FarmerDemandMap.keys.elementAt(0);
+  }
+
+  void createBox()async{
+    box3 = await Hive.openBox('demanddata');
   }
 
   Future<void> exportImage(BuildContext context) async {
@@ -101,6 +129,8 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
     }
     return response;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -350,7 +380,23 @@ class _FarmerDemandSConsentState extends State<FarmerDemandSConsent> {
                                               builder: (BuildContext context) => _buildPopupDialogforSign(context),
                                             );
                                           } else if (widget.FarmerDemand1["surveyor_signature"].toString()!="null"){
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => DataSyncDemand(widget.FarmerDemand1),),);
+                                            String datetime = DateTime.now().toString();
+                                            print(datetime);
+
+
+                                          String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());
+                                          widget.FarmerDemand1["farmer_image_base64"] = base64Image;
+                                          widget.FarmerDemand1["farmer_image_file_name"] = widget.FarmerDemand1['farmer_image'].path.split("/").last;
+                                          widget.FarmerDemand1.remove("farmer_image");
+
+                                            box3.put(datetime, widget.FarmerDemand1);
+                                            print("values inside");
+                                            print(box3.length);
+                                            print(box3.values.length);
+                                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+                                                DataSyncDemand(widget.FarmerDemand1),
+                                            ),);
+                                            print(box3.length);
                                           }
                                           // url = 'https://stand4land.in/plantation_app/add_data_farmer_reg.php';
                                           //

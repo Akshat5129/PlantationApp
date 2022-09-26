@@ -36,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var villageVID = [];
   var farmerFID = [];
   var farmerVID = [];
+  var farmerAadhar = [];
 
   String villageNameValue = 'Select Village';
   var itemsVillage = [
@@ -51,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var itemsFarmer = [
     'Select Farmer'
   ];
+
 
   bool _passwordVisible = true;
   TextEditingController controllerUserID = TextEditingController();
@@ -112,12 +114,16 @@ class _LoginScreenState extends State<LoginScreen> {
         box1.put('email', controllerUserID.value.text);
         box1.put('pass', controllerPass.value.text);
       }
+      box1.put('email', controllerUserID.value.text);
+      box1.put('pass', controllerPass.value.text);
       box1.put('isLogged',true);
 
       print("box val abcd1");
       box2.get("district1").forEach((element) { print(element); });
       print("Block Box 1234");
       box2.get("block1").forEach((s)=> print(s));
+      print("login_time");
+      print(box1.get("email"));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
           blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1, controllerUserID.text
       ),),);
@@ -139,6 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String urlBlock = 'https://stand4land.in/plantation_app/get_block_data.php';
   String urlVillage = 'https://stand4land.in/plantation_app/get_village_data.php';
   String urlFarmer = 'https://stand4land.in/plantation_app/get_farmer_data.php';
+  String urlAadhar = 'https://stand4land.in/plantation_app/get_aadhar_data.php';
 
 
   Future<http.Response> makePostRequest0(String url, String unencodedPath , Map<String, String> header) async {
@@ -216,9 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       //items1.add(d1);
-      jsonResult.forEach((s)=> itemsVillage.add(s["vname"]));
-      jsonResult.forEach((s)=> print(s["bid"]));
-      jsonResult.forEach((s)=> villageBID.add(s["bid"]));
+      jsonResult.forEach((s)=> farmerAadhar.add(s["aadhar"]));
       jsonResult.forEach((s)=> villageVID.add(s["vid"]));
       box2.put("village1",itemsVillage);
       box2.put('villageBID', villageBID);
@@ -232,6 +237,32 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
   Future<List<String>> makePostRequest3(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      //items1.add(d1);
+      jsonResult.forEach((s)=> itemsFarmer.add(s["fname"]));
+      jsonResult.forEach((s)=> print(s["bid"]));
+      jsonResult.forEach((s)=> farmerVID.add(s["vid"]));
+      jsonResult.forEach((s)=> farmerFID.add(s["fid"]));
+      box2.put("farmer1",itemsFarmer);
+      box2.put('farmerVID', farmerVID);
+      box2.put('farmerFID', farmerFID);
+      print("Farmer Box 1234");
+      box2.get("farmerFID").forEach((s)=> print(s));
+    }
+    return itemsFarmer;
+  }
+
+
+  Future<List<String>> makePostRequest4(String url, String unencodedPath , Map<String, String> header) async {
     final response = await http.get(
       //Uri.http(url,unencodedPath),
       Uri.parse(url),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:hive/hive.dart';
 import 'package:plantationapp/screens/take_picture_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +26,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
   bool _isInited = false;
   late String _url;
   String _path = "";
+  late Box box3;
 
 
   final SignatureController _controller = SignatureController(
@@ -37,6 +39,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    createBox();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final cameras = await availableCameras();
@@ -49,6 +52,12 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
         })
       });
     });
+  }
+
+  void createBox()async{
+    box3 = await Hive.openBox('demanddata');
+    print(box3.get("datetime"));
+    print(box3.length);
   }
 
 

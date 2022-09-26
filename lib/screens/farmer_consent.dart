@@ -64,6 +64,26 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
   );
   @override
   void initState() {
+    createBox();
+    print("Email: ");
+    print(box1?.get("email"));
+
+
+    print("not map");
+    print(widget.userID);
+    print(widget.district);
+    print(widget.farmer);
+    print(widget.phone);
+    print(widget.aadhar);
+    print(widget.village);
+    print(widget.block);
+    print(widget.year);
+    print(widget.status);
+    print(widget.date);
+    print(widget.gender);
+    print(widget.farmerdemand);
+    print(widget.FarmerDemandMap);
+    print("done");
 
     print(widget.farmer);
     print(widget.district);
@@ -103,6 +123,8 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
 
   void createBox()async{
     box1 = await Hive.openBox('logindata');
+    print("Email1: ");
+    print(box1?.get("email"));
   }
 
   late CameraDescription camera;

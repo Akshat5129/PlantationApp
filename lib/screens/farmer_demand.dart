@@ -469,6 +469,21 @@ class _FarmerDemandState extends State<FarmerDemand> {
   @override
   void initState() {
     year=widget.year;
+
+    // print("Values from last page: ");
+    // print(FlutterExample.FarmerDemandMap);
+    // print("not map");
+    // print(widget.userID);
+    // print(widget.district);
+    // print(widget.farmer);
+    // print(widget.phone);
+    // print(widget.aadhar);
+    // print(widget.village);
+    // print(widget.block);
+    // print(widget.year);
+    // print(widget.status);
+    // print(widget.date);
+    // print(widget.gender);
     //FlutterExample.FarmerDemandMap.clear();
   }
 }
@@ -489,7 +504,7 @@ class _ListTileItemState extends State<ListTileItem> {
     // TODO: implement initState
     super.initState();
 
-    print(FlutterExample.FarmerDemandMap);
+    //print(FlutterExample.FarmerDemandMap);
     if(FlutterExample.FarmerDemandMap.containsKey(widget.title)){
       print("object1234");
       print(FlutterExample.FarmerDemandMap[widget.title]==0);
