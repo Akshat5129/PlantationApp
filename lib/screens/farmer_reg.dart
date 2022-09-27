@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:plantationapp/screens/farmer_demand.dart';
 import 'package:plantationapp/screens/farmer_distribution.dart';
 import 'package:plantationapp/screens/farmer_plantation.dart';
+import 'package:plantationapp/screens/follow_up_1.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 import 'package:http/http.dart' as http;
@@ -1633,6 +1634,12 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                               &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
                               &&yearController.text!="") {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantation(farmerdropdownvalue1, i1),),);
+                          }
+                        }else if(dropdownvalue=="Visit 4: FollowUp1"){
+                          if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()
+                              &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
+                              &&yearController.text!="") {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerFollowUP1(farmerdropdownvalue1, i1, {}),),);
                           }
                         }
 
