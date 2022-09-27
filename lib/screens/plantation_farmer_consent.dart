@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:plantationapp/screens/farmer_plantation_surveyor_consent.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 import 'package:plantationapp/screens/take_picture_from_camera2.dart';
@@ -22,11 +23,11 @@ class FarmerPlantationFConsent extends StatefulWidget {
 
   String farmerName, farmerChecked;
   int fid;
-  List tree_type, selected_tree, qty;
+  List tree_type, selected_tree, qty, treeImage;
   var imageFarmer;
 
   FarmerPlantationFConsent(this.farmerName, this.farmerChecked, this.fid,
-      this.tree_type, this.selected_tree, this.qty, this.imageFarmer);
+      this.tree_type, this.selected_tree, this.qty, this.imageFarmer, this.treeImage);
 
   @override
   State<FarmerPlantationFConsent> createState() => _FarmerPlantationFConsentState();
@@ -48,6 +49,8 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
   };
 
   Box? box1;
+
+  List treeImage = [];
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -78,10 +81,19 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
     });
     FarmerData1['agreement'] = widget.farmerChecked;
     FarmerData1['fid'] = widget.fid;
-    FarmerData1['farmer_image'] = widget.imageFarmer;
+    FarmerData1['farmer_image'] = widget.treeImage;
     FarmerData1['tree_type'] = widget.tree_type;
     FarmerData1['selected_tree'] = widget.selected_tree;
     FarmerData1['qty'] = widget.qty;
+
+    print("values of ninini");
+    print(widget.selected_tree);
+
+
+
+    // widget.selected_tree.asMap().forEach((index, element) {
+    //   treeImage.insert(index, null);
+    // });
     // store multiple images for each type of tree
     // data sync
     //send to cloud
@@ -174,7 +186,7 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
             Navigator.of(context).pop();
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (BuildContext context) => FarmerPlantationFConsent(widget.farmerName, widget.farmerChecked, widget.fid, widget.tree_type, widget.selected_tree, widget.qty, image12)),
+              MaterialPageRoute(builder: (BuildContext context) => FarmerPlantationFConsent(widget.farmerName, widget.farmerChecked, widget.fid, widget.tree_type, widget.selected_tree, widget.qty, image12, widget.treeImage)),
             );
           },
           textColor: Theme.of(context).primaryColor,
@@ -188,7 +200,7 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color.fromRGBO(255, 254, 236, 1),
-        body: Container(
+        body: SingleChildScrollView(child: Container(
           padding: EdgeInsets.all(50),
           child: ListView(
               shrinkWrap: true,
@@ -216,10 +228,11 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 40,),
+
+                              SizedBox(height: 20,),
                               Container(
                                 child: Text(
-                                  "Select/Click Photo",
+                                  "Selected Tree",
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
@@ -232,82 +245,140 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
                                 ),
                                 padding: EdgeInsets.only(left: 5),
                               ),
-                              Container(
-                                  child: widget.imageFarmer == null ? new Container() : new Container(
-                                    child: Image.file(File(widget.imageFarmer!.path)),
-                                    height: 180,
-                                    alignment: Alignment.center,
-                                  )
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                padding: EdgeInsets.symmetric(vertical: 25.0),
-                                width: double.infinity,
-                                child: RaisedButton(
-                                  elevation: 1.0,
-                                  onPressed: () {
-                                    //_showCamera();
 
+                              ListView(shrinkWrap: true, children: [Container(
+                                child: Expanded(child: Column(
+                                  children: [
+                                    Scrollbar(child:
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                itemCount: widget.selected_tree.length,
+                                  itemBuilder: (context,index){
+                                    return GestureDetector(
+                                        onTap: (){
+                                          setState(() async {
+                                            image1 = await ImagePicker().getImage(source:ImageSource.camera);
+                                            if(image1 == null){
+                                              print("succc"+image1);
+                                              return;}
 
+                                            GallerySaver.saveImage(image1.path);
+                                            print("correct"+image1.path);
+                                            FarmerData1['farmer_image']=image1.path;
+                                            //treeImage[index] = image1.path;
+                                           // treeImage.insert(index, image1.path);
+                                            widget.treeImage[index]=image1.path;
+                                            image11 = image1;
+                                            print("succccc"+image11.path);
+                                            image11 = image1;
+                                            print("succcc"+image11.path);
 
-                                    setState(() async {
-                                      image1 = await ImagePicker().getImage(source:ImageSource.camera);
-                                      if(image1 == null){
-                                        print("succc"+image1);
-                                        return;}
+                                            //_onLoading();
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) => _buildPopupDialog(context,image11),
+                                            );
+                                          });
 
-                                      GallerySaver.saveImage(image1.path);
-                                      print("correct"+image1.path);
-                                      FarmerData1['farmer_image']=image1.path;
-                                      image11 = image1;
-                                      print("succccc"+image11.path);
-                                      image11 = image1;
-                                      print("succcc"+image11.path);
-
-                                      // Navigator.pushAndRemoveUntil(
-                                      //   context,
-                                      //   MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
-                                      //       widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)), // this mainpage is your page to refresh
-                                      //       (Route<dynamic> route) => false,
-                                      // );
-
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(builder: (BuildContext context) => FarmerDemandFConsent(widget.year,
-                                      //   widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)),
-                                      // );
-
-
-
-                                      //_onLoading();
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) => _buildPopupDialog(context,image11),
-                                      );
-                                    });
-
-
-
-
-                                    //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
-                                  },
-                                  padding: EdgeInsets.all(15.0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  color: Color.fromRGBO(255, 252, 177, 1.0),
-                                  child: Text(
-                                    'Capture',
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(93, 43, 14, 1),
-                                      letterSpacing: 1.5,
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'OpenSans',
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                        },
+                                        child: _buildPopupDialogCard(context, widget.selected_tree[index], widget.qty[index], index));
+                                  }))
+                                  ],
+                                ),)
+                              ),]),
+                              //
+                              // SizedBox(height: 20,),
+                              // Container(
+                              //   child: Text(
+                              //     "Select/Click Photo",
+                              //     textAlign: TextAlign.left,
+                              //     style: GoogleFonts.poppins(
+                              //       textStyle: TextStyle(
+                              //           color: Color.fromRGBO(58, 58, 58, 1),
+                              //           letterSpacing: .2,
+                              //           fontSize: 15,
+                              //           fontWeight: FontWeight.w600
+                              //       ),
+                              //     ),
+                              //   ),
+                              //   padding: EdgeInsets.only(left: 5),
+                              // ),
+                              // Container(
+                              //     child: widget.imageFarmer == null ? new Container() : new Container(
+                              //       child: Image.file(File(widget.imageFarmer!.path)),
+                              //       height: 180,
+                              //       alignment: Alignment.center,
+                              //     )
+                              // ),
+                              // Container(
+                              //   margin: EdgeInsets.only(top: 10),
+                              //   padding: EdgeInsets.symmetric(vertical: 25.0),
+                              //   width: double.infinity,
+                              //   child: RaisedButton(
+                              //     elevation: 1.0,
+                              //     onPressed: () {
+                              //       //_showCamera();
+                              //
+                              //
+                              //
+                              //       setState(() async {
+                              //         image1 = await ImagePicker().getImage(source:ImageSource.camera);
+                              //         if(image1 == null){
+                              //           print("succc"+image1);
+                              //           return;}
+                              //
+                              //         GallerySaver.saveImage(image1.path);
+                              //         print("correct"+image1.path);
+                              //         FarmerData1['farmer_image']=image1.path;
+                              //         image11 = image1;
+                              //         print("succccc"+image11.path);
+                              //         image11 = image1;
+                              //         print("succcc"+image11.path);
+                              //
+                              //         // Navigator.pushAndRemoveUntil(
+                              //         //   context,
+                              //         //   MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
+                              //         //       widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)), // this mainpage is your page to refresh
+                              //         //       (Route<dynamic> route) => false,
+                              //         // );
+                              //
+                              //         // Navigator.push(
+                              //         //   context,
+                              //         //   MaterialPageRoute(builder: (BuildContext context) => FarmerDemandFConsent(widget.year,
+                              //         //   widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)),
+                              //         // );
+                              //
+                              //
+                              //
+                              //         //_onLoading();
+                              //         showDialog(
+                              //           context: context,
+                              //           builder: (BuildContext context) => _buildPopupDialog(context,image11),
+                              //         );
+                              //       });
+                              //
+                              //
+                              //
+                              //
+                              //       //Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerRegistration3(),),);
+                              //     },
+                              //     padding: EdgeInsets.all(15.0),
+                              //     shape: RoundedRectangleBorder(
+                              //       borderRadius: BorderRadius.circular(10.0),
+                              //     ),
+                              //     color: Color.fromRGBO(255, 252, 177, 1.0),
+                              //     child: Text(
+                              //       'Capture',
+                              //       style: TextStyle(
+                              //         color: Color.fromRGBO(93, 43, 14, 1),
+                              //         letterSpacing: 1.5,
+                              //         fontSize: 15.0,
+                              //         fontWeight: FontWeight.w600,
+                              //         fontFamily: 'OpenSans',
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
 
                               SizedBox(height: 20,),
                               Container(
@@ -386,18 +457,19 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
                       //print("consentf "+FarmerData1['year']);
                       print("hey"+FarmerData1["farmer_image"].toString());
                       print("heee"+FarmerData1["farmer_sign"].toString());
-                      if(FarmerData1["farmer_image"].toString()=="null"){
+
+                      if(FarmerData1["farmer_image"].toString()==""||FarmerData1["farmer_image"].contains(null)){
                         showDialog(
                           context: context,
                           builder: (BuildContext context) => _buildPopupDialogforCam(context),
                         );
-                      }else if(FarmerData1["farmer_sign"].toString()=="null"){
+                      }else if(FarmerData1["farmer_sign"].toString()==""){
                         showDialog(
                           context: context,
                           builder: (BuildContext context) => _buildPopupDialogforSign(context),
                         );
                       }else{
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDistributionSConsent(
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantationSConsent(
                             widget.farmerName, FarmerData1
                         ),),);
                       }
@@ -421,7 +493,7 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
                   ),
                 ),
               ]),
-        )
+        ))
     );}
 
   Widget _buildPopupDialogforCam(BuildContext context) {
@@ -467,6 +539,38 @@ class _FarmerPlantationFConsentState extends State<FarmerPlantationFConsent> {
           child: const Text('Close'),
         ),
       ],
+    );
+  }
+
+  Widget _buildPopupDialogCard(BuildContext context, String selectedT, String QTY, int index) {
+    print("farmer"+widget.imageFarmer.toString());
+    print(index);
+    print(widget.treeImage);
+    print(widget.treeImage.asMap()[index] == null);
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 0,
+        color: Color.fromRGBO(251, 190, 37, 0.6),
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: ListTile(
+            visualDensity: VisualDensity(vertical: 4),
+            title: Padding(
+              padding: const EdgeInsets.all(2),
+              child: Text(selectedT,style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 18)),
+            ),
+            subtitle: Padding(padding: EdgeInsets.all(1),
+            child: Text("Quantity: "+QTY,style: TextStyle(color: Colors.indigo.shade500, fontWeight: FontWeight.bold,fontSize: 15))),
+            trailing: Expanded(child: Container(
+                child: widget.treeImage[index] == null ? Container(child: Icon(Icons.add_circle),) : Container(
+                  child: Image.file(File(widget.treeImage[index]), height: double.maxFinite,),
+                  height: double.maxFinite,
+                )
+            ),),
+          ),
+        ),
+      ),
     );
   }
 }

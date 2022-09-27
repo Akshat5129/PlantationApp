@@ -461,37 +461,58 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         print(box3.getAt(i)['fid']);
         print(box3.getAt(i)['agreement']);
 
-        http.post(Uri.parse(phpEndPoint2), body: {
-          "image_farmer": box3.getAt(i)['farmer_image_base64'],
-          "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
-          "image_farmer_sign": base64ImageFarmer_Sign,
-          "name_farmer_sign": fileNameFarmer_Sign,
-          "image_surveyor_sign": base64ImageSurveyor_Sign,
-          "name_surveyor_sign": fileNameSurveyor_Sign,
-          "userID": box1.get('email'),
-          "fid": box3.getAt(i)['fid'].toString(),
-          "agreement": box3.getAt(i)['agreement'],
 
-        }).then((res) {
-          print("inside data");
-          print(res.statusCode);
-          print(res.body);
+        print("Final Values to be stored");
+        print(box1.get('email'));
+        print(box3.getAt(i)['fid'].toString());
+        print(box3.getAt(i)['tree_type']);
+        print(box3.getAt(i)['selected_tree']);
+        print(box3.getAt(i)['qty']);
+        print(box3.getAt(i)['farmer_image_base64']);
+        print(box3.getAt(i)['farmer_image_file_name']);
+        print(box3.getAt(i)['base64ImageFarmer_Sign']);
+        print(box3.getAt(i)['fileNameFarmer_Sign']);
+        print(box3.getAt(i)['base64ImageSurveyor_Sign']);
+        print(box3.getAt(i)['fileNameSurveyor_Sign']);
 
-          if(i == box3.length-1){
-            setState(() {
-              _isLoading = false;
-            });
+        for(var j = 0; j < box3.getAt(i)['selected_tree'].length; j++) {
+          print("length"+j.toString());
+          print("length: " + box3.getAt(i)['selected_tree'].length.toString());
+          http.post(Uri.parse(phpEndPoint3), body: {
+            "image_farmer": box3.getAt(i)['farmer_image_base64'][j],
+            "name_image_farmer": box3.getAt(i)['farmer_image_file_name'][j],
+            "image_farmer_sign": base64ImageFarmer_Sign,
+            "name_farmer_sign": fileNameFarmer_Sign,
+            "image_surveyor_sign": base64ImageSurveyor_Sign,
+            "name_surveyor_sign": fileNameSurveyor_Sign,
+            "userID": box1.get('email'),
+            "fid": box3.getAt(i)['fid'].toString(),
+            "tree_type": box3.getAt(i)['tree_type'][j],
+            "selected_tree": box3.getAt(i)['selected_tree'][j],
+            "qty": box3.getAt(i)['qty'][j],
 
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialogChecked(context),
-            );
+          }).then((res) {
+            print("inside data");
+            print(res.statusCode);
+            print(res.body);
 
-          }
-          print("isloading"+_isLoading.toString());
-        }).catchError((err) {
-          print(err);
-        });
+            if (i == box3.length - 1) {
+              if(j == box3.getAt(i)['selected_tree'].length){
+              setState(() {
+                _isLoading = false;
+              });
+
+              showDialog(
+                context: context,
+                builder: (BuildContext context) =>
+                    _buildPopupDialogChecked(context),
+              );
+            }
+            print("isloading" + _isLoading.toString());
+          }}).catchError((err) {
+            print(err);
+          });
+        }
       }
 
 
@@ -587,13 +608,14 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     return new AlertDialog(
 
       title: const Text('Data Sending to the Server', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
-      content: _isLoading ? CircularProgressIndicator() : Column(
+      content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[Center(child:
             Container(
           child: CircularProgressIndicator(),
               height: 100,
+              width: 100,
       ),)
 
         ],

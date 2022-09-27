@@ -38,6 +38,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
   List tree_type = [];
   List selected_tree = [];
   List qty = [];
+  List tree = [];
 
 
 
@@ -51,6 +52,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
     print(box1?.get("demandFID"));
     setState(() {
       print("instate");
+
 
       box1?.get("demandFID").asMap().forEach((index, element) {
         print(element);
@@ -92,10 +94,15 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
         //selected_tree.add(box1?.get("demandList")[index].toString());
         //qty.add(box1?.get("demandqty")[index].toString());
 
+
         setState(() {
           tree_type.add(box1?.get("demandFarmer")[index].toString());
           selected_tree.add(box1?.get("demandList")[index].toString());
+          print(box1?.get("demandFarmer")[index].toString());
           qty.add(box1?.get("demandqty")[index].toString());
+          tree.add(null);
+          print("trees");
+          print(tree);
         });
         // phoneController.text = box1?.get("regPhone")[index];
         // dropdownvalue2 = box1?.get("regGender")[index];
@@ -306,7 +313,8 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
                                   child: RaisedButton(
                                     elevation: 1.0,
                                     onPressed: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantationFConsent(widget.Farmer, agree.toString(), widget.fid, tree_type, selected_tree, qty, null),),);
+                                      print(tree);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerPlantationFConsent(widget.Farmer, agree.toString(), widget.fid, tree_type, selected_tree, qty, null, tree),),);
                                     },
                                     padding: EdgeInsets.all(15.0),
                                     shape: RoundedRectangleBorder(
