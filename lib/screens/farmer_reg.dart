@@ -12,6 +12,9 @@ import 'package:plantationapp/screens/login_screen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 import 'package:http/http.dart' as http;
 
+import 'farmer_conclusion.dart';
+import 'follow_up_2.dart';
+
 class FarmerRegistration extends StatefulWidget {
   //const FarmerRegistration({Key? key}) : super(key: key);
 
@@ -1640,6 +1643,18 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                               &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
                               &&yearController.text!="") {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerFollowUP1(farmerdropdownvalue1, i1, {}),),);
+                          }
+                        }else if(dropdownvalue=="Visit 5: FollowUp2"){
+                          if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()
+                              &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
+                              &&yearController.text!="") {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerFollowUP2(farmerdropdownvalue1, i1, {}),),);
+                          }
+                        }else if(dropdownvalue=="Conclusion"){
+                          if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()
+                              &&formGlobalKey3.currentState!.validate()&&formGlobalKey4.currentState!.validate()
+                              &&yearController.text!="") {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerConclusion(farmerdropdownvalue1, i1, {}),),);
                           }
                         }
 

@@ -605,7 +605,88 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
           });
         }
       }
+      else if(box3.getAt(i)['status']=='Visit 5: FollowUp2'){
+        print("Various");
+        print(box3.getAt(i)['farmer_sign']);
+        print(box3.getAt(i)['surveyor_signature']);
 
+        if (box3.getAt(i)['farmer_sign'] == null) return;
+        var _image = MemoryImage(box3.getAt(i)['farmer_sign']);
+        String base64ImageFarmer_Sign = base64Encode(box3.getAt(i)['farmer_sign']);
+        String fileNameFarmer_Sign = box3.getAt(i)['fid'].toString()+"_"+box1.get('email').split("/").last;
+
+        if (box3.getAt(i)['surveyor_signature'] == null) return;
+        String base64ImageSurveyor_Sign = base64Encode(box3.getAt(i)['surveyor_signature']);
+        String fileNameSurveyor_Sign = box3.getAt(i)['fid'].toString().split("/").last;
+
+        print("Data to be sent surveyor");
+        print(fileNameSurveyor_Sign.toString());
+        print(base64ImageSurveyor_Sign.toString());
+
+        print("VALUES --- ");
+        print(box3.getAt(i)['farmer_image_base64']);
+        print(box3.getAt(i)['farmer_image_file_name']);
+        print(base64ImageFarmer_Sign);
+        print(fileNameFarmer_Sign);
+        print(base64ImageSurveyor_Sign);
+        print(fileNameSurveyor_Sign);
+        print(box1.get('email'));
+        print(box3.getAt(i)['fid']);
+        print(box3.getAt(i)['agreement']);
+
+
+        print("Final Values to be stored");
+        print(box1.get('email'));
+        print(box3.getAt(i)['fid'].toString());
+        print(box3.getAt(i)['tree_type']);
+        print(box3.getAt(i)['selected_tree']);
+        print(box3.getAt(i)['qty']);
+        print(box3.getAt(i)['farmer_image_base64']);
+        print(box3.getAt(i)['farmer_image_file_name']);
+        print(box3.getAt(i)['base64ImageFarmer_Sign']);
+        print(box3.getAt(i)['fileNameFarmer_Sign']);
+        print(box3.getAt(i)['base64ImageSurveyor_Sign']);
+        print(box3.getAt(i)['fileNameSurveyor_Sign']);
+
+        for(var j = 0; j < box3.getAt(i)['selected_tree'].length; j++) {
+          print("length"+j.toString());
+          print("length: " + box3.getAt(i)['selected_tree'].length.toString());
+          http.post(Uri.parse(phpEndPoint5), body: {
+            "image_farmer": box3.getAt(i)['farmer_image_base64'][j],
+            "name_image_farmer": box3.getAt(i)['farmer_image_file_name'][j],
+            "image_farmer_sign": base64ImageFarmer_Sign,
+            "name_farmer_sign": fileNameFarmer_Sign,
+            "image_surveyor_sign": base64ImageSurveyor_Sign,
+            "name_surveyor_sign": fileNameSurveyor_Sign,
+            "userID": box1.get('email'),
+            "fid": box3.getAt(i)['fid'].toString(),
+            "tree_type": "plant/tree",
+            "selected_tree": box3.getAt(i)['selected_tree'][j].toString(),
+            "qty": box3.getAt(i)['qty'][j].toString(),
+
+          }).then((res) {
+            print("inside data");
+            print(res.statusCode);
+            print(res.body);
+
+            if (i == box3.length - 1) {
+              if(j == box3.getAt(i)['selected_tree'].length-1){
+                setState(() {
+                  _isLoading = false;
+                });
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      _buildPopupDialogChecked(context),
+                );
+              }
+              print("isloading" + _isLoading.toString());
+            }}).catchError((err) {
+            print(err);
+          });
+        }
+      }
 
 
     }

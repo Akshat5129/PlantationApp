@@ -48,6 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
   var demandList = [];
   var demandqty = [];
 
+  var distributionFID = [];
+  var distributionUserID = [];
+
 
 
   String villageNameValue = 'Select Village';
@@ -84,6 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
     makePostRequest3(urlFarmer, unencodedPath1, headers1);
     makePostRequest4(urlAadhar, unencodedPath1, headers1);
     makePostRequest5(urlDemand, unencodedPath1, headers1);
+    makePostRequest6(urlDistribution, unencodedPath1, headers1);
   }
 
   //final String url = "https:/stand4land.in";
@@ -161,6 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String urlFarmer = 'https://stand4land.in/plantation_app/get_farmer_data.php';
   String urlAadhar = 'https://stand4land.in/plantation_app/get_aadhar_data.php';
   String urlDemand = 'https://stand4land.in/plantation_app/get_demand_data.php';
+  String urlDistribution = 'https://stand4land.in/plantation_app/get_distribution_data.php';
 
 
   Future<http.Response> makePostRequest0(String url, String unencodedPath , Map<String, String> header) async {
@@ -332,6 +337,30 @@ class _LoginScreenState extends State<LoginScreen> {
       box2.put('demandqty', demandqty);
       print("Farmer Box 1234566");
       box2.get("demandFID").forEach((s)=> print(s));
+    }
+    return response;
+  }
+
+  Future<http.Response> makePostRequest6(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print("Farmer Box 1234588");
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      jsonResult.forEach((s){
+        distributionFID.add(s["aadhar"]);
+        distributionUserID.add(s["emp_id"]);
+      });
+      box2.put("distributionFID",distributionFID);
+      box2.put('distributionUserID', distributionUserID);
+      print("Farmer Box 1234566");
+      box2.get("distributionFID").forEach((s)=> print(s));
     }
     return response;
   }
