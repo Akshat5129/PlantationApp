@@ -188,7 +188,7 @@ class _FarmerDistributionFConsentState extends State<FarmerDistributionFConsent>
                     children: [
                       SizedBox(height: 40,),
                       Text(
-                        "Farmer's Consent",
+                        "Farmer's Consent - Distribution",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.roboto(
                           textStyle: TextStyle(

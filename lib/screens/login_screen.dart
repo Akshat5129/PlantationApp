@@ -9,6 +9,8 @@ import 'package:hive/hive.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
 import 'package:http/http.dart' as http;
 
+import 'homescreen.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -51,6 +53,15 @@ class _LoginScreenState extends State<LoginScreen> {
   var distributionFID = [];
   var distributionUserID = [];
 
+  var plantationFID = [];
+  var plantationUserID = [];
+
+  var fu1FID = [];
+  var fu1UserID = [];
+
+  var fu2FID = [];
+  var fu2UserID = [];
+
 
 
   String villageNameValue = 'Select Village';
@@ -80,6 +91,8 @@ class _LoginScreenState extends State<LoginScreen> {
     print("inside inint 1st"+items1.length.toString());
     items1.clear();
     items1.add("Select District");
+    controllerUserID.clear();
+    controllerPass.clear();
     print("inside inint"+items1.length.toString());
     makePostRequest0(urlDis, unencodedPath1, headers1);
     makePostRequest1(urlBlock, unencodedPath1, headers1);
@@ -88,6 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
     makePostRequest4(urlAadhar, unencodedPath1, headers1);
     makePostRequest5(urlDemand, unencodedPath1, headers1);
     makePostRequest6(urlDistribution, unencodedPath1, headers1);
+    makePostRequest7(urlPlantation, unencodedPath1, headers1);
+    makePostRequest8(urlFollowUp1, unencodedPath1, headers1);
+    makePostRequest9(urlFollowUp2, unencodedPath1, headers1);
   }
 
   //final String url = "https:/stand4land.in";
@@ -142,9 +158,14 @@ class _LoginScreenState extends State<LoginScreen> {
       box2.get("block1").forEach((s)=> print(s));
       print("login_time");
       print(box1.get("email"));
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
+      //     blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1, controllerUserID.text
+      // ),),);
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserType(
           blockNameValue, villageNameValue, dropdownvalue1, itemsBlock, itemsVillage, items1, controllerUserID.text
       ),),);
+
     }
     else{
       showDialog(
@@ -166,6 +187,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String urlAadhar = 'https://stand4land.in/plantation_app/get_aadhar_data.php';
   String urlDemand = 'https://stand4land.in/plantation_app/get_demand_data.php';
   String urlDistribution = 'https://stand4land.in/plantation_app/get_distribution_data.php';
+  String urlPlantation = 'https://stand4land.in/plantation_app/get_plantation.php';
+  String urlFollowUp1 = 'https://stand4land.in/plantation_app/get_followup1.php';
+  String urlFollowUp2 = 'https://stand4land.in/plantation_app/get_followup2.php';
 
 
   Future<http.Response> makePostRequest0(String url, String unencodedPath , Map<String, String> header) async {
@@ -364,6 +388,80 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return response;
   }
+
+  Future<http.Response> makePostRequest7(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print("Farmer Box 1234588");
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      jsonResult.forEach((s){
+        plantationFID.add(s["aadhar"]);
+        plantationUserID.add(s["emp_id"]);
+      });
+      box2.put("plantationFID",plantationFID);
+      box2.put('plantationUserID', plantationUserID);
+      print("Farmer Box 1234566");
+      box2.get("plantationFID").forEach((s)=> print(s));
+    }
+    return response;
+  }
+
+  Future<http.Response> makePostRequest8(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print("Farmer Box 1234588");
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      jsonResult.forEach((s){
+        fu1FID.add(s["aadhar"]);
+        fu1UserID.add(s["emp_id"]);
+      });
+      box2.put("fu1FID",fu1FID);
+      box2.put('fu1UserID', fu1UserID);
+      print("Farmer Box 1234566");
+      box2.get("fu1FID").forEach((s)=> print(s));
+    }
+    return response;
+  }
+
+  Future<http.Response> makePostRequest9(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print("Farmer Box 1234588");
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      jsonResult.forEach((s){
+        fu2FID.add(s["aadhar"]);
+        fu2UserID.add(s["emp_id"]);
+      });
+      box2.put("fu2FID",fu2FID);
+      box2.put('fu2UserID', fu2UserID);
+      print("Farmer Box 1234566");
+      box2.get("fu2FID").forEach((s)=> print(s));
+    }
+    return response;
+  }
+
+
 
 
   @override

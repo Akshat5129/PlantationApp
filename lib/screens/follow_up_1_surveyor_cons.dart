@@ -13,19 +13,19 @@ import 'package:signature/signature.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-class FarmerPlantationSConsent extends StatefulWidget {
+class FarmerFollowUp1SConsent extends StatefulWidget {
 
 
   String farmerName;
   Map<String, dynamic> FarmerDemand1;
 
-  FarmerPlantationSConsent(this.farmerName, this.FarmerDemand1);
+  FarmerFollowUp1SConsent(this.farmerName, this.FarmerDemand1);
 
   @override
-  State<FarmerPlantationSConsent> createState() => _FarmerPlantationSConsentState();
+  State<FarmerFollowUp1SConsent> createState() => _FarmerFollowUp1SConsentState();
 }
 
-class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
+class _FarmerFollowUp1SConsentState extends State<FarmerFollowUp1SConsent> {
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -133,7 +133,7 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
                           children: [
                             SizedBox(height: 40,),
                             Text(
-                              "Surveyor’s Consent - Plantation",
+                              "Surveyor’s Consent - FollowUp1",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.roboto(
                                 textStyle: TextStyle(
@@ -340,7 +340,7 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
                                             });
 
                                             widget.FarmerDemand1.remove("farmer_image");
-                                            widget.FarmerDemand1['status']="Visit 3: Plantation";
+                                            widget.FarmerDemand1['status']="Visit 4: FollowUp1";
 
 
                                             // String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());

@@ -13,19 +13,19 @@ import 'package:signature/signature.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-class FarmerPlantationSConsent extends StatefulWidget {
+class FarmerConclusionSConsent extends StatefulWidget {
 
 
   String farmerName;
   Map<String, dynamic> FarmerDemand1;
 
-  FarmerPlantationSConsent(this.farmerName, this.FarmerDemand1);
+  FarmerConclusionSConsent(this.farmerName, this.FarmerDemand1);
 
   @override
-  State<FarmerPlantationSConsent> createState() => _FarmerPlantationSConsentState();
+  State<FarmerConclusionSConsent> createState() => _FarmerConclusionSConsentState();
 }
 
-class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
+class _FarmerConclusionSConsentState extends State<FarmerConclusionSConsent> {
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -53,7 +53,7 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
     // print(widget.FarmerDemand1['block']);
     // print("consent3"+widget.FarmerDemand1['year'].toString());
     farmerName.text=widget.farmerName;
-    demandController.text=widget.FarmerDemand1['farmer_image'].length.toString()+" images trees/plants captured";
+    //demandController.text=widget.FarmerDemand1['farmer_image'].length.toString()+" images trees/plants captured";
     // demandController.text=widget.FarmerDemand1['farmer_demand'];
     // String remove = widget.FarmerDemand1['farmer_demand_map'].toString().replaceAll("{", "");
     // String remove1 = remove.replaceAll("}", "");
@@ -133,7 +133,7 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
                           children: [
                             SizedBox(height: 40,),
                             Text(
-                              "Surveyor’s Consent - Plantation",
+                              "Surveyor’s Consent - Conclusion",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.roboto(
                                 textStyle: TextStyle(
@@ -213,7 +213,7 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
                                     SizedBox(height: 20,),
                                     Container(
                                       child: Text(
-                                        "Plants Images Captured",
+                                        "Total Trees/Plants",
                                         textAlign: TextAlign.left,
                                         style: GoogleFonts.poppins(
                                           textStyle: TextStyle(
@@ -332,15 +332,9 @@ class _FarmerPlantationSConsentState extends State<FarmerPlantationSConsent> {
                                             print(widget.FarmerDemand1['farmer_image']);
                                             widget.FarmerDemand1["farmer_image_file_name"] = [];
                                             widget.FarmerDemand1["farmer_image_base64"] = [];
-                                            widget.FarmerDemand1['farmer_image'].forEach((element){
-
-                                              String base64Image = base64Encode(File(element).readAsBytesSync());
-                                              widget.FarmerDemand1["farmer_image_base64"].add(base64Image);
-                                              widget.FarmerDemand1["farmer_image_file_name"].add(element.split("/").last);
-                                            });
 
                                             widget.FarmerDemand1.remove("farmer_image");
-                                            widget.FarmerDemand1['status']="Visit 3: Plantation";
+                                            widget.FarmerDemand1['status']="Conclusion";
 
 
                                             // String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());

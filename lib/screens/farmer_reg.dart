@@ -674,6 +674,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             blockdropdownvalue1 = "Select Block";
                             villagedropdownvalue1 = "Select Village";
                             farmerdropdownvalue1 = "Select Farmer";
+                            aadharController.clear();
+                            phoneController.clear();
+
                             i1 = districtitems1.indexOf(newValue);
                             print("len"+blockitems1.length.toString());
                             print(i1);
@@ -854,19 +857,157 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             print("len"+farmeritems1.length.toString());
                             print(i1);
                             print(newList);
-                            farmerVID1.asMap().forEach((index, element) {
-                              print(element);
-                              print(i1);
-                              print("nect1");
-                              print(newList);
-                              print(box1?.get("farmer1")[index]);
-                              if(element.toString() == i1.toString()){
+                            if(dropdownvalue == "Visit 1: Demand"){
+
+                              farmerVID1.asMap().forEach((index, element) {
+                                print(element);
+                                print(i1);
+                                print("nect1");
                                 print(newList);
-                                print("index"+index.toString());
-                                print(box1?.get("farmer1")[index+1]);
-                                newList.add(box1?.get("farmer1")[index+1]);
-                              }
-                            });
+                                print(box1?.get("farmer1")[index]);
+                                if(element.toString() == i1.toString()){
+                                  print(newList);
+                                  print("index"+index.toString());
+                                  print(box1?.get("farmer1")[index+1]);
+                                  newList.add(box1?.get("farmer1")[index+1]);
+                                }
+                              });
+
+                            }else if(dropdownvalue == "Visit 2: Distribution"){
+
+                              farmerVID1.asMap().forEach((index, element) {
+                                // print(element);
+                                // print(i1);
+                                // print("nect1");
+                                // print(newList);
+                                // print(box1?.get("farmer1")[index]);
+                                if(element.toString() == i1.toString()){
+                                  box1?.get("regFID").asMap().forEach((index1, element1) {
+                                    print("Farmer value: "+farmerFID1[index]);
+                                    if(element1.toString() == farmerFID1[index]){
+                                      print(newList);
+                                      print("index"+index.toString());
+                                      print(box1?.get("farmer1")[index+1]);
+                                      if(!newList.contains(box1?.get("farmer1")[index+1])) {
+                                        newList.add(box1?.get("farmer1")[index+1]);
+                                      }
+                                    }
+                                  });
+                                }
+                              });
+
+                            }
+                            else if(dropdownvalue == "Visit 3: Plantation"){
+
+                              farmerVID1.asMap().forEach((index, element) {
+                               // print(element);
+                                // print(i1);
+                                // print("nect1");
+                                // print(newList);
+                                // print(box1?.get("farmer1")[index]);
+                                if(element.toString() == i1.toString()){
+                                  box1?.get("distributionFID").asMap().forEach((index1, element1) {
+                                    print("Farmer value: "+farmerFID1[index]);
+                                    if(element1.toString() == farmerFID1[index]){
+                                      print(newList);
+                                      print("index"+index.toString());
+                                      print(box1?.get("farmer1")[index+1]);
+                                      //newList.add(box1?.get("farmer1")[index+1]);
+                                      if(!newList.contains(box1?.get("farmer1")[index+1])) {
+                                        newList.add(box1?.get("farmer1")[index+1]);
+                                      }
+                                    }
+                                  });
+                                }
+                              });
+
+                            }
+
+                            else if(dropdownvalue == "Visit 4: FollowUp1"){
+                              print("sat");
+
+                              farmerVID1.asMap().forEach((index, element) {
+                                // print(element);
+                                // print(i1);
+                                // print("nect1");
+                                // print(newList);
+                                // print(box1?.get("farmer1")[index]);
+                                print("Farmer element val1"
+                                    ": "+element);
+                                print("Farmer element val2: "+i1.toString());
+                                if(element.toString() == i1.toString()){
+                                  box1?.get("plantationFID").asMap().forEach((index1, element1) {
+                                    print("Farmer element val: "+element1);
+                                    print("Farmer value: "+farmerFID1[index]);
+                                    if(element1.toString() == farmerFID1[index]){
+                                      print(newList);
+                                      print("index: hh: "+index.toString());
+                                      print(box1?.get("farmer1")[index+1]);
+                                      //newList.add(box1?.get("farmer1")[index+1]);
+                                      if(!newList.contains(box1?.get("farmer1")[index+1])) {
+                                        newList.add(box1?.get("farmer1")[index+1]);
+                                        print("hey");
+
+                                      }
+                                      print("listnew"+newList.toString());
+                                    }
+                                  });
+                                }
+                              });
+
+                            }
+
+                            else if(dropdownvalue == "Visit 5: FollowUp2"){
+
+                              farmerVID1.asMap().forEach((index, element) {
+                                // print(element);
+                                // print(i1);
+                                // print("nect1");
+                                // print(newList);
+                                // print(box1?.get("farmer1")[index]);
+                                if(element.toString() == i1.toString()){
+                                  box1?.get("fu1FID").asMap().forEach((index1, element1) {
+                                    print("Farmer value: "+farmerFID1[index]);
+                                    if(element1.toString() == farmerFID1[index]){
+                                      print(newList);
+                                      print("index"+index.toString());
+                                      print(box1?.get("farmer1")[index+1]);
+                                      //newList.add(box1?.get("farmer1")[index+1]);
+                                      if(!newList.contains(box1?.get("farmer1")[index+1])) {
+                                        newList.add(box1?.get("farmer1")[index+1]);
+                                      }
+                                    }
+                                  });
+                                }
+                              });
+
+                            }
+
+                            else if(dropdownvalue == "Conclusion"){
+
+                              farmerVID1.asMap().forEach((index, element) {
+                                // print(element);
+                                // print(i1);
+                                // print("nect1");
+                                // print(newList);
+                                // print(box1?.get("farmer1")[index]);
+                                if(element.toString() == i1.toString()){
+                                  box1?.get("fu2FID").asMap().forEach((index1, element1) {
+                                    print("Farmer value: "+farmerFID1[index]);
+                                    if(element1.toString() == farmerFID1[index]){
+                                      print(newList);
+                                      print("index"+index.toString());
+                                      print(box1?.get("farmer1")[index+1]);
+                                      //newList.add(box1?.get("farmer1")[index+1]);
+                                      if(!newList.contains(box1?.get("farmer1")[index+1])) {
+                                        newList.add(box1?.get("farmer1")[index+1]);
+                                      }
+                                    }
+                                  });
+                                }
+                              });
+
+                            }
                             print(newList);
                             farmeritems1 = newList;
                           });
@@ -944,7 +1085,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             i1 = box1?.get("farmer1").indexOf(newValue);
                             print(i1);
                             print("i1-------> "+i1.toString());
-                            if(dropdownvalue != "Visit 1: Demand"){
+                            if(dropdownvalue == "Visit 2: Distribution"){
                               box1?.get("regFID").asMap().forEach((index, element) {
                                 print(element);
                                 print(i1);
@@ -955,7 +1096,73 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                   aadharController.text = box1?.get("regAD")[index];
                                   phoneController.text = box1?.get("regPhone")[index];
                                   dropdownvalue2 = box1?.get("regGender")[index];
-                                  print(box1?.get("regPhone")[index+1]);
+                                  print(box1?.get("regPhone")[index]);
+                                  showPOP = false;
+                                }
+                              });
+                            }
+                            if(dropdownvalue == "Visit 3: Plantation"){
+                              box1?.get("distributionFID").asMap().forEach((index, element) {
+                                print(element);
+                                print(i1);
+                                print("nect1");
+                                print(box1?.get("distributionFID")[index]);
+                                if(element.toString() == i1.toString()){
+                                  print("index"+index.toString());
+
+                                  aadharController.text = box1?.get("regAD")[index];
+                                  phoneController.text = box1?.get("regPhone")[index];
+                                  dropdownvalue2 = box1?.get("regGender")[index];
+                                  print(box1?.get("regPhone")[index]);
+                                  showPOP = false;
+                                }
+                              });
+                            }
+                            if(dropdownvalue == "Visit 4: FollowUp1"){
+                              box1?.get("plantationFID").asMap().forEach((index, element) {
+                                print(element);
+                                print(i1);
+                                print("nect1");
+                                print(box1?.get("plantationFID")[index]);
+                                if(element.toString() == i1.toString()){
+                                  print("index"+index.toString());
+
+                                  aadharController.text = box1?.get("regAD")[index];
+                                  phoneController.text = box1?.get("regPhone")[index];
+                                  dropdownvalue2 = box1?.get("regGender")[index];
+                                  print(box1?.get("regPhone")[index]);
+                                  showPOP = false;
+                                }
+                              });
+                            }if(dropdownvalue == "Visit 5: FollowUp2"){
+                              box1?.get("fu1FID").asMap().forEach((index, element) {
+                                print(element);
+                                print(i1);
+                                print("nect1");
+                                print(box1?.get("fu1FID")[index]);
+                                if(element.toString() == i1.toString()){
+                                  print("index"+index.toString());
+
+                                  aadharController.text = box1?.get("regAD")[index];
+                                  phoneController.text = box1?.get("regPhone")[index];
+                                  dropdownvalue2 = box1?.get("regGender")[index];
+                                  print(box1?.get("regPhone")[index]);
+                                  showPOP = false;
+                                }
+                              });
+                            }if(dropdownvalue == "Conclusion"){
+                              box1?.get("fu2FID").asMap().forEach((index, element) {
+                                print(element);
+                                print(i1);
+                                print("nect1");
+                                print(box1?.get("fu2FID")[index]);
+                                if(element.toString() == i1.toString()){
+                                  print("index"+index.toString());
+
+                                  aadharController.text = box1?.get("regAD")[index];
+                                  phoneController.text = box1?.get("regPhone")[index];
+                                  dropdownvalue2 = box1?.get("regGender")[index];
+                                  print(box1?.get("regPhone")[index]);
                                   showPOP = false;
                                 }
                               });
