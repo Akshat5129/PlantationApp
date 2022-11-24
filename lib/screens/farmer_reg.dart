@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 
 import 'farmer_conclusion.dart';
 import 'follow_up_2.dart';
+import 'homescreen.dart';
 
 class FarmerRegistration extends StatefulWidget {
   //const FarmerRegistration({Key? key}) : super(key: key);
@@ -412,17 +413,18 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                   ),
                 ),
                 IconButton(
-              iconSize: 30,
-              icon: const Icon(
-                Icons.logout,
-              ),
+              iconSize: 40,
+              icon: Icon(Icons.home),
               onPressed: () {
-                print("boxx hello");
-                print(box2?.get("isLogged"));
-                box2?.put('isLogged',false);
-                print("box after");
-                print(box2?.get("isLogged"));
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>LoginScreen()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserType(
+                        widget.valueBlock1, widget.valueVillage1, widget.valueDistrict1, widget.itemsBlock1, widget.itmesVillage1, widget.valueDistrict1, widget.userID
+                    ),),);
+                // print("boxx hello");
+                // print(box2?.get("isLogged"));
+                // box2?.put('isLogged',false);
+                // print("box after");
+                // print(box2?.get("isLogged"));
+                //Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>LoginScreen()));
               },
             ),
 

@@ -83,6 +83,7 @@ flutter:
     - assets/images/
     - assets/images/logo1.png
     - assets/images/splash_rect.png
+    - assets/images/home_flat.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

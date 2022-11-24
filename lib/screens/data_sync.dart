@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
+import 'package:plantationapp/screens/homescreen.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 
 class DataSyncDemand extends StatefulWidget {
@@ -170,7 +171,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
                 //     itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])),
                 // );
                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>
-                FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+                UserType(blockNameValue, villageNameValue, dropdownvalue1,
                          itemsBlock, itemsVillage, items1, box1.get('email'))));
 
               },
@@ -198,6 +199,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
   late Box box3;
   late Box box1;
+  late Box boxSynced;
 
   @override
   void initState() {
@@ -211,6 +213,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     box3 = await Hive.openBox('demanddata');
     box1 = await Hive.openBox('logindata');
     box2 = await Hive.openBox('dropdowndata');
+    boxSynced = await Hive.openBox('datasynced');
     print(box3.length);
   }
 
@@ -1250,9 +1253,10 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         new FlatButton(
           onPressed: () {
             Navigator.of(context).pop();
+            boxSynced = box3;
             box3.clear();
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
+                UserType(blockNameValue, villageNameValue, dropdownvalue1,
                     itemsBlock, itemsVillage, items1, "widget.FarmerDemand1['userID']")),
                     (Route<dynamic> route) => false);
           },

@@ -1,5 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:plantationapp/screens/synced_form.dart';
+
+import 'farmer_reg.dart';
+import 'login_screen.dart';
 
 
 class UserType extends StatefulWidget {
@@ -24,6 +29,19 @@ class UserType extends StatefulWidget {
 }
 
 class _UserTypeState extends State<UserType> {
+
+  Box? box2;
+
+
+  @override
+  void initState() {
+    createBox();
+  }
+
+  void createBox()async{
+    box2 = await Hive.openBox("logindata");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,8 +59,9 @@ class _UserTypeState extends State<UserType> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
 
-                    Image.asset("assets/images/logo_img.png", width: 150),
-                    Text('Login as', style: TextStyle(
+                    Image.asset("assets/images/logo1.png", width: 150),
+                    SizedBox(height: 20,),
+                    Text('Welcome', style: TextStyle(
                         color: Colors.black,
                         fontSize: 25.0
                     ),),
@@ -61,7 +80,9 @@ class _UserTypeState extends State<UserType> {
                           elevation: 2.0,
                           onPressed: ()
                           {
-                            //Navigator.push(context, MaterialPageRoute(builder: (context) => ,),);
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
+                                widget.valueBlock1, widget.valueVillage1, widget.valueDistrict1, widget.itemsBlock1, widget.valueVillage1, widget.itemsDIstrict1, widget.userID
+                            ),),);
                           },
                           padding: EdgeInsets.all(18.0),
 
@@ -71,7 +92,7 @@ class _UserTypeState extends State<UserType> {
                           ),
                           color: Colors.white,
                           child: Text(
-                            'Individual Order',
+                            'New Form',
                             style: TextStyle(
                               color: Color.fromRGBO(93, 43, 14, 1),
                               letterSpacing: 1.5,
@@ -89,7 +110,9 @@ class _UserTypeState extends State<UserType> {
                           elevation: 2.0,
                           onPressed: ()
                           {
-                            //Navigator.push(context, MaterialPageRoute(builder: (context) => ,),);
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SyncedForm(
+                                widget.valueBlock1, widget.valueVillage1, widget.valueDistrict1, widget.itemsBlock1, widget.valueVillage1, widget.itemsDIstrict1, widget.userID
+                            ),),);
                           },
                           padding: EdgeInsets.all(18.0),
                           shape: RoundedRectangleBorder(
@@ -98,7 +121,7 @@ class _UserTypeState extends State<UserType> {
                           ),
                           color: Colors.white,
                           child: Text(
-                            'Society',
+                            'Synced Form',
                             style: TextStyle(
                               color: Color.fromRGBO(93, 43, 14, 1),
                               letterSpacing: 1.5,
@@ -125,7 +148,7 @@ class _UserTypeState extends State<UserType> {
                           ),
                           color: Colors.white,
                           child: Text(
-                            'Business Associative',
+                            'Unsynced Form',
                             style: TextStyle(
                               color: Color.fromRGBO(93, 43, 14, 1),
                               letterSpacing: 1.5,
@@ -150,7 +173,7 @@ class _UserTypeState extends State<UserType> {
                           ),
                           color: Colors.white,
                           child: Text(
-                            'Brand',
+                            'Sync Data',
                             style: TextStyle(
                               color: Color.fromRGBO(93, 43, 14, 1),
                               letterSpacing: 1.5,
@@ -169,6 +192,14 @@ class _UserTypeState extends State<UserType> {
                           onPressed: ()
                           {
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => ,),);
+
+                            print("boxx hello");
+                            print(box2?.get("isLogged"));
+                            box2?.put('isLogged',false);
+                            print("box after");
+                            print(box2?.get("isLogged"));
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>LoginScreen()));
+
                             },
                           padding: EdgeInsets.all(18.0),
                           shape: RoundedRectangleBorder(
@@ -177,7 +208,7 @@ class _UserTypeState extends State<UserType> {
                           ),
                           color: Colors.white70,
                           child: Text(
-                            'Admin',
+                            'Logout',
                             style: TextStyle(
                               color: Color.fromRGBO(93, 43, 14, 1),
                               letterSpacing: 1.5,
