@@ -1875,17 +1875,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      color: Color.fromRGBO(243, 214, 139, 1.0),
-                      child: Text(
-                        'NEXT',
-                        style: TextStyle(
-                          color: Color.fromRGBO(93, 43, 14, 1),
-                          letterSpacing: 1.5,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'OpenSans',
-                        ),
-                      ),
+                      color: Colors.black54,
+                      child: Icon(Icons.arrow_forward_ios_outlined,
+                        color: Colors.white,),
                     ),
                   ),
                 ],

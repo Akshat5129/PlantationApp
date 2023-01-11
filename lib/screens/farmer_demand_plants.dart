@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:plantationapp/screens/farmer_demand_plants.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
 import 'package:plantationapp/screens/surveyor_consent.dart';
 
@@ -13,20 +12,37 @@ import 'package:http/http.dart' as http;
 
 
 
-class FarmerDemand extends StatefulWidget {
+class FarmerDemandPlants extends StatefulWidget {
   //const FarmerDemand({Key? key}) : super(key: key);
 
-  String year, status, date, district, block, village, farmer, aadhar, phone, gender, userID;
+  // String year, status, date, district, block, village, farmer, aadhar, phone, gender, userID;
+  //
+  //
+  // FarmerDemandPlants(this.year, this.status, this.date, this.district, this.block,
+  //     this.village, this.farmer, this.aadhar, this.phone, this.gender, this.userID);
+
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand, userID;
+  Map<String, int> FarmerDemandMap;
+  var imageFarmer;
+
+  static Map<String, int> FarmerDemandMap1 = {};
 
 
-  FarmerDemand(this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.userID);
+
+  FarmerDemandPlants(this.year, this.status, this.date, this.district, this.block,
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.imageFarmer, this.userID);
+
+
+
 
   @override
-  State<FarmerDemand> createState() => _FarmerDemandState();
+  State<FarmerDemandPlants> createState() => _FarmerDemandPlantsState();
 }
 
-class _FarmerDemandState extends State<FarmerDemand> {
+class _FarmerDemandPlantsState extends State<FarmerDemandPlants> {
+
+
+  static late Map<String, int> FarmerDemandMap1;
 
 
 
@@ -140,11 +156,11 @@ class _FarmerDemandState extends State<FarmerDemand> {
                           ),
                         ),
                         Text(
-                          "Forest Trees",
+                          "Plants",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.roboto(
                             textStyle: TextStyle(
-                                color: Color.fromRGBO(103, 141, 14, 1.0),
+                                color: Color.fromRGBO(175, 108, 8, 1.0),
                                 letterSpacing: .2,
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold
@@ -262,88 +278,88 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                 ),
                                 Container(
                                   width: double.infinity,
-                                    padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
-                                    decoration: BoxDecoration(
-                                        color:Color.fromRGBO(255, 254, 236, 1),
-                                        border: Border.all(
-                                            color: Color.fromRGBO(255, 254, 236, 1)
-                                        ),
-                                        borderRadius: BorderRadius.all(Radius.circular(10))
-                                    ),
-                                    margin: EdgeInsets.only(top: 1),
-                                    child: RaisedButton(
-                                      elevation: 1.0,
-                                      onPressed: (){
-                                        // AlertDialog(
-                                        //   title: Container(child: Padding(
-                                        //     padding: const EdgeInsets.all(8.0),
-                                        //     child: Text('Pick Item',style: TextStyle(color: Colors.white),),
-                                        //   ),color: Colors.blueAccent,),
-                                        //   content: setupAlertDialoadContainer(context),
-                                        // );
-
-                                        // if(dropdownvalue1=="Forest Trees"){
-                                        //   showDialog(
-                                        //     context: context,
-                                        //     builder: (BuildContext context) => new FlutterExample(dropdownvalue1, ForestTrees, widget.year,
-                                        //     widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                        //         , widget.phone, widget.gender, widget.userID),
-                                        //   );
-                                        //
-                                        // }else if(dropdownvalue1=="Plants"){
-                                        //   showDialog(
-                                        //     context: context,
-                                        //     builder: (BuildContext context) => new FlutterExample(dropdownvalue1, FruitTrees, widget.year,
-                                        //         widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                        //         , widget.phone, widget.gender, widget.userID),
-                                        //   );
-                                        // }
-
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) => new FlutterExample(demandController.text, ForestTrees, widget.year,
-                                              widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                              , widget.phone, widget.gender, widget.userID),
-                                        );
-
-                                        },
-                                      padding: EdgeInsets.all(15.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                  padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                                  decoration: BoxDecoration(
+                                      color:Color.fromRGBO(255, 254, 236, 1),
+                                      border: Border.all(
+                                          color: Color.fromRGBO(255, 254, 236, 1)
                                       ),
-                                      color: Color.fromRGBO(181, 231, 77, 0.56),
-                                      child: Text(
-                                        'SELECT',
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                          letterSpacing: 1.5,
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'OpenSans',
-                                        ),
+                                      borderRadius: BorderRadius.all(Radius.circular(10))
+                                  ),
+                                  margin: EdgeInsets.only(top: 1),
+                                  child: RaisedButton(
+                                    elevation: 1.0,
+                                    onPressed: (){
+                                      // AlertDialog(
+                                      //   title: Container(child: Padding(
+                                      //     padding: const EdgeInsets.all(8.0),
+                                      //     child: Text('Pick Item',style: TextStyle(color: Colors.white),),
+                                      //   ),color: Colors.blueAccent,),
+                                      //   content: setupAlertDialoadContainer(context),
+                                      // );
+
+                                      // if(dropdownvalue1=="Forest Trees"){
+                                      //   showDialog(
+                                      //     context: context,
+                                      //     builder: (BuildContext context) => new FlutterExample(dropdownvalue1, ForestTrees, widget.year,
+                                      //     widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                                      //         , widget.phone, widget.gender, widget.userID),
+                                      //   );
+                                      //
+                                      // }else if(dropdownvalue1=="Plants"){
+                                      //   showDialog(
+                                      //     context: context,
+                                      //     builder: (BuildContext context) => new FlutterExample(dropdownvalue1, FruitTrees, widget.year,
+                                      //         widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                                      //         , widget.phone, widget.gender, widget.userID),
+                                      //   );
+                                      // }
+
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) => new FlutterExample(demandController.text, FruitTrees, widget.year,
+                                            widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+                                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, widget.userID),
+                                      );
+
+                                    },
+                                    padding: EdgeInsets.all(15.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    color: Color.fromRGBO(181, 231, 77, 0.56),
+                                    child: Text(
+                                      'SELECT',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        letterSpacing: 1.5,
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'OpenSans',
                                       ),
                                     ),
+                                  ),
                                 ),
                                 Container(
                                   height: 200,
                                   child: Scrollbar(
-                                    child: ListView.builder(
-                                      itemCount: FlutterExample.FarmerDemandMap.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        String key = FlutterExample.FarmerDemandMap.keys.elementAt(index);
-                                        return new Column(
-                                          children: <Widget>[
-                                            new ListTile(
-                                              title: new Text("$key"),
-                                              subtitle: new Text("${FlutterExample.FarmerDemandMap[key]}"),
-                                            ),
-                                            new Divider(
-                                              height: 2.0,
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    )
+                                      child: ListView.builder(
+                                        itemCount: FlutterExample.FarmerDemandMap.length,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          String key = FlutterExample.FarmerDemandMap.keys.elementAt(index);
+                                          return new Column(
+                                            children: <Widget>[
+                                              new ListTile(
+                                                title: new Text("$key"),
+                                                subtitle: new Text("${FlutterExample.FarmerDemandMap[key]}"),
+                                              ),
+                                              new Divider(
+                                                height: 2.0,
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      )
                                   ),
                                 ),
                                 Container(
@@ -361,7 +377,7 @@ class _FarmerDemandState extends State<FarmerDemand> {
                                         );
                                       }
                                       else{
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandPlants(widget.year,
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
                                             widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
                                             , widget.phone, widget.gender, demandController.text, FlutterExample.FarmerDemandMap, null, widget.userID),
 
@@ -438,38 +454,38 @@ class _FarmerDemandState extends State<FarmerDemand> {
   Widget setupAlertDialoadContainer(context) {
     print("in the func");
     return new Scaffold(
-      
-      body: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          color: Colors.grey,
-          height: 300.0, // Change as per your requirement
-          width: 300.0, // Change as per your requirement
-          child: ListView.builder(
 
-            shrinkWrap: true,
-            itemCount: 15,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Card(child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('List Item $index'),
-                )),
-              );
-            },
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: FlatButton(
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              color: Colors.grey,
+              height: 300.0, // Change as per your requirement
+              width: 300.0, // Change as per your requirement
+              child: ListView.builder(
 
-            onPressed: (){
-              Navigator.pop(context);
-            },child: Text("Cancel"),),
-        )
-      ],
-    ));
+                shrinkWrap: true,
+                itemCount: 15,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Card(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('List Item $index'),
+                    )),
+                  );
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: FlatButton(
+
+                onPressed: (){
+                  Navigator.pop(context);
+                },child: Text("Cancel"),),
+            )
+          ],
+        ));
   }
 
 
@@ -489,18 +505,18 @@ class _FarmerDemandState extends State<FarmerDemand> {
               itemCount: 5,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: new Text("item"),
-                  trailing: SizedBox(
-                    height: 50,
-                    width: 150,
-                  child: Row(
-                    children: [
-                      _itemCount!=0? new  IconButton(icon: new Icon(Icons.remove),onPressed: ()=>setState(()=>_itemCount--),):new Container(),
-                      new Text(_itemCount.toString()),
-                      new IconButton(icon: new Icon(Icons.add),onPressed: ()=>setState(()=>_itemCount++))
-                    ],
-                  ),
-                ));
+                    title: new Text("item"),
+                    trailing: SizedBox(
+                      height: 50,
+                      width: 150,
+                      child: Row(
+                        children: [
+                          _itemCount!=0? new  IconButton(icon: new Icon(Icons.remove),onPressed: ()=>setState(()=>_itemCount--),):new Container(),
+                          new Text(_itemCount.toString()),
+                          new IconButton(icon: new Icon(Icons.add),onPressed: ()=>setState(()=>_itemCount++))
+                        ],
+                      ),
+                    ));
               },
             ),
           ),
@@ -521,8 +537,9 @@ class _FarmerDemandState extends State<FarmerDemand> {
   @override
   void initState() {
     year=widget.year;
-    demandController.text = "Forest Trees";
+    demandController.text = "Plants";
     print("inint");
+    FarmerDemandMap1 = widget.FarmerDemandMap;
 
     // print("Values from last page: ");
     // print(FlutterExample.FarmerDemandMap);
@@ -553,7 +570,7 @@ class ListTileItem extends StatefulWidget {
 class _ListTileItemState extends State<ListTileItem> {
   int _itemCount = 0;
 
- @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -576,28 +593,28 @@ class _ListTileItemState extends State<ListTileItem> {
   @override
   Widget build(BuildContext context) {
     return new ListTile(
-      title: new Text(widget.title),
-      trailing: new SizedBox(
-        height: 100,
-        width: 120,
-        child: Row(
-        children: <Widget>[
-          _itemCount!=0? new  IconButton(icon: new Icon(Icons.remove),onPressed: () {
-            setState(() => _itemCount--);
-            print(FlutterExample.FarmerDemandMap);
-            FlutterExample.FarmerDemandMap[widget.title]=_itemCount;
-            if(_itemCount==0){
-              FlutterExample.FarmerDemandMap.remove(widget.title);
-            }
+        title: new Text(widget.title),
+        trailing: new SizedBox(
+          height: 100,
+          width: 120,
+          child: Row(
+            children: <Widget>[
+              _itemCount!=0? new  IconButton(icon: new Icon(Icons.remove),onPressed: () {
+                setState(() => _itemCount--);
+                print(FlutterExample.FarmerDemandMap);
+                FlutterExample.FarmerDemandMap[widget.title]=_itemCount;
+                if(_itemCount==0){
+                  FlutterExample.FarmerDemandMap.remove(widget.title);
+                }
 
-          },):new Container(),
-          new Text(_itemCount.toString()),
-          new IconButton(icon: new Icon(Icons.add),onPressed: (){setState(()=>_itemCount++);
-          print(FlutterExample.FarmerDemandMap);
-          FlutterExample.FarmerDemandMap[widget.title]=_itemCount;
-          })
-        ],
-      ),)
+              },):new Container(),
+              new Text(_itemCount.toString()),
+              new IconButton(icon: new Icon(Icons.add),onPressed: (){setState(()=>_itemCount++);
+              print(FlutterExample.FarmerDemandMap);
+              FlutterExample.FarmerDemandMap[widget.title]=_itemCount;
+              })
+            ],
+          ),)
     );
   }
 
@@ -610,10 +627,13 @@ class FlutterExample extends StatelessWidget {
 
   String demandCat;
   var demandCatList;
-  String year, status, date, district, block, village, farmer, aadhar, phone, gender, userID;
+  var FarmerDemandMap1;
+  String year, status, date, district, block, village, farmer, aadhar, phone, gender, userID, farmerDemand;
+
+  var farmerDemandMap1;
 
   FlutterExample(this.demandCat, this.demandCatList, this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.userID);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerDemand, this.farmerDemandMap1, this.userID);
   static Map<String, int> FarmerDemandMap = {};
 
 
@@ -625,30 +645,30 @@ class FlutterExample extends StatelessWidget {
         height: 300,
         width: 400,
         child:ListView(
-        children: new List.generate(demandCatList.length, (i)=>new ListTileItem(
-          title: demandCatList[i],
-        )),
-      ),),
-        actions: <Widget>[
-    new FlatButton(
-    onPressed: () {
-      print(FarmerDemandMap);
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemand(
-          year,
-          status, date, district, block, village, farmer, aadhar, phone, gender, userID
-      ),),);
-      // Navigator.pushAndRemoveUntil(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => FarmerDemand()),
-      //       (Route<dynamic> route) => false,
-      // );
-    },
-    textColor: Theme.of(context).primaryColor,
-    child: const Text('Close'),
-    ),
-    ],
+          children: new List.generate(demandCatList.length, (i)=>new ListTileItem(
+            title: demandCatList[i],
+          )),
+        ),),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            print(FarmerDemandMap);
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandPlants(
+                year,
+                status, date, district, block, village, farmer, aadhar, phone, gender, farmerDemand, farmerDemandMap1, null, userID
+            ),),);
+            // Navigator.pushAndRemoveUntil(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => FarmerDemand()),
+            //       (Route<dynamic> route) => false,
+            // );
+            },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:plantationapp/screens/farmer_reg.dart';
+import 'package:plantationapp/screens/homescreen.dart';
 import 'package:plantationapp/screens/login_screen.dart';
 late Box box1;
 
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         seconds: 3
     ), (){
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
-      box1.get('isLogged',defaultValue: false)?FarmerRegistration("", "valueVillage1", "valueDistrict1", "itemsBlock1", "itmesVillage1", "itemsDIstrict1", "userID"):LoginScreen()
+      box1.get('isLogged',defaultValue: false)?UserType("", "valueVillage1", "valueDistrict1", "itemsBlock1", "itmesVillage1", "itemsDIstrict1", "userID"):LoginScreen()
         ,),);
     },);
   }

@@ -17,7 +17,6 @@ class DataSyncDemand extends StatefulWidget {
 
   Map<String, dynamic> FarmerDemand1;
 
-
   DataSyncDemand(this.FarmerDemand1);
 
   @override

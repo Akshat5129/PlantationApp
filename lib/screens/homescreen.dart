@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:plantationapp/screens/synced_form.dart';
+import 'package:plantationapp/screens/unsynceddata.dart';
 
+import 'data_sync.dart';
 import 'farmer_reg.dart';
 import 'login_screen.dart';
 
@@ -111,7 +113,9 @@ class _UserTypeState extends State<UserType> {
                           onPressed: ()
                           {
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SyncedForm(
-                                widget.valueBlock1, widget.valueVillage1, widget.valueDistrict1, widget.itemsBlock1, widget.valueVillage1, widget.itemsDIstrict1, widget.userID
+                                widget.valueBlock1,
+                                widget.valueVillage1, widget.valueDistrict1, widget.itemsBlock1, widget.valueVillage1, widget.itemsDIstrict1,
+                                widget.userID
                             ),),);
                           },
                           padding: EdgeInsets.all(18.0),
@@ -139,7 +143,9 @@ class _UserTypeState extends State<UserType> {
                           elevation: 2.0,
                           onPressed: ()
                           {
-                            //Navigator.push(context, MaterialPageRoute(builder: (context) => ),);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => UnsyncedData(widget.valueBlock1,
+                                widget.valueVillage1, widget.valueDistrict1, widget.itemsBlock1, widget.valueVillage1, widget.itemsDIstrict1,
+                                widget.userID)),);
                           },
                           padding: EdgeInsets.all(18.0),
                           shape: RoundedRectangleBorder(
@@ -165,7 +171,11 @@ class _UserTypeState extends State<UserType> {
                         child: RaisedButton(
                           elevation: 2.0,
                           onPressed: ()
-                          {},
+                          {
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => DataSyncDemand(widget.valueBlock1,
+                            //     widget.valueVillage1, widget.valueDistrict1, widget.itemsBlock1, widget.valueVillage1, widget.itemsDIstrict1,
+                            //     widget.userID)),);
+                          },
                           padding: EdgeInsets.all(18.0),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25.0),
@@ -199,7 +209,6 @@ class _UserTypeState extends State<UserType> {
                             print("box after");
                             print(box2?.get("isLogged"));
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>LoginScreen()));
-
                             },
                           padding: EdgeInsets.all(18.0),
                           shape: RoundedRectangleBorder(
