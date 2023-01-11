@@ -13,9 +13,10 @@ class TakePicturePage extends StatefulWidget {
   final CameraDescription camera;
   String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
   Map<String, int> FarmerDemandMap;
+  Map<String, int> FarmerDemandMapFruits;
 
   TakePicturePage(this.year, this.status, this.date, this.district, this.block,
-  this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, {required this.camera});
+  this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap,this.FarmerDemandMapFruits, {required this.camera});
 
 
   @override
@@ -55,7 +56,7 @@ class _TakePicturePageState extends State<TakePicturePage> {
             // the DisplayPictureScreen widget.
               widget.year,
               widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-              , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap,path
+              , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, widget.FarmerDemandMapFruits,path
           ),
         ),
       );
@@ -110,6 +111,7 @@ class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
   String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
   Map<String, int> FarmerDemandMap;
+  Map<String, int> FarmerDemandMapFruits;
 
   DisplayPictureScreen(
       this.year,
@@ -123,7 +125,7 @@ class DisplayPictureScreen extends StatelessWidget {
       this.phone,
       this.gender,
       this.farmerdemand,
-      this.FarmerDemandMap,this.imagePath);
+      this.FarmerDemandMap,this.FarmerDemandMapFruits,this.imagePath);
   //const DisplayPictureScreen({super.key, required this.imagePath});
 
 
@@ -162,7 +164,7 @@ class DisplayPictureScreen extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => FarmerDemandFConsent(year,
                          status, date, district, block, village, farmer, aadhar
-                          ,phone, gender, farmerdemand, FarmerDemandMap,null, ""
+                          ,phone, gender, farmerdemand, FarmerDemandMap, FarmerDemandMapFruits, null, ""
                           // Pass the automatically generated path to
                           // the DisplayPictureScreen widget.
 

@@ -18,9 +18,10 @@ class TakeImageFromCamera2 extends StatefulWidget {
 
   String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand;
   Map<String, int> FarmerDemandMap;
+  Map<String, int> FarmerDemandMapFruits;
 
   TakeImageFromCamera2(this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.FarmerDemandMapFruits);
 
   @override
   State<TakeImageFromCamera2> createState() => _TakeImageFromCamera2State();
@@ -151,7 +152,7 @@ class _TakeImageFromCamera2State extends State<TakeImageFromCamera2> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => FarmerDemandFConsent(widget.year, widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap,null, ""),
+                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap,widget.FarmerDemandMapFruits,null, ""),
 
                         settings: RouteSettings(
                           arguments: image,

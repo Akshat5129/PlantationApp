@@ -119,7 +119,7 @@ class _FarmerDemandPlantsState extends State<FarmerDemandPlants> {
       print(items1.length);
       Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
           widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap,null, widget.userID),),);
+          , widget.phone, widget.gender, dropdownvalue1, widget.FarmerDemandMap, FlutterExample.FarmerDemandMap,null, widget.userID),),);
     }else{
       showDialog(
         context: context,
@@ -379,7 +379,7 @@ class _FarmerDemandPlantsState extends State<FarmerDemandPlants> {
                                       else{
                                         Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
                                             widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                                            , widget.phone, widget.gender, demandController.text, FlutterExample.FarmerDemandMap, null, widget.userID),
+                                            , widget.phone, widget.gender, demandController.text, widget.FarmerDemandMap, FlutterExample.FarmerDemandMap, null, widget.userID),
 
                                         ),);
                                       }

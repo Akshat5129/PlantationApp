@@ -101,9 +101,9 @@ class _FarmerDemandState extends State<FarmerDemand> {
       print("succ");
       XFile image;
       print(items1.length);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
-          widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-          , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap,null, widget.userID),),);
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandFConsent(widget.year,
+      //     widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
+      //     , widget.phone, widget.gender, dropdownvalue1, FlutterExample.FarmerDemandMap,null, widget.userID),),);
     }else{
       showDialog(
         context: context,

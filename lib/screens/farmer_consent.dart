@@ -20,12 +20,13 @@ class FarmerDemandFConsent extends StatefulWidget {
 
   String year, status, date, district, block, village, farmer, aadhar, phone, gender, farmerdemand, userID;
   Map<String, int> FarmerDemandMap;
+  Map<String, int> FarmerDemandMapFruits;
   var imageFarmer;
 
 
 
   FarmerDemandFConsent(this.year, this.status, this.date, this.district, this.block,
-      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.imageFarmer, this.userID);
+      this.village, this.farmer, this.aadhar, this.phone, this.gender, this.farmerdemand, this.FarmerDemandMap, this.FarmerDemandMapFruits, this.imageFarmer, this.userID);
 
   @override
   State<FarmerDemandFConsent> createState() => _FarmerDemandFConsentState();
@@ -56,6 +57,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
   };
 
   Box? box1;
+  Map<String, int> thirdMap = {};
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -101,6 +103,13 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
         })
       });
     });
+
+
+
+    thirdMap.addAll(widget.FarmerDemandMap);
+    thirdMap.addAll(widget.FarmerDemandMapFruits);
+
+
     print("consent1"+widget.year);
     FarmerData1['year'] = widget.year;
     print("consent1"+FarmerData1['year']);
@@ -114,7 +123,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     FarmerData1['phone'] = widget.phone;
     FarmerData1['gender'] = widget.gender;
     FarmerData1["farmer_demand"] = widget.farmerdemand;
-    FarmerData1['farmer_demand_map'] = widget.FarmerDemandMap;
+    FarmerData1['farmer_demand_map'] = thirdMap;
     FarmerData1['farmer_image'] = widget.imageFarmer;
     FarmerData1['userID']=box1?.get("email");
     FarmerData1['fid']=widget.userID;
@@ -156,7 +165,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
         context,
         MaterialPageRoute(
             builder: (context) => TakeImageFromCamera2(widget.year, widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap)));
+                , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, widget.FarmerDemandMapFruits)));
 
     setState(() {
       _path = result;
@@ -241,7 +250,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (BuildContext context) => FarmerDemandFConsent(widget.year,
-              widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, image12, widget.userID)),
+              widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar, widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, widget.FarmerDemandMapFruits, image12, widget.userID)),
             );
           },
           textColor: Theme.of(context).primaryColor,
@@ -467,7 +476,7 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => FarmerDemandSConsent(
                             widget.year,
                             widget.status, widget.date, widget.district, widget.block, widget.village, widget.farmer, widget.aadhar
-                            , widget.phone, widget.gender, widget.farmerdemand, widget.FarmerDemandMap, FarmerData1
+                            , widget.phone, widget.gender, widget.farmerdemand, thirdMap, FarmerData1
                         ),),);
                       }
 
