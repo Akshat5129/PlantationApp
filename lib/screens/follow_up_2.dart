@@ -601,7 +601,7 @@ class _FarmerFollowUP2State extends State<FarmerFollowUP2> {
       print(box1?.get("demandUserID")[index].toString());
       print(box2?.get("email"));
       //print(box1?.get("regFID")[index]);
-      if(element.toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+      if(element.toString() == widget.fid.toString() ){//&& box1?.get("demandUserID")[index].toString() == box2?.get("email")){
         print("index"+index.toString());
         if(demandTypeController.text.contains("Trees") || demandTypeController.text.contains("Forest")){
           demandTypeController.text = demandTypeController.text;

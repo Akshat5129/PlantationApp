@@ -78,7 +78,9 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
               elevation: 1.0,
               onPressed: ()  {
                 //startUpload();
+
                 _uploadFarmerImage();
+
 
                 // makePostRequest0(urlDis, unencodedPath1, headers1);
                 // makePostRequest1(urlBlock, unencodedPath1, headers1);
@@ -163,13 +165,32 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
               elevation: 1.0,
               onPressed: ()  {
-                Navigator.of(context).pop();
+                //Navigator.of(context).pop();
                 // Navigator.pushReplacement(
                 //   context,
                 //   MaterialPageRoute(builder: (BuildContext context) => FarmerRegistration(blockNameValue, villageNameValue, dropdownvalue1,
                 //     itemsBlock, itemsVillage, items1, widget.FarmerDemand1['userID'])),
                 // );
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>
+
+
+                print(box3.length);
+                print("values inside the box");
+                print(box3.values);
+                for (var i = 0; i < box3.length-1; i++) {
+                  print(box3.getAt(i));
+                  print("index: " + i.toString());
+                  print(box3.getAt(i)['status'].toString());
+                  print(box3.getAt(i)['tree_type'].toString());
+                  print(box3.getAt(i)['selected_tree'].toString());
+                  print(box3.getAt(i)['qty'].toString());
+                  box3.getAt(i).forEach((index, element) {
+                    print("----");
+                    print(index);
+                    print(element);
+                  });
+                }
+
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>
                 UserType(blockNameValue, villageNameValue, dropdownvalue1,
                          itemsBlock, itemsVillage, items1, box1.get('email'))));
 
@@ -214,6 +235,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
     box2 = await Hive.openBox('dropdowndata');
     boxSynced = await Hive.openBox('datasynced');
     print(box3.length);
+
   }
 
 
@@ -293,11 +315,13 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
   var farmerVID = [];
   var farmerAadhar = [];
   var regFID = [];
+  var regYear = [];
   var regAD = [];
   var regPhone = [];
   var regGender = [];
 
   var demandFID = [];
+  var demandYear = [];
   var demandUserID = [];
   var demandFarmer = [];
   var demandList = [];
@@ -305,15 +329,39 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
   var distributionFID = [];
   var distributionUserID = [];
+  var distributionPhone = [];
+  var distributionAadhar = [];
+  var distributionGender = [];
+  var distributionYear = [];
+
 
   var plantationFID = [];
   var plantationUserID = [];
+  var plantationPhone = [];
+  var plantationAadhar = [];
+  var plantationGender = [];
+  var plantationYear = [];
 
   var fu1FID = [];
   var fu1UserID = [];
+  var fu1Phone = [];
+  var fu1Aadhar = [];
+  var fu1Gender = [];
+  var fu1Year = [];
 
   var fu2FID = [];
   var fu2UserID = [];
+  var fu2Phone = [];
+  var fu2Aadhar = [];
+  var fu2Gender = [];
+  var fu2Year = [];
+
+  var ConFID = [];
+  var ConUserID = [];
+  var ConPhone = [];
+  var ConAadhar = [];
+  var ConGender = [];
+  var ConYear = [];
 
   late Box box2;
 
@@ -461,11 +509,13 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        regYear.add(s["year"]);
         regFID.add(s["fid"]);
         regAD.add(s["aadhar"]);
         regPhone.add(s["phone"]);
         regGender.add(s["gender"]);
       });
+      box2.put("regYear",regYear);
       box2.put("regFID",regFID);
       box2.put('regAD', regAD);
       box2.put('regPhone', regPhone);
@@ -489,12 +539,14 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        demandYear.add(s["year"]);
         demandFID.add(s["fid"]);
         demandUserID.add(s["emp_id"]);
         demandFarmer.add(s["tree_type"]);
         demandList.add(s["selected_tree"]);
         demandqty.add(s["qty"]);
       });
+      box2.put("demandYear",demandYear);
       box2.put("demandFID",demandFID);
       box2.put('demandUserID', demandUserID);
       box2.put('demandFarmer', demandFarmer);
@@ -519,9 +571,17 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        distributionGender.add(s["gender"]);
+        distributionAadhar.add(s["ad"]);
+        distributionPhone.add(s["phone"]);
+        distributionYear.add(s["year"]);
         distributionFID.add(s["aadhar"]);
         distributionUserID.add(s["emp_id"]);
       });
+      box2.put("distributionGender",distributionGender);
+      box2.put("distributionAd",distributionAadhar);
+      box2.put("distributionPhone",distributionPhone);
+      box2.put("distributionYear",distributionYear);
       box2.put("distributionFID",distributionFID);
       box2.put('distributionUserID', distributionUserID);
       print("Farmer Box 1234566");
@@ -536,20 +596,33 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       Uri.parse(url),
       headers: header,
     );
-    print("Farmer Box 1234588");
+    print("Farmer Box 123458812345678");
     print(response.statusCode);
     print(response.body);
     if(response.statusCode==200){
-      var jsonResult = jsonDecode(response.body);
-      print(jsonResult.length);
-      jsonResult.forEach((s){
-        plantationFID.add(s["aadhar"]);
-        plantationUserID.add(s["emp_id"]);
-      });
-      box2.put("plantationFID",plantationFID);
-      box2.put('plantationUserID', plantationUserID);
-      print("Farmer Box 1234566");
-      box2.get("plantationFID").forEach((s)=> print(s));
+
+      print("opopopopop");
+      print(response.body);
+      if(response.body != "0 results"){
+        var jsonResult = jsonDecode(response.body);
+        print(jsonResult.length);
+        jsonResult.forEach((s){
+          plantationGender.add(s["gender"]);
+          plantationAadhar.add(s["ad"]);
+          plantationPhone.add(s["phone"]);
+          plantationYear.add(s["year"]);
+          plantationFID.add(s["aadhar"]);
+          plantationUserID.add(s["emp_id"]);
+        });
+        box2.put("plantationGender",plantationGender);
+        box2.put("plantationAd",plantationAadhar);
+        box2.put("plantationPhone",plantationPhone);
+        box2.put("plantationYear",plantationYear);
+        box2.put("plantationFID",plantationFID);
+        box2.put('plantationUserID', plantationUserID);
+        print("Farmer Box 1234566");
+        box2.get("plantationFID").forEach((s)=> print(s));
+      }
     }
     return response;
   }
@@ -567,9 +640,17 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        fu1Gender.add(s["gender"]);
+        fu1Aadhar.add(s["ad"]);
+        fu1Phone.add(s["phone"]);
+        fu1Year.add(s["year"]);
         fu1FID.add(s["aadhar"]);
         fu1UserID.add(s["emp_id"]);
       });
+      box2.put("fu1Gender",fu1Gender);
+      box2.put("fu1Ad",fu1Aadhar);
+      box2.put("fu1Phone",fu1Phone);
+      box2.put("fu1Year",fu1Year);
       box2.put("fu1FID",fu1FID);
       box2.put('fu1UserID', fu1UserID);
       print("Farmer Box 1234566");
@@ -591,13 +672,53 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        fu2Gender.add(s["gender"]);
+        fu2Aadhar.add(s["ad"]);
+        fu2Phone.add(s["phone"]);
+        fu2Year.add(s["year"]);
         fu2FID.add(s["aadhar"]);
         fu2UserID.add(s["emp_id"]);
       });
+      box2.put("fu2Gender",fu2Gender);
+      box2.put("fu2Ad",fu2Aadhar);
+      box2.put("fu2Phone",fu2Phone);
+      box2.put("fu2Year",fu2Year);
       box2.put("fu2FID",fu2FID);
       box2.put('fu2UserID', fu2UserID);
       print("Farmer Box 1234566");
       box2.get("fu2FID").forEach((s)=> print(s));
+    }
+    return response;
+  }
+
+  Future<http.Response> makePostRequest15(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print("Farmer Box 1234588");
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      jsonResult.forEach((s){
+        ConGender.add(s["gender"]);
+        ConAadhar.add(s["ad"]);
+        ConPhone.add(s["phone"]);
+        ConYear.add(s["year"]);
+        ConFID.add(s["aadhar"]);
+        ConUserID.add(s["emp_id"]);
+      });
+      box2.put("ConGender",ConGender);
+      box2.put("ConAd",ConAadhar);
+      box2.put("ConPhone",ConPhone);
+      box2.put("ConYear",ConYear);
+      box2.put("ConFID",ConFID);
+      box2.put('ConUserID', ConUserID);
+      print("Farmer Box 1234566");
+      box2.get("ConFID").forEach((s)=> print(s));
     }
     return response;
   }
@@ -612,13 +733,16 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
   void _uploadFarmerImage() {
 
+
     print(box3.length);
     print("values inside the box");
     print(box3.values);
-    for (var i = 0; i < box3.length; i++) {
+    for (var i = 0; i < box3.length-1; i++) {
       print(box3.getAt(i));
       print("index: "+ i.toString());
-      print(box3.getAt(i)['status']);
+      print(box3.getAt(i)['status'].toString());
+
+      print(box3.getAt(i).toString());
 
       if(box3.getAt(i)['status']=='Visit 1: Demand'){
         //String base64Image = base64Encode(File(widget.FarmerDemand1['farmer_image'].path).readAsBytesSync());
@@ -638,6 +762,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         print(base64ImageSurveyor_Sign.toString());
 
         http.post(Uri.parse(phpEndPoint), body: {
+          "year": box3.getAt(i)['year'],
           "image_farmer": box3.getAt(i)['farmer_image_base64'],
           "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
           "image_farmer_sign": base64ImageFarmer_Sign,
@@ -655,7 +780,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
           print(res.statusCode);
           print(res.body);
 
-          if(i == box3.length-1){
+          if(i == box3.length-2){
             setState(() {
               _isLoading = false;
 
@@ -693,19 +818,19 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
             print("isloading"+_isLoading.toString());
 
-            if(i == box3.length-1){
+            // if(i == box3.length-1){
+            //
+            //   // showDialog(
+            //   //   context: context,
+            //   //   builder: (BuildContext context) => _buildPopupDialogChecked(context),
+            //   // );
+            //
+            // }
 
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => _buildPopupDialogChecked(context),
-              );
-
-            }
-
-            // showDialog(
-            //   context: context,
-            //   builder: (BuildContext context) => _buildPopupDialog(context),
-            // );
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialog(context),
+            );
             //return 1;
           }
           else if(res.body!="success"){
@@ -716,7 +841,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         });
       }
       else if(box3.getAt(i)['status']=='Visit 2: Distribution'){
-        print("Various");
+        print("VariousDtru");
         print(box3.getAt(i)['farmer_sign']);
         print(box3.getAt(i)['surveyor_signature']);
 
@@ -743,8 +868,10 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         print(box1.get('email'));
         print(box3.getAt(i)['fid']);
         print(box3.getAt(i)['agreement']);
+        print(box3.get("yearSel").toString());
 
         http.post(Uri.parse(phpEndPoint2), body: {
+          "year": box3.get("yearSel").toString(),
           "image_farmer": box3.getAt(i)['farmer_image_base64'],
           "name_image_farmer": box3.getAt(i)['farmer_image_file_name'],
           "image_farmer_sign": base64ImageFarmer_Sign,
@@ -760,7 +887,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
           print(res.statusCode);
           print(res.body);
 
-          if(i == box3.length-1){
+          if(i == box3.length-2){
             setState(() {
               _isLoading = false;
             });
@@ -818,11 +945,13 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
         print(box3.getAt(i)['fileNameFarmer_Sign']);
         print(box3.getAt(i)['base64ImageSurveyor_Sign']);
         print(box3.getAt(i)['fileNameSurveyor_Sign']);
+        print(box3.getAt(i)['selected_tree'].length.toString());
 
         for(var j = 0; j < box3.getAt(i)['selected_tree'].length; j++) {
           print("length"+j.toString());
           print("length: " + box3.getAt(i)['selected_tree'].length.toString());
           http.post(Uri.parse(phpEndPoint3), body: {
+            "year": box3.get("yearSel").toString(),
             "image_farmer": box3.getAt(i)['farmer_image_base64'][j],
             "name_image_farmer": box3.getAt(i)['farmer_image_file_name'][j],
             "image_farmer_sign": base64ImageFarmer_Sign,
@@ -840,8 +969,12 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
             print(res.statusCode);
             print(res.body);
 
-            if (i == box3.length - 1) {
-              if(j == box3.getAt(i)['selected_tree'].length-1){
+            print(_isLoading);
+
+            print("HELOOO");
+            print(i);
+            print(box3.length - 2);
+            if (i == box3.length - 2) {
               setState(() {
                 _isLoading = false;
               });
@@ -851,7 +984,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
                 builder: (BuildContext context) =>
                     _buildPopupDialogChecked(context),
               );
-            }
+
             print("isloading" + _isLoading.toString());
           }}).catchError((err) {
             print(err);
@@ -905,6 +1038,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
           print("length"+j.toString());
           print("length: " + box3.getAt(i)['selected_tree'].length.toString());
           http.post(Uri.parse(phpEndPoint4), body: {
+            "year": box3.get("yearSel").toString(),
             "image_farmer": box3.getAt(i)['farmer_image_base64'][j],
             "name_image_farmer": box3.getAt(i)['farmer_image_file_name'][j],
             "image_farmer_sign": base64ImageFarmer_Sign,
@@ -922,7 +1056,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
             print(res.statusCode);
             print(res.body);
 
-            if (i == box3.length - 1) {
+            if (i == box3.length - 2) {
               if(j == box3.getAt(i)['selected_tree'].length-1){
                 setState(() {
                   _isLoading = false;
@@ -987,6 +1121,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
           print("length"+j.toString());
           print("length: " + box3.getAt(i)['selected_tree'].length.toString());
           http.post(Uri.parse(phpEndPoint5), body: {
+            "year": box3.get("yearSel").toString(),
             "image_farmer": box3.getAt(i)['farmer_image_base64'][j],
             "name_image_farmer": box3.getAt(i)['farmer_image_file_name'][j],
             "image_farmer_sign": base64ImageFarmer_Sign,
@@ -1004,8 +1139,8 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
             print(res.statusCode);
             print(res.body);
 
-            if (i == box3.length - 1) {
-              if(j == box3.getAt(i)['selected_tree'].length-1){
+            if (i == box3.length - 2) {
+
                 setState(() {
                   _isLoading = false;
                 });
@@ -1015,7 +1150,7 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
                   builder: (BuildContext context) =>
                       _buildPopupDialogChecked(context),
                 );
-              }
+
               print("isloading" + _isLoading.toString());
             }}).catchError((err) {
             print(err);
@@ -1227,16 +1362,13 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
 
   Widget _buildPopupDialogChecked(BuildContext context) {
     print("_isLoading1"+_isLoading.toString());
-    makePostRequest0(urlDis, unencodedPath1, headers1);
-    makePostRequest1(urlBlock, unencodedPath1, headers1);
-    makePostRequest2(urlVillage, unencodedPath1, headers1);
-    makePostRequest3(urlFarmer, unencodedPath1, headers1);
-    makePostRequest4(urlAadhar, unencodedPath1, headers1);
-    makePostRequest5(urlDemand, unencodedPath1, headers1);
-    makePostRequest6(urlDistribution, unencodedPath1, headers1);
-    makePostRequest7(urlPlantation, unencodedPath1, headers1);
-    makePostRequest8(urlFollowUp1, unencodedPath1, headers1);
-    makePostRequest9(urlFollowUp2, unencodedPath1, headers1);
+
+
+
+
+
+
+
     return new AlertDialog(
 
       title: const Text('Data Sent Sucessfully', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
@@ -1251,12 +1383,65 @@ class _DataSyncDemandState extends State<DataSyncDemand> {
       actions: <Widget>[
         new FlatButton(
           onPressed: () {
-            Navigator.of(context).pop();
-            boxSynced = box3;
+
+            //boxSynced = box3;
+            print(box3.values);
+
+
+
+            var mappedValues = box3.values.map((m) => m).toList();
+
+
+            if(boxSynced.get("box3").toString()!=null.toString()){
+              for(int i=0;i<boxSynced.get("box3").length-1;i++){
+                print(boxSynced.get("box3")[i]);
+                mappedValues.add(boxSynced.get("box3")[i]);
+              }
+            }
+            print(boxSynced.get("box3"));
+
+            //mappedValues.add(boxSynced.get("box3"));
+            print(mappedValues);
+            print(mappedValues.length);
+
+            // for(int i=0;i<mappedValues.length-1;i++){
+            //   print(mappedValues[i]);
+            //   print(mappedValues[i]['status']);
+            //   print(mappedValues[i]['year']);
+            //   print(mappedValues[i]['farmer']);
+            //   print(mappedValues[i]['village']);
+            //   print(mappedValues[i]['farmer_demand_map']);
+            //
+            // }
+
+
+            box2.clear();
+
+            print("GETTT");
+            makePostRequest0(urlDis, unencodedPath1, headers1);
+            makePostRequest1(urlBlock, unencodedPath1, headers1);
+            makePostRequest2(urlVillage, unencodedPath1, headers1);
+            makePostRequest3(urlFarmer, unencodedPath1, headers1);
+            makePostRequest4(urlAadhar, unencodedPath1, headers1);
+            makePostRequest5(urlDemand, unencodedPath1, headers1);
+            makePostRequest6(urlDistribution, unencodedPath1, headers1);
+            makePostRequest7(urlPlantation, unencodedPath1, headers1);
+            makePostRequest8(urlFollowUp1, unencodedPath1, headers1);
+            makePostRequest9(urlFollowUp2, unencodedPath1, headers1);
+
+            boxSynced.put("box3", mappedValues);
+
+            print(boxSynced.get("box3"));
+
+            //print(box3.get("district1").toString());
             box3.clear();
+
+
+            Navigator.of(context).pop();
+
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
                 UserType(blockNameValue, villageNameValue, dropdownvalue1,
-                    itemsBlock, itemsVillage, items1, "widget.FarmerDemand1['userID']")),
+                    itemsBlock, itemsVillage, items1, box1.get('email'))),
                     (Route<dynamic> route) => false);
           },
           textColor: Theme.of(context).primaryColor,

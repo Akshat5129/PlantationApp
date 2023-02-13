@@ -34,6 +34,10 @@ class FarmerDemandFConsent extends StatefulWidget {
 
 class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
 
+
+  late Uint8List signImage;
+
+
   late final todo;
   var image1 = null;
   var image11 = null;
@@ -187,6 +191,11 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     }
 
     FarmerData1['farmer_signature'] = data;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => _buildPopupDialogforSignSuccess(context),
+    );
 
 
     // await Navigator.of(context).push(
@@ -443,7 +452,18 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
 
                                 ],
                                 mainAxisAlignment: MainAxisAlignment.center,
-                              )
+                              ),
+
+                              // Container(
+                              //     child: FarmerData1['farmer_signature'] == null ? new Container() : new Container(
+                              //       width: 140,
+                              //       color: Colors.grey[300],
+                              //       child: Image.memory(FarmerData1['farmer_signature']),
+                              //     ),
+                              // ),
+
+
+
                             ]
                         ),
                       ),
@@ -525,6 +545,8 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
     );
   }
 
+
+
   Widget _buildPopupDialogforSign(BuildContext context) {
     return new AlertDialog(
       title: const Text("Farmer Sign has not been uploaded", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
@@ -547,6 +569,31 @@ class _FarmerDemandFConsentState extends State<FarmerDemandFConsent> {
       ],
     );
   }
+}
+
+
+Widget _buildPopupDialogforSignSuccess(BuildContext context) {
+  return new AlertDialog(
+    title: const Text("Farmer Sign sucessfully Stored", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+    content: new Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[Center(child:
+      Text("Farmer'sign has been successfully capstured and stored"),)
+
+      ],
+    ),
+    actions: <Widget>[
+      new FlatButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        textColor: Theme.of(context).primaryColor,
+        child: const Text('Close'),
+      ),
+    ],
+  );
+
 }
 
 

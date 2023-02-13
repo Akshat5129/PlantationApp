@@ -67,6 +67,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   bool _validateYear= false;
   bool _validateAd= false;
   bool _validatePhone= false;
+  String adText = "";
+  String phText = "";
 
   DateTime dateToday =new DateTime.now();
   String dateTod = DateTime.now().toString().substring(0,10);
@@ -106,6 +108,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   var farmerVID1 = [];
   var farmerFID1 = [];
   int i1 = 0;
+
+  var farmerYear = [];
 
   String dropdownvalue1 = 'Select District';
   var items1 = [
@@ -154,6 +158,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
   Box? box1;
   Box? box2;
   Box? box3;
+  Box? box4;
 
   @override
   void initState() {
@@ -167,9 +172,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     print("${widget.itmesVillage1}");
     items1.clear();
     dateController.text=dateTod;
-    makePostRequest(url, unencodedPath, headers);
-    makePostRequest1(urlBlock, unencodedPath1, headers);
-    makePostRequest2(urlVillage, unencodedPath, headers);
+    //makePostRequest(url, unencodedPath, headers);
+    //makePostRequest1(urlBlock, unencodedPath1, headers);
+    //makePostRequest2(urlVillage, unencodedPath, headers);
     //items1=widget.itemsDIstrict1;
     //itemsBlock=widget.itemsBlock1;
     //itemsVillage=widget.itmesVillage1;
@@ -183,6 +188,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
     getdata();
     box2 = await Hive.openBox("logindata");
     box3 = await Hive.openBox("farmer_demand");
+    box4 = await Hive.openBox("demanddata");
   }
   void getdata()async{
     print("box dataabcd");
@@ -191,10 +197,16 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
       setState(() {
         print("length123");
         box1?.get("district1").forEach((element) { print(element); });
+        print(districtitems1);
         districtitems1.clear();
+        districtitems1.forEach((element) { print(element); });
+        print("add");
         districtitems1 = box1?.get("district1");
+        districtitems1.forEach((element) { print(element); });
         blockitems1.clear();
         blockitems1 = box1?.get("block1");
+        print("HEYYYYYYYYYYY");
+        print(blockitems1);
         villageitems1.clear();
         villageitems1 = box1?.get("village1");
         farmeritems1.clear();
@@ -211,6 +223,8 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
         farmerFID1 = box1?.get("farmerFID");
       });
     }
+
+    districtitems1.forEach((element) { print(element); });
   }
 
 
@@ -440,6 +454,64 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
+                  Container(
+                    child: Text(
+                      "Status of Visit",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            color: Color.fromRGBO(58, 58, 58, 1),
+                            letterSpacing: .2,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    padding: EdgeInsets.only(left: 5),
+                  ),
+                  Container(
+                      padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                      decoration: BoxDecoration(
+                          color:Color.fromRGBO(255, 235, 220, 1),
+                          border: Border.all(
+                              color: Color.fromRGBO(255, 235, 220, 1)
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10))
+                      ),
+                      margin: EdgeInsets.only(top: 1),
+                      child: DropdownButton(
+
+                        isExpanded: true,
+                        style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                              color: Colors.black54,
+                              letterSpacing: .2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        value: dropdownvalue,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: items.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownvalue = newValue!;
+                          });
+                        },
+                      )
+                  ),
+
+                  SizedBox(height: 20,),
+
                   Container(
                     child: Text(
                       "Year",
@@ -507,61 +579,61 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       //   },
                       // )
                   ),
-                  SizedBox(height: 20,),
-                  Container(
-                    child: Text(
-                      "Status of Visit",
-                      textAlign: TextAlign.left,
-                      style: GoogleFonts.poppins(
-                        textStyle: TextStyle(
-                            color: Color.fromRGBO(58, 58, 58, 1),
-                            letterSpacing: .2,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
-                    padding: EdgeInsets.only(left: 5),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
-                    decoration: BoxDecoration(
-                        color:Color.fromRGBO(255, 235, 220, 1),
-                        border: Border.all(
-                          color: Color.fromRGBO(255, 235, 220, 1)
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
-                    margin: EdgeInsets.only(top: 1),
-                    child: DropdownButton(
-
-                      isExpanded: true,
-                      style: GoogleFonts.lato(
-                        textStyle: TextStyle(
-                            color: Colors.black54,
-                            letterSpacing: .2,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600
-                        ),
-                      ),
-                      value: dropdownvalue,
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      items: items.map((String items) {
-                        return DropdownMenuItem(
-                          value: items,
-                          child: Text(items),
-
-                        );
-                      }).toList(),
-                      // After selecting the desired option,it will
-                      // change button value to selected value
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownvalue = newValue!;
-                        });
-                      },
-                    )
-                  ),
+                  //SizedBox(height: 20,),
+                  // Container(
+                  //   child: Text(
+                  //     "Status of Visit",
+                  //     textAlign: TextAlign.left,
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle: TextStyle(
+                  //           color: Color.fromRGBO(58, 58, 58, 1),
+                  //           letterSpacing: .2,
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.w600
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   padding: EdgeInsets.only(left: 5),
+                  // ),
+                  // Container(
+                  //   padding: EdgeInsets.only(left: 6, top: 2, right: 6, bottom: 2),
+                  //   decoration: BoxDecoration(
+                  //       color:Color.fromRGBO(255, 235, 220, 1),
+                  //       border: Border.all(
+                  //         color: Color.fromRGBO(255, 235, 220, 1)
+                  //       ),
+                  //       borderRadius: BorderRadius.all(Radius.circular(10))
+                  //   ),
+                  //   margin: EdgeInsets.only(top: 1),
+                  //   child: DropdownButton(
+                  //
+                  //     isExpanded: true,
+                  //     style: GoogleFonts.lato(
+                  //       textStyle: TextStyle(
+                  //           color: Colors.black54,
+                  //           letterSpacing: .2,
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w600
+                  //       ),
+                  //     ),
+                  //     value: dropdownvalue,
+                  //     icon: const Icon(Icons.keyboard_arrow_down),
+                  //     items: items.map((String items) {
+                  //       return DropdownMenuItem(
+                  //         value: items,
+                  //         child: Text(items),
+                  //
+                  //       );
+                  //     }).toList(),
+                  //     // After selecting the desired option,it will
+                  //     // change button value to selected value
+                  //     onChanged: (String? newValue) {
+                  //       setState(() {
+                  //         dropdownvalue = newValue!;
+                  //       });
+                  //     },
+                  //   )
+                  // ),
 
                   SizedBox(height: 40,),
                   Container(
@@ -861,38 +933,124 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                             print(newList);
                             if(dropdownvalue == "Visit 1: Demand"){
 
+                              print("hello broter");
+
                               farmerVID1.asMap().forEach((index, element) {
-                                print(element);
-                                print(i1);
-                                print("nect1");
-                                print(newList);
-                                print(box1?.get("farmer1")[index]);
                                 if(element.toString() == i1.toString()){
-                                  print(newList);
-                                  print("index"+index.toString());
-                                  print(box1?.get("farmer1")[index+1]);
                                   newList.add(box1?.get("farmer1")[index+1]);
                                 }
                               });
 
-                            }else if(dropdownvalue == "Visit 2: Distribution"){
+                              box1?.get("regFID").asMap().forEach((ind,ele){
+                                if(box1?.get("regYear")[ind].toString()==yearController.text.toString()){
+                                  print(ele);
+                                  farmerFID1.asMap().forEach((index, element) {
+                                    print(element);
+                                    if(element==ele){
+                                      print("REMOVING ELE:"+box1?.get("farmer1")[index+1]);
+                                      print("REMOVING ELE:"+newList[index+1]);
+                                      newList.removeAt(index+1);
+                                    }
+                                  });
+                                }
+                              });
+                              // box1?.get("regFID").asMap().forEach((index1, element1) {
+                              //   farmerVID1.asMap().forEach((index, element) {
+                              //     if(box1?.get("regYear")[index1].toString()==yearController.text.toString()){
+                              //       //print("YEAR: "+yearController.text.toString());
+                              //       //print("INDEXXXXX"+index1.toString());
+                              //       //print(element1);
+                              //       //print(farmerFID1[index]);
+                              //       if(element1.toString() == farmerFID1[index]){
+                              //         print("ELE: "+box1?.get("farmer1")[index+1]);
+                              //
+                              //         // if(!newList.contains(box1?.get("farmer1")[index+1])) {
+                              //         //   //print(!newList.contains(box1?.get("farmer1")[index+1]));
+                              //         //   //newList.add(box1?.get("farmer1")[index+1]);
+                              //         //   print("ELE: "+box1?.get("farmer1")[index+1]);
+                              //         // }
+                              //       }else{
+                              //         print("-------------------");
+                              //         print("ELE1: "+box1?.get("farmer1")[index+1]);
+                              //       }
+                              //     }
+                              //   });
+                              // });
 
-                              farmerVID1.asMap().forEach((index, element) {
+                              //farmerVID1.asMap().forEach((index, element) {
                                 // print(element);
                                 // print(i1);
-                                // print("nect1");
-                                // print(newList);
-                                // print(box1?.get("farmer1")[index]);
+
+
+
+                                // if(element.toString() == i1.toString()){
+                                //   print("--------------");
+                                //   print("eroo");
+                                //   box1?.get("regFID").asMap().forEach((index1, element1) {
+                                //     print("ABCCCCC");
+                                //     print(box1?.get("regYear")[index1].toString());
+                                //     print("Farmer value: "+farmerFID1[index]);
+                                //     print("YEAR"+box1?.get("regYear")[index1]);
+                                //     print("YEAR*"+yearController.text.toString());
+                                //     if(box1?.get("regYear")[index1].toString()==yearController.text.toString()){
+                                //       print("FORM"+farmerFID1[index].toString());
+                                //       print("FORM1"+element1.toString());
+                                //       print("FORM@"+box1?.get("farmer1")[index+1]);
+                                //
+                                //       if(element1.toString() != farmerFID1[index]){
+                                //         print("NOOOOOOOOOOOOOOOOOO");
+                                //         // print("ABCCCCCDDDDDDDD");
+                                //         // print(newList);
+                                //         // print("index"+index.toString());
+                                //         // print(box1?.get("farmer1")[index+1]);
+                                //         // //newList.add(box1?.get("farmer1")[index+1]);
+
+                                //       }else{
+                                //         print("OKYYYYYYYYYYYYYYYYYYYYYYYY");
+                                //       }
+                                //     }
+                                //   });
+                                // }
+                             // });
+
+                            }else if(dropdownvalue == "Visit 2: Distribution"){
+
+                              print("disributionLISTTTTTTTTTT");
+
+
+                              farmerVID1.asMap().forEach((index, element) {
+                                print(element);
+                                print(i1);
+
                                 if(element.toString() == i1.toString()){
+                                  print("eroo");
                                   box1?.get("regFID").asMap().forEach((index1, element1) {
+                                    print("ABCCCCC");
+                                    print(box1?.get("regYear")[index1].toString());
                                     print("Farmer value: "+farmerFID1[index]);
-                                    if(element1.toString() == farmerFID1[index]){
+                                        if(box1?.get("regYear")[index1].toString()==yearController.text.toString()){
+                                          if(element1.toString() == farmerFID1[index]){
                                       print(newList);
                                       print("index"+index.toString());
                                       print(box1?.get("farmer1")[index+1]);
                                       if(!newList.contains(box1?.get("farmer1")[index+1])) {
                                         newList.add(box1?.get("farmer1")[index+1]);
                                       }
+                                    }
+                                    }
+                                  });
+                                }
+                              });
+
+                              box1?.get("distributionFID").asMap().forEach((ind,ele){
+                                if(box1?.get("distributionYear")[ind].toString()==yearController.text.toString()){
+                                  print(ele);
+                                  farmerFID1.asMap().forEach((index, element) {
+                                    print(element);
+                                    if(element==ele){
+                                      print("REMOVING ELE:"+box1?.get("farmer1")[index+1]);
+                                      //print("REMOVING ELE:"+newList[index+1]);
+                                      newList.remove(box1?.get("farmer1")[index+1]);
                                     }
                                   });
                                 }
@@ -910,6 +1068,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 if(element.toString() == i1.toString()){
                                   box1?.get("distributionFID").asMap().forEach((index1, element1) {
                                     print("Farmer value: "+farmerFID1[index]);
+                                    if(box1?.get("distributionYear")[index1].toString()==yearController.text.toString()){
                                     if(element1.toString() == farmerFID1[index]){
                                       print(newList);
                                       print("index"+index.toString());
@@ -918,6 +1077,19 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                       if(!newList.contains(box1?.get("farmer1")[index+1])) {
                                         newList.add(box1?.get("farmer1")[index+1]);
                                       }
+                                    }}
+                                  });
+                                }
+                              });
+
+
+                              box1?.get("plantationFID").asMap().forEach((ind,ele){
+                                if(box1?.get("plantationYear")[ind].toString()==yearController.text.toString()){
+                                  print(ele);
+                                  farmerFID1.asMap().forEach((index, element) {
+                                    print(element);
+                                    if(element==ele){
+                                      newList.remove(box1?.get("farmer1")[index+1]);
                                     }
                                   });
                                 }
@@ -941,6 +1113,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                   box1?.get("plantationFID").asMap().forEach((index1, element1) {
                                     print("Farmer element val: "+element1);
                                     print("Farmer value: "+farmerFID1[index]);
+                                    if(box1?.get("plantationYear")[index1].toString()==yearController.text.toString()){
                                     if(element1.toString() == farmerFID1[index]){
                                       print(newList);
                                       print("index: hh: "+index.toString());
@@ -952,7 +1125,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
 
                                       }
                                       print("listnew"+newList.toString());
-                                    }
+                                    }}
                                   });
                                 }
                               });
@@ -970,6 +1143,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 if(element.toString() == i1.toString()){
                                   box1?.get("fu1FID").asMap().forEach((index1, element1) {
                                     print("Farmer value: "+farmerFID1[index]);
+                                    if(box1?.get("fu1Year")[index1].toString()==yearController.text.toString()){
                                     if(element1.toString() == farmerFID1[index]){
                                       print(newList);
                                       print("index"+index.toString());
@@ -978,7 +1152,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                       if(!newList.contains(box1?.get("farmer1")[index+1])) {
                                         newList.add(box1?.get("farmer1")[index+1]);
                                       }
-                                    }
+                                    }}
                                   });
                                 }
                               });
@@ -1009,6 +1183,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 }
                               });
 
+
                             }
                             print(newList);
                             farmeritems1 = newList;
@@ -1017,8 +1192,6 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         },
                       )
                   ),),
-
-
 
 
                   SizedBox(height: 20,),
@@ -1112,10 +1285,10 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 if(element.toString() == i1.toString()){
                                   print("index"+index.toString());
 
-                                  aadharController.text = box1?.get("regAD")[index];
-                                  phoneController.text = box1?.get("regPhone")[index];
-                                  dropdownvalue2 = box1?.get("regGender")[index];
-                                  print(box1?.get("regPhone")[index]);
+                                  aadharController.text = box1?.get("distributionAd")[index];
+                                  phoneController.text = box1?.get("distributionPhone")[index];
+                                  dropdownvalue2 = box1?.get("distributionGender")[index];
+                                  //print(box1?.get("regPhone")[index]);
                                   showPOP = false;
                                 }
                               });
@@ -1129,9 +1302,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 if(element.toString() == i1.toString()){
                                   print("index"+index.toString());
 
-                                  aadharController.text = box1?.get("regAD")[index];
-                                  phoneController.text = box1?.get("regPhone")[index];
-                                  dropdownvalue2 = box1?.get("regGender")[index];
+                                  aadharController.text = box1?.get("plantationAd")[index];
+                                  phoneController.text = box1?.get("plantationPhone")[index];
+                                  dropdownvalue2 = box1?.get("plantationGender")[index];
                                   print(box1?.get("regPhone")[index]);
                                   showPOP = false;
                                 }
@@ -1145,9 +1318,9 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 if(element.toString() == i1.toString()){
                                   print("index"+index.toString());
 
-                                  aadharController.text = box1?.get("regAD")[index];
-                                  phoneController.text = box1?.get("regPhone")[index];
-                                  dropdownvalue2 = box1?.get("regGender")[index];
+                                  aadharController.text = box1?.get("fu1Ad")[index];
+                                  phoneController.text = box1?.get("fu1Phone")[index];
+                                  dropdownvalue2 = box1?.get("fu1Gender")[index];
                                   print(box1?.get("regPhone")[index]);
                                   showPOP = false;
                                 }
@@ -1161,7 +1334,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                                 if(element.toString() == i1.toString()){
                                   print("index"+index.toString());
 
-                                  aadharController.text = box1?.get("regAD")[index];
+                                  aadharController.text = box1?.get("regAd")[index];
                                   phoneController.text = box1?.get("regPhone")[index];
                                   dropdownvalue2 = box1?.get("regGender")[index];
                                   print(box1?.get("regPhone")[index]);
@@ -1650,7 +1823,20 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       onChanged: (value){
                         setState(() {
                           print("insideset state");
-                          aadharController.text.isEmpty ? _validateAd = true : _validateAd = false;
+                          if(aadharController.text.isEmpty){
+                            _validateAd = true;
+                            adText="Enter Aadhar Number";
+                          }else {
+                            if(aadharController.text.length != 12){
+                              _validateAd = true;
+                              adText="Incorrect Aadhar Number";
+                            }else{
+                              _validateAd = false;
+                            }
+                          }
+                          // aadharController.text.isEmpty ? _validateAd = true :
+                          // aadharController.text.length != 12 ? _validateAd = true : _validateAd = false;
+                          print(_validateAd);
                         });
                       },
                       controller: aadharController,
@@ -1662,7 +1848,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         //contentPadding: EdgeInsets.all(1),
                         hintText: "Enter your Aadhar Number",
                         prefixIcon: Icon(Icons.credit_card_rounded),
-                        errorText: _validateAd ? 'Enter Aadhar' : null,
+                        errorText: _validateAd ? adText : null,
                       ),
                       style: GoogleFonts.lato(
                         textStyle: TextStyle(
@@ -1705,7 +1891,17 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                         onChanged: (value){
                           setState(() {
                             print("insideset state");
-                            phoneController.text.isEmpty ? _validatePhone = true : _validatePhone = false;
+                            if(phoneController.text.isEmpty){
+                              _validatePhone = true;
+                              phText="Enter Phone Number";
+                            }else {
+                              if(phoneController.text.length != 10){
+                                _validatePhone = true;
+                                phText="Incorrect Phone Number";
+                              }else{
+                                _validatePhone = false;
+                              }
+                            }
                           });
                         },
                         controller: phoneController,
@@ -1717,7 +1913,7 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                           //contentPadding: EdgeInsets.all(1),
                           hintText: 'Enter your Phone No',
                           prefixIcon: Icon(Icons.phone),
-                          errorText: _validatePhone ? 'Enter Phone' : null,
+                          errorText: _validatePhone ? phText : null,
                         ),
                         style: GoogleFonts.lato(
                           textStyle: TextStyle(
@@ -1794,9 +1990,37 @@ class _FarmerRegistrationState extends State<FarmerRegistration> {
                       onPressed: (){
                         setState(() {
                           yearController.text.isEmpty ? _validateYear = true : _validateYear = false;
-                          aadharController.text.isEmpty ? _validateAd = true : _validateAd = false;
-                          phoneController.text.isEmpty ? _validatePhone = true : _validatePhone = false;
+                          //aadharController.text.isEmpty ? _validateAd = true : _validateAd = false;
+                          // aadharController.text.isEmpty ? _validateAd = true :
+                          // aadharController.text.length != 12 ? _validateAd = true : _validateAd = false;
+
+                          if(aadharController.text.isEmpty){
+                            _validateAd = true;
+                            adText="Enter Aadhar Number";
+                          }else {
+                            if(aadharController.text.length != 12){
+                              _validateAd = true;
+                              adText="Incorrect Aadhar Number";
+                            }else{
+                              _validateAd = false;
+                            }
+                          }
+
+                          if(phoneController.text.isEmpty){
+                            _validatePhone = true;
+                            phText="Enter Phone Number";
+                          }else {
+                            if(phoneController.text.length != 10){
+                              _validatePhone = true;
+                              phText="Incorrect Phone Number";
+                            }else{
+                              _validatePhone = false;
+                            }
+                          }
                         });
+
+                        print("YEARRRRRRRRRRRRR"+yearController.text);
+                        box4?.put("yearSel", yearController.text);
 
                         if(dropdownvalue=="Visit 1: Demand"){
                         if (formGlobalKey.currentState!.validate()&&formGlobalKey2.currentState!.validate()

@@ -40,10 +40,12 @@ class _LoginScreenState extends State<LoginScreen> {
   var farmerVID = [];
   var farmerAadhar = [];
   var regFID = [];
+  var regYear = [];
   var regAD = [];
   var regPhone = [];
   var regGender = [];
 
+  var demandYear = [];
   var demandFID = [];
   var demandUserID = [];
   var demandFarmer = [];
@@ -51,16 +53,39 @@ class _LoginScreenState extends State<LoginScreen> {
   var demandqty = [];
 
   var distributionFID = [];
+  var distributionPhone = [];
+  var distributionAadhar = [];
+  var distributionGender = [];
+  var distributionYear = [];
   var distributionUserID = [];
 
   var plantationFID = [];
   var plantationUserID = [];
+  var plantationPhone = [];
+  var plantationAadhar = [];
+  var plantationGender = [];
+  var plantationYear = [];
 
   var fu1FID = [];
   var fu1UserID = [];
+  var fu1Phone = [];
+  var fu1Aadhar = [];
+  var fu1Gender = [];
+  var fu1Year = [];
 
   var fu2FID = [];
   var fu2UserID = [];
+  var fu2Phone = [];
+  var fu2Aadhar = [];
+  var fu2Gender = [];
+  var fu2Year = [];
+
+  var ConFID = [];
+  var ConUserID = [];
+  var ConPhone = [];
+  var ConAadhar = [];
+  var ConGender = [];
+  var ConYear = [];
 
 
 
@@ -94,16 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
     controllerUserID.clear();
     controllerPass.clear();
     print("inside inint"+items1.length.toString());
-    makePostRequest0(urlDis, unencodedPath1, headers1);
-    makePostRequest1(urlBlock, unencodedPath1, headers1);
-    makePostRequest2(urlVillage, unencodedPath1, headers1);
-    makePostRequest3(urlFarmer, unencodedPath1, headers1);
-    makePostRequest4(urlAadhar, unencodedPath1, headers1);
-    makePostRequest5(urlDemand, unencodedPath1, headers1);
-    makePostRequest6(urlDistribution, unencodedPath1, headers1);
-    makePostRequest7(urlPlantation, unencodedPath1, headers1);
-    makePostRequest8(urlFollowUp1, unencodedPath1, headers1);
-    makePostRequest9(urlFollowUp2, unencodedPath1, headers1);
+    // makePostRequest0(urlDis, unencodedPath1, headers1);
+    // makePostRequest1(urlBlock, unencodedPath1, headers1);
+    // makePostRequest2(urlVillage, unencodedPath1, headers1);
+    // makePostRequest3(urlFarmer, unencodedPath1, headers1);
+    // makePostRequest4(urlAadhar, unencodedPath1, headers1);
+    // makePostRequest5(urlDemand, unencodedPath1, headers1);
+    // makePostRequest6(urlDistribution, unencodedPath1, headers1);
+    // makePostRequest7(urlPlantation, unencodedPath1, headers1);
+    // makePostRequest8(urlFollowUp1, unencodedPath1, headers1);
+    // makePostRequest9(urlFollowUp2, unencodedPath1, headers1);
   }
 
   //final String url = "https:/stand4land.in";
@@ -116,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
     box1 = await Hive.openBox('logindata');
     getdata();
     box2 = await Hive.openBox('dropdowndata');
+    box2.clear();
   }
   void getdata()async{
     if(box1.get('email')!=null){
@@ -144,6 +170,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if(response.body=='success'){
 
+      box2.clear();
+      makePostRequest0(urlDis, unencodedPath1, headers1);
+      makePostRequest1(urlBlock, unencodedPath1, headers1);
+      makePostRequest2(urlVillage, unencodedPath1, headers1);
+      makePostRequest3(urlFarmer, unencodedPath1, headers1);
+      makePostRequest4(urlAadhar, unencodedPath1, headers1);
+      makePostRequest5(urlDemand, unencodedPath1, headers1);
+      makePostRequest6(urlDistribution, unencodedPath1, headers1);
+      makePostRequest7(urlPlantation, unencodedPath1, headers1);
+      makePostRequest8(urlFollowUp1, unencodedPath1, headers1);
+      makePostRequest9(urlFollowUp2, unencodedPath1, headers1);
+
+
       if(isChecked){
         box1.put('email', controllerUserID.value.text);
         box1.put('pass', controllerPass.value.text);
@@ -153,9 +192,9 @@ class _LoginScreenState extends State<LoginScreen> {
       box1.put('isLogged',true);
 
       print("box val abcd1");
-      box2.get("district1").forEach((element) { print(element); });
+      //box2.get("district1").forEach((element) { print(element); });
       print("Block Box 1234");
-      box2.get("block1").forEach((s)=> print(s));
+      //box2.get("block1").forEach((s)=> print(s));
       print("login_time");
       print(box1.get("email"));
       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FarmerRegistration(
@@ -320,17 +359,21 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        print(s['year']);
+        regYear.add(s["year"]);
         regFID.add(s["fid"]);
         regAD.add(s["aadhar"]);
         regPhone.add(s["phone"]);
         regGender.add(s["gender"]);
       });
+      box2.put("regYear",regYear);
+      print(box2.get("regYear").toString());
       box2.put("regFID",regFID);
       box2.put('regAD', regAD);
       box2.put('regPhone', regPhone);
       box2.put('regGender', regGender);
-      print("Farmer Box 1234566");
-      box2.get("regPhone").forEach((s)=> print(s));
+      print("Farmer Box 123456612");
+      box2.get("regYear").forEach((s)=> print("hey"+s.toString()));
     }
     return response;
   }
@@ -348,12 +391,14 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        demandYear.add(s["year"]);
         demandFID.add(s["fid"]);
         demandUserID.add(s["emp_id"]);
         demandFarmer.add(s["tree_type"]);
         demandList.add(s["selected_tree"]);
         demandqty.add(s["qty"]);
       });
+      box2.put("demandYear",demandYear);
       box2.put("demandFID",demandFID);
       box2.put('demandUserID', demandUserID);
       box2.put('demandFarmer', demandFarmer);
@@ -378,10 +423,18 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        distributionGender.add(s["gender"]);
+        distributionAadhar.add(s["ad"]);
+        distributionPhone.add(s["phone"]);
+        distributionYear.add(s["year"]);
         distributionFID.add(s["aadhar"]);
         distributionUserID.add(s["emp_id"]);
       });
+      box2.put("distributionGender",distributionGender);
+      box2.put("distributionAd",distributionAadhar);
+      box2.put("distributionPhone",distributionPhone);
       box2.put("distributionFID",distributionFID);
+      box2.put("distributionYear",distributionYear);
       box2.put('distributionUserID', distributionUserID);
       print("Farmer Box 1234566");
       box2.get("distributionFID").forEach((s)=> print(s));
@@ -402,9 +455,17 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        plantationGender.add(s["gender"]);
+        plantationAadhar.add(s["ad"]);
+        plantationPhone.add(s["phone"]);
+        plantationYear.add(s["year"]);
         plantationFID.add(s["aadhar"]);
         plantationUserID.add(s["emp_id"]);
       });
+      box2.put("plantationGender",plantationGender);
+      box2.put("plantationAd",plantationAadhar);
+      box2.put("plantationPhone",plantationPhone);
+      box2.put("plantationYear",plantationYear);
       box2.put("plantationFID",plantationFID);
       box2.put('plantationUserID', plantationUserID);
       print("Farmer Box 1234566");
@@ -426,9 +487,17 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        fu1Gender.add(s["gender"]);
+        fu1Aadhar.add(s["ad"]);
+        fu1Phone.add(s["phone"]);
+        fu1Year.add(s["year"]);
         fu1FID.add(s["aadhar"]);
         fu1UserID.add(s["emp_id"]);
       });
+      box2.put("fu1Gender",fu1Gender);
+      box2.put("fu1Ad",fu1Aadhar);
+      box2.put("fu1Phone",fu1Phone);
+      box2.put("fu1Year",fu1Year);
       box2.put("fu1FID",fu1FID);
       box2.put('fu1UserID', fu1UserID);
       print("Farmer Box 1234566");
@@ -450,13 +519,53 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResult = jsonDecode(response.body);
       print(jsonResult.length);
       jsonResult.forEach((s){
+        fu2Gender.add(s["gender"]);
+        fu2Aadhar.add(s["ad"]);
+        fu2Phone.add(s["phone"]);
+        fu2Year.add(s["year"]);
         fu2FID.add(s["aadhar"]);
         fu2UserID.add(s["emp_id"]);
       });
+      box2.put("fu2Gender",fu2Gender);
+      box2.put("fu2Ad",fu2Aadhar);
+      box2.put("fu2Phone",fu2Phone);
+      box2.put("fu2Year",fu2Year);
       box2.put("fu2FID",fu2FID);
       box2.put('fu2UserID', fu2UserID);
       print("Farmer Box 1234566");
       box2.get("fu2FID").forEach((s)=> print(s));
+    }
+    return response;
+  }
+
+  Future<http.Response> makePostRequest15(String url, String unencodedPath , Map<String, String> header) async {
+    final response = await http.get(
+      //Uri.http(url,unencodedPath),
+      Uri.parse(url),
+      headers: header,
+    );
+    print("Farmer Box 1234588");
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode==200){
+      var jsonResult = jsonDecode(response.body);
+      print(jsonResult.length);
+      jsonResult.forEach((s){
+        ConGender.add(s["gender"]);
+        ConAadhar.add(s["ad"]);
+        ConPhone.add(s["phone"]);
+        ConYear.add(s["year"]);
+        ConFID.add(s["aadhar"]);
+        ConUserID.add(s["emp_id"]);
+      });
+      box2.put("ConGender",ConGender);
+      box2.put("ConAd",ConAadhar);
+      box2.put("ConPhone",ConPhone);
+      box2.put("ConYear",ConYear);
+      box2.put("ConFID",ConFID);
+      box2.put('ConUserID', ConUserID);
+      print("Farmer Box 1234566");
+      box2.get("ConFID").forEach((s)=> print(s));
     }
     return response;
   }

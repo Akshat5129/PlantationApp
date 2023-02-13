@@ -147,6 +147,11 @@ class _FarmerFollowUp1FConsentState extends State<FarmerFollowUp1FConsent> {
 
     FarmerData1['farmer_sign'] = data;
 
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => _buildPopupDialogforSignSuccess(context),
+    );
+
 
     // await Navigator.of(context).push(
     //   MaterialPageRoute<void>(
@@ -574,6 +579,31 @@ class _FarmerFollowUp1FConsentState extends State<FarmerFollowUp1FConsent> {
       ),
     );
   }
+
+  Widget _buildPopupDialogforSignSuccess(BuildContext context) {
+    return new AlertDialog(
+      title: const Text("Farmer Sign sucessfully Stored", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Farmer'sign has been successfully capstured and stored"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+
+  }
+
 }
 
 

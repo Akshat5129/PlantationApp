@@ -88,6 +88,11 @@ class _FarmerFollowUp1SConsentState extends State<FarmerFollowUp1SConsent> {
 
     widget.FarmerDemand1['surveyor_signature'] = data;
 
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => _buildPopupDialogforSignSuccess(context),
+    );
+
   }
 
   //final String url = "https:/stand4land.in";
@@ -446,6 +451,31 @@ class _FarmerFollowUp1SConsentState extends State<FarmerFollowUp1SConsent> {
         ),
       ],
     );
+  }
+
+
+  Widget _buildPopupDialogforSignSuccess(BuildContext context) {
+    return new AlertDialog(
+      title: const Text("Surveyor Sign sucessfully Stored", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Center(child:
+        Text("Surveyor sign has been successfully capstured and stored"),)
+
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+
   }
 
 }

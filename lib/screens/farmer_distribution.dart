@@ -57,7 +57,7 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
         print(box1?.get("regFID")[index]);
         if(box1?.get("demandFID")[index].toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
           print("index"+index.toString());
-          demandTypeController.text = demandTypeController.text+box1?.get("demandFarmer")[index];
+          demandTypeController.text = demandTypeController.text+box1?.get("demandFarmer")[0];
           // phoneController.text = box1?.get("regPhone")[index];
           // dropdownvalue2 = box1?.get("regGender")[index];
           // print(box1?.get("regPhone")[index+1]);
@@ -72,6 +72,8 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
     box2 = await Hive.openBox("logindata");
     print(box1?.get("demandFID"));
 
+
+
     box1?.get("demandFID").asMap().forEach((index, element) {
       print(element);
       print(widget.fid);
@@ -79,7 +81,12 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
       print(box1?.get("demandUserID")[index].toString());
       print(box2?.get("email"));
       //print(box1?.get("regFID")[index]);
-      if(element.toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+
+      print(element.toString() == widget.fid.toString());
+      print(box1?.get("demandUserID")[index].toString() == box2?.get("email"));
+
+      if(element.toString() == widget.fid.toString() ){//&& box1?.get("demandUserID")[index].toString() == box2?.get("email").toString()){
+
         print("index"+index.toString());
         if(demandTypeController.text.contains("Trees") || demandTypeController.text.contains("Forest")){
           demandTypeController.text = demandTypeController.text;
@@ -101,6 +108,8 @@ class _FarmerDistributionState extends State<FarmerDistribution> {
       }
 
       print("list l1 l2");
+      print(box1?.get("demandList"));
+      print(box1?.get("demandqty"));
       print(selected_tree);
       print(qty);
     });

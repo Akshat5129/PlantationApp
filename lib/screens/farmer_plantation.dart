@@ -59,7 +59,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
         print(widget.fid);
         print("nect1");
         print(box1?.get("regFID")[index]);
-        if(box1?.get("demandFID")[index].toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+        if(box1?.get("demandFID")[index].toString() == widget.fid.toString() ){//&& box1?.get("demandUserID")[index].toString() == box2?.get("email")){
           print("index"+index.toString());
           demandTypeController.text = demandTypeController.text+box1?.get("demandFarmer")[index];
           // phoneController.text = box1?.get("regPhone")[index];
@@ -83,7 +83,7 @@ class _FarmerPlantationState extends State<FarmerPlantation> {
       print(box1?.get("demandUserID")[index].toString());
       print(box2?.get("email"));
       //print(box1?.get("regFID")[index]);
-      if(element.toString() == widget.fid.toString() && box1?.get("demandUserID")[index].toString() == box2?.get("email")){
+      if(element.toString() == widget.fid.toString() ){//&& box1?.get("demandUserID")[index].toString() == box2?.get("email")){
         print("index"+index.toString());
         if(demandTypeController.text.contains("Trees") || demandTypeController.text.contains("Forest")){
           demandTypeController.text = demandTypeController.text;

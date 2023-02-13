@@ -7,7 +7,7 @@ import 'homescreen.dart';
 class SyncedForm extends StatefulWidget {
 
   String valueBlock1, valueVillage1, valueDistrict1, userID;
-  var  itemsBlock1, itmesVillage1, itemsDIstrict1;
+  var  itemsBlock1, itmesVillage1, itemsDIstrict1,mapList;
 
   SyncedForm(
       this.valueBlock1,
@@ -16,7 +16,7 @@ class SyncedForm extends StatefulWidget {
       this.itemsBlock1,
       this.itmesVillage1,
       this.itemsDIstrict1,
-      this.userID);
+      this.userID,this.mapList);
 
   @override
   State<SyncedForm> createState() => _SyncedFormState();
@@ -29,13 +29,23 @@ class _SyncedFormState extends State<SyncedForm> {
   Box? boxSynced;
   Box? box3;
 
+  var mappedValues;
+
+  double wt=1,ht=0.65;
+
 
   @override
   void initState() {
     createBox();
+    mappedValues=widget.mapList;
+
+    for(int i=0;i<mappedValues[0].length;i++){
+      print("priu"+mappedValues[0][i].toString());
+    }
   }
 
   createBox() async {
+    print("createbox");
     boxSynced = await Hive.openBox("boxsynced");
     box3 = await Hive.openBox("farmer_demand");
     if(boxSynced!=null){
@@ -60,7 +70,7 @@ class _SyncedFormState extends State<SyncedForm> {
                     Row(
                       children: [
                         Text(
-                          "Recently \nSynced Form",
+                          "Recently \nSynced Form12",
                           textAlign: TextAlign.left,
                           style: GoogleFonts.roboto(
                             textStyle: TextStyle(
@@ -83,7 +93,7 @@ class _SyncedFormState extends State<SyncedForm> {
                       ],mainAxisAlignment: MainAxisAlignment.spaceBetween,),
 
                     Container(
-                      child: boxSynced==null ?
+                      child: mappedValues.length-1==-1 ?
                       Container(
                         margin: EdgeInsets.only(top: 50),
                         child: Text(
@@ -98,25 +108,180 @@ class _SyncedFormState extends State<SyncedForm> {
                             ),
                           ),
                         ),
-                      ) : Container(
-                        margin: EdgeInsets.only(top: 30),
-                          child: Column(
-                            children: [ListView.builder(
-                              shrinkWrap: true,
-                            itemCount: boxSynced?.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return ListTile(
-                                  leading: const Icon(Icons.list),
-                                  trailing: Text(
-                                    index.toString(),
-                                    style: TextStyle(color: Colors.green, fontSize: 15),
-                                  ),
-                                  title: Text("List item $index"));
-                            })],
-                          )
-                      )
+                      ) : Container()
 
                       ),
+
+
+                    SizedBox(height: 10,),
+
+                    Container(
+                        child: GridView.count(
+                          physics: ScrollPhysics(),
+                          childAspectRatio: (1 / 0.65),
+                          shrinkWrap: true,
+                          crossAxisCount: 1,
+                          children: mappedValues.length-1==-1?
+                          []:
+                          List.generate(
+                            //box2.get('isLogged',defaultValue: false)?MyPhone(title: "phone"):Verify(),
+                              mappedValues.length-1,//this is the total number of cards
+                                  (i){
+                                  return Container(
+
+                                    child: Card(
+                                        color: Colors.blueGrey,
+                                        child: Container(
+
+                                          padding: EdgeInsets.all(16),
+                                          alignment: Alignment.centerLeft,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .start,
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              RichText(
+                                                text: TextSpan(
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                      text: mappedValues[i]['status'] +
+                                                          "\n\n",
+                                                      style: TextStyle(
+                                                          color: Colors.white
+                                                              .withOpacity(0.7),
+                                                          fontSize: 17),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment
+                                                    .start,
+                                                //mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                      flex: 2,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          RichText(
+                                                            text: TextSpan(
+                                                              children: <
+                                                                  TextSpan>[
+                                                                TextSpan(
+                                                                  text: mappedValues[i]['farmer']
+                                                                      .toUpperCase() +
+                                                                      "\n\n",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize: 18),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],))
+                                                ],
+                                              ),
+                                              // RichText(
+                                              //   text: TextSpan(
+                                              //     children: <TextSpan>[
+                                              //       TextSpan(
+                                              //         text: "Year: ",
+                                              //         style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 15),
+                                              //       ),
+                                              //       TextSpan(
+                                              //         text: mappedValues[i]['year'],
+                                              //         style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 15),
+                                              //       ),
+                                              //
+                                              //     ],
+                                              //   ),
+                                              // ),
+                                              //SizedBox(height: 5,),
+                                              Row(
+                                                  crossAxisAlignment: CrossAxisAlignment
+                                                      .center,
+                                                  mainAxisAlignment: MainAxisAlignment
+                                                      .start,
+                                                  children: [
+                                                    Expanded(
+                                                        flex: 2,
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment
+                                                              .start,
+                                                          crossAxisAlignment: CrossAxisAlignment
+                                                              .start,
+                                                          children: [RichText(
+                                                            text: TextSpan(
+                                                              children: <
+                                                                  TextSpan>[
+                                                                TextSpan(
+                                                                  text: "Village: ",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                          0.5),
+                                                                      fontSize: 15),
+                                                                ),
+                                                                TextSpan(
+                                                                  text: mappedValues[i]['village'],
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                          0.8),
+                                                                      fontSize: 15),
+                                                                ),
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                            RichText(
+                                                              text: TextSpan(
+                                                                children: <
+                                                                    TextSpan>[
+                                                                  TextSpan(
+                                                                    text: "Year: ",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white
+                                                                            .withOpacity(
+                                                                            0.5),
+                                                                        fontSize: 15),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: mappedValues[i]['year'],
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white
+                                                                            .withOpacity(
+                                                                            0.8),
+                                                                        fontSize: 15),
+                                                                  ),
+
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],)),
+
+
+                                                  ]),
+                                              //SizedBox(height: 2,)
+                                            ],
+                                          ),
+                                        )
+                                      //Text(result["response"][index]["Name"]),
+                                    ),
+                                  );
+
+                              }
+                          ),
+                        ))
+
                   ],
                 )
               ],
